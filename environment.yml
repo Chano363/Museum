@@ -1,0 +1,14 @@
+name: museum-env
+channels:
+  - defaults
+  - conda-forge
+dependencies:
+  - python=3.9
+  - flask
+  - opencv-python
+  - numpy
+  - scipy
+  - pip
+  - pip:
+    - onnxruntime
+    - watchdog

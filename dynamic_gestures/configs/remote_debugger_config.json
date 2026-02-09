@@ -1,0 +1,6 @@
+{
+    "batchSize": 1,
+    "inputSize": 224,
+    "precision": "fp32",
+    "threads": 4
+}
