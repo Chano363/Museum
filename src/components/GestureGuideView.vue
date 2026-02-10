@@ -7,37 +7,43 @@
       <h2 class="guide-title">手势操作指南</h2>
       
       <div class="guide-section">
-        <h3>基本手势</h3>
+        <h3>核心手势</h3>
         <div class="gesture-grid">
           <div class="gesture-card">
-            <div class="gesture-icon">✊</div>
-            <h4>拳头</h4>
-            <p>锁定或解锁模型旋转</p>
-          </div>
-          <div class="gesture-card">
             <div class="gesture-icon">🖐️</div>
-            <h4>张开手</h4>
-            <p>重置模型视角到初始状态</p>
+            <h4>手掌</h4>
+            <p class="gesture-desc">重置模型到初始视角</p>
+            <p class="gesture-tip">五指自然张开，手心朝向摄像头</p>
           </div>
           <div class="gesture-card">
             <div class="gesture-icon">👍</div>
             <h4>点赞</h4>
-            <p>放大模型视图</p>
+            <p class="gesture-desc">放大模型视图</p>
+            <p class="gesture-tip">竖起大拇指，其他手指弯曲</p>
           </div>
           <div class="gesture-card">
             <div class="gesture-icon">👎</div>
-            <h4>拇指向下</h4>
-            <p>缩小模型视图</p>
+            <h4>点踩</h4>
+            <p class="gesture-desc">缩小模型视图</p>
+            <p class="gesture-tip">大拇指向下，其他手指弯曲</p>
           </div>
           <div class="gesture-card">
-            <div class="gesture-icon">✌️</div>
-            <h4>剪刀手</h4>
-            <p>切换到下一个文物模型</p>
+            <div class="gesture-icon">✊</div>
+            <h4>拳头</h4>
+            <p class="gesture-desc">切换展品模型</p>
+            <p class="gesture-tip">握紧拳头，所有手指弯曲</p>
           </div>
           <div class="gesture-card">
             <div class="gesture-icon">👌</div>
             <h4>OK手势</h4>
-            <p>显示当前文物的详细信息</p>
+            <p class="gesture-desc">显示文物详细信息</p>
+            <p class="gesture-tip">拇指和食指形成圆圈，其他手指伸直</p>
+          </div>
+          <div class="gesture-card">
+            <div class="gesture-icon">☝️</div>
+            <h4>手指指向</h4>
+            <p class="gesture-desc">移动和旋转模型</p>
+            <p class="gesture-tip">伸出食指，其他手指弯曲，移动手指控制模型</p>
           </div>
         </div>
       </div>
@@ -114,13 +120,14 @@ export default {
   width: 800px;
   max-width: 95vw;
   max-height: 90vh;
-  background-color: #f5f1e8;
+  background-color: #f2f2f2;
   border-radius: 15px;
   padding: 40px;
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
   animation: slideIn 0.4s ease;
   overflow-y: auto;
   position: relative;
+  font-family: var(--font-family);
 }
 
 .close-btn {
@@ -133,22 +140,21 @@ export default {
   background-color: transparent;
   font-size: 28px;
   cursor: pointer;
-  color: #3c2a1e;
+  color: var(--text-color);
   transition: all 0.3s ease;
 }
 
 .close-btn:hover {
   transform: scale(1.2);
-  color: #8b0000;
+  color: var(--text-color);
 }
 
 .guide-title {
   font-size: 2.2rem;
   font-weight: bold;
-  color: #3c2a1e;
+  color: var(--text-color);
   text-align: center;
   margin-bottom: 30px;
-  font-family: 'PingFang SC', 'Microsoft YaHei', serif;
 }
 
 .guide-section {
@@ -158,9 +164,9 @@ export default {
 .guide-section h3 {
   font-size: 1.4rem;
   font-weight: bold;
-  color: #3c2a1e;
+  color: var(--text-color);
   margin-bottom: 20px;
-  border-bottom: 2px solid rgba(139, 0, 0, 0.2);
+  border-bottom: 2px solid rgba(196, 146, 16, 0.2);
   padding-bottom: 10px;
 }
 
@@ -171,18 +177,18 @@ export default {
 }
 
 .gesture-card {
-  background-color: rgba(60, 42, 30, 0.05);
+  background-color: rgba(196, 146, 16, 0.05);
   border-radius: 12px;
   padding: 25px;
   text-align: center;
   transition: all 0.3s ease;
-  border: 1px solid rgba(60, 42, 30, 0.1);
+  border: 1px solid rgba(196, 146, 16, 0.1);
 }
 
 .gesture-card:hover {
   transform: translateY(-5px);
   box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
-  background-color: rgba(60, 42, 30, 0.1);
+  background-color: rgba(196, 146, 16, 0.1);
 }
 
 .gesture-icon {
@@ -193,18 +199,28 @@ export default {
 .gesture-card h4 {
   font-size: 1.1rem;
   font-weight: bold;
-  color: #3c2a1e;
+  color: var(--text-color);
   margin-bottom: 10px;
 }
 
-.gesture-card p {
-  color: #6b5645;
-  font-size: 0.95rem;
+.gesture-card .gesture-desc {
+  color: #333;
+  font-size: 1rem;
+  font-weight: 500;
+  margin-bottom: 8px;
   line-height: 1.4;
 }
 
+.gesture-card .gesture-tip {
+  color: #666;
+  font-size: 0.85rem;
+  line-height: 1.3;
+  font-style: italic;
+  opacity: 0.9;
+}
+
 .tips-list {
-  color: #6b5645;
+  color: #666;
   line-height: 1.8;
   margin-left: 20px;
 }
@@ -226,10 +242,10 @@ export default {
   flex-direction: column;
   align-items: center;
   padding: 15px 20px;
-  background-color: rgba(60, 42, 30, 0.05);
+  background-color: rgba(196, 146, 16, 0.05);
   border-radius: 10px;
   min-width: 100px;
-  border: 1px solid rgba(60, 42, 30, 0.1);
+  border: 1px solid rgba(196, 146, 16, 0.1);
 }
 
 .toolbar-icon {
@@ -238,7 +254,7 @@ export default {
 }
 
 .toolbar-name {
-  color: #3c2a1e;
+  color: var(--text-color);
   font-size: 0.9rem;
   font-weight: 500;
   text-align: center;
@@ -254,18 +270,18 @@ export default {
   height: 55px;
   font-size: 1.2rem;
   font-weight: bold;
-  color: #f5f1e8;
-  background-color: #8b0000;
+  color: #fff;
+  background-color: var(--text-color);
   border: none;
   border-radius: 30px;
   cursor: pointer;
   transition: all 0.3s ease;
-  box-shadow: 0 4px 12px rgba(139, 0, 0, 0.2);
+  box-shadow: 0 4px 12px rgba(196, 146, 16, 0.2);
 }
 
 .start-btn:hover {
   transform: scale(1.05);
-  box-shadow: 0 6px 16px rgba(139, 0, 0, 0.3);
+  box-shadow: 0 6px 16px rgba(196, 146, 16, 0.3);
 }
 
 @keyframes fadeIn {
@@ -294,12 +310,12 @@ export default {
 }
 
 .gesture-guide-content::-webkit-scrollbar-track {
-  background: rgba(60, 42, 30, 0.1);
+  background: rgba(196, 146, 16, 0.1);
   border-radius: 4px;
 }
 
 .gesture-guide-content::-webkit-scrollbar-thumb {
-  background: rgba(60, 42, 30, 0.3);
+  background: rgba(196, 146, 16, 0.3);
   border-radius: 4px;
 }
 

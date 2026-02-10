@@ -73,13 +73,14 @@ export default {
   width: 500px;
   max-width: 90vw;
   max-height: 80vh;
-  background-color: #f5f1e8; /* 宣纸米白 */
+  background-color: #f2f2f2;
   border-radius: 10px;
   padding: 30px;
   box-shadow: 0 5px 20px rgba(0, 0, 0, 0.3);
   animation: slideIn 0.3s ease;
   overflow-y: auto;
   position: relative;
+  font-family: var(--font-family);
 }
 
 .close-btn {
@@ -92,20 +93,20 @@ export default {
   background-color: transparent;
   font-size: 24px;
   cursor: pointer;
-  color: #3c2a1e;
+  color: var(--text-color);
   transition: all 0.3s ease;
 }
 
 .close-btn:hover {
   transform: scale(1.2);
-  color: #8b0000; /* 朱砂红 */
+  color: var(--text-color);
 }
 
 .about-header {
   text-align: center;
   margin-bottom: 30px;
   padding-bottom: 20px;
-  border-bottom: 1px solid rgba(60, 42, 30, 0.2);
+  border-bottom: 1px solid rgba(196, 146, 16, 0.2);
 }
 
 .app-icon {
@@ -116,12 +117,12 @@ export default {
 .app-title {
   font-size: 2rem;
   font-weight: bold;
-  color: #3c2a1e;
+  color: var(--text-color);
   margin-bottom: 10px;
 }
 
 .app-version {
-  color: #6b5645;
+  color: #666;
   font-size: 1rem;
 }
 
@@ -132,18 +133,18 @@ export default {
 .about-section h3 {
   font-size: 1.2rem;
   font-weight: bold;
-  color: #3c2a1e;
+  color: var(--text-color);
   margin-bottom: 10px;
 }
 
 .about-section p {
-  color: #6b5645;
+  color: #666;
   line-height: 1.6;
   margin-bottom: 15px;
 }
 
 .feature-list {
-  color: #6b5645;
+  color: #666;
   line-height: 1.8;
   margin-left: 10px;
 }
@@ -157,19 +158,19 @@ export default {
 
 .tech-tag {
   padding: 5px 12px;
-  background-color: rgba(60, 42, 30, 0.1);
-  color: #3c2a1e;
+  background-color: rgba(196, 146, 16, 0.1);
+  color: var(--text-color);
   border-radius: 15px;
   font-size: 0.9rem;
-  border: 1px solid rgba(60, 42, 30, 0.2);
+  border: 1px solid rgba(196, 146, 16, 0.2);
 }
 
 .about-footer {
   text-align: center;
   margin-top: 30px;
   padding-top: 20px;
-  border-top: 1px solid rgba(60, 42, 30, 0.2);
-  color: #6b5645;
+  border-top: 1px solid rgba(196, 146, 16, 0.2);
+  color: #666;
   font-size: 0.9rem;
 }
 
@@ -199,12 +200,12 @@ export default {
 }
 
 .about-view::-webkit-scrollbar-track {
-  background: rgba(60, 42, 30, 0.1);
+  background: rgba(196, 146, 16, 0.1);
   border-radius: 3px;
 }
 
 .about-view::-webkit-scrollbar-thumb {
-  background: rgba(60, 42, 30, 0.3);
+  background: rgba(196, 146, 16, 0.3);
   border-radius: 3px;
 }
 

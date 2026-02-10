@@ -6,7 +6,7 @@
       alt="3D Model"
       auto-rotate
       camera-controls
-      poster="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='300' viewBox='0 0 400 300'%3E%3Crect width='400' height='300' fill='%23f5f1e8'/%3E%3Ctext x='200' y='150' font-size='24' text-anchor='middle' fill='%233c2a1e'%3E加载模型中...%3C/text%3E%3C/svg%3E"
+      poster="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='300' viewBox='0 0 400 300'%3E%3Crect width='400' height='300' fill='%23f2f2f2'/%3E%3Ctext x='200' y='150' font-size='24' text-anchor='middle' fill='%23C49210'%3E加载模型中...%3C/text%3E%3C/svg%3E"
       style="width: 100%; height: 100%;"
       @load="onModelLoad"
       @error="onModelError"
@@ -57,6 +57,7 @@ export default {
   width: 100%;
   height: 100%;
   position: relative;
+  font-family: var(--font-family);
 }
 
 .loading-overlay {
@@ -65,7 +66,7 @@ export default {
   left: 0;
   right: 0;
   bottom: 0;
-  background-color: rgba(245, 241, 232, 0.9);
+  background-color: rgba(242, 242, 242, 0.9);
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -76,8 +77,8 @@ export default {
 .loading-spinner {
   width: 60px;
   height: 60px;
-  border: 5px solid rgba(139, 0, 0, 0.2);
-  border-top: 5px solid #8b0000;
+  border: 5px solid rgba(196, 146, 16, 0.2);
+  border-top: 5px solid var(--text-color);
   border-radius: 50%;
   animation: spin 1s linear infinite;
   margin-bottom: 20px;
@@ -91,6 +92,6 @@ export default {
 .loading-text {
   font-size: 18px;
   font-weight: bold;
-  color: #3c2a1e;
+  color: var(--text-color);
 }
 </style>

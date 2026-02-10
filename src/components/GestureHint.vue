@@ -30,12 +30,13 @@ export default {
 
 .hint-content {
   background-color: rgba(0, 0, 0, 0.7);
-  color: white;
+  color: var(--text-color);
   padding: 15px 25px;
   border-radius: 25px;
   font-size: 1rem;
   backdrop-filter: blur(5px);
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  font-family: var(--font-family);
 }
 
 @keyframes fadeInOut {

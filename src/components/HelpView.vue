@@ -170,13 +170,14 @@ export default {
   width: 600px;
   max-width: 90vw;
   max-height: 80vh;
-  background-color: #f5f1e8; /* 宣纸米白 */
+  background-color: #f2f2f2;
   border-radius: 10px;
   padding: 30px;
   box-shadow: 0 5px 20px rgba(0, 0, 0, 0.3);
   animation: slideIn 0.3s ease;
   overflow-y: auto;
   position: relative;
+  font-family: var(--font-family);
 }
 
 .close-btn {
@@ -189,20 +190,20 @@ export default {
   background-color: transparent;
   font-size: 24px;
   cursor: pointer;
-  color: #3c2a1e;
+  color: var(--text-color);
   transition: all 0.3s ease;
 }
 
 .close-btn:hover {
   transform: scale(1.2);
-  color: #8b0000; /* 朱砂红 */
+  color: var(--text-color);
 }
 
 .help-header {
   text-align: center;
   margin-bottom: 30px;
   padding-bottom: 20px;
-  border-bottom: 1px solid rgba(60, 42, 30, 0.2);
+  border-bottom: 1px solid rgba(196, 146, 16, 0.2);
 }
 
 .help-icon {
@@ -213,7 +214,7 @@ export default {
 .help-title {
   font-size: 2rem;
   font-weight: bold;
-  color: #3c2a1e;
+  color: var(--text-color);
 }
 
 .help-section {
@@ -223,7 +224,7 @@ export default {
 .help-section h3 {
   font-size: 1.2rem;
   font-weight: bold;
-  color: #3c2a1e;
+  color: var(--text-color);
   margin-bottom: 15px;
 }
 
@@ -232,7 +233,7 @@ export default {
   align-items: flex-start;
   margin-bottom: 20px;
   padding: 15px;
-  background-color: rgba(60, 42, 30, 0.05);
+  background-color: rgba(196, 146, 16, 0.05);
   border-radius: 8px;
 }
 
@@ -248,12 +249,12 @@ export default {
 
 .help-text strong {
   display: block;
-  color: #3c2a1e;
+  color: var(--text-color);
   margin-bottom: 5px;
 }
 
 .help-text p {
-  color: #6b5645;
+  color: #666;
   margin-bottom: 3px;
   font-size: 0.95rem;
 }
@@ -268,7 +269,7 @@ export default {
   display: flex;
   align-items: center;
   padding: 15px;
-  background-color: rgba(60, 42, 30, 0.05);
+  background-color: rgba(196, 146, 16, 0.05);
   border-radius: 8px;
 }
 
@@ -280,12 +281,12 @@ export default {
 
 .gesture-info strong {
   display: block;
-  color: #3c2a1e;
+  color: var(--text-color);
   margin-bottom: 3px;
 }
 
 .gesture-info p {
-  color: #6b5645;
+  color: #666;
   font-size: 0.9rem;
   margin: 0;
 }
@@ -300,7 +301,7 @@ export default {
   display: flex;
   align-items: center;
   padding: 12px;
-  background-color: rgba(60, 42, 30, 0.05);
+  background-color: rgba(196, 146, 16, 0.05);
   border-radius: 8px;
 }
 
@@ -313,13 +314,13 @@ export default {
 
 .toolbar-info strong {
   display: block;
-  color: #3c2a1e;
+  color: var(--text-color);
   margin-bottom: 2px;
   font-size: 0.95rem;
 }
 
 .toolbar-info p {
-  color: #6b5645;
+  color: #666;
   font-size: 0.85rem;
   margin: 0;
 }
@@ -332,18 +333,18 @@ export default {
 
 .faq-item {
   padding: 15px;
-  background-color: rgba(60, 42, 30, 0.05);
+  background-color: rgba(196, 146, 16, 0.05);
   border-radius: 8px;
 }
 
 .faq-item strong {
   display: block;
-  color: #3c2a1e;
+  color: var(--text-color);
   margin-bottom: 5px;
 }
 
 .faq-item p {
-  color: #6b5645;
+  color: #666;
   margin: 0;
   font-size: 0.95rem;
 }
@@ -374,12 +375,12 @@ export default {
 }
 
 .help-view::-webkit-scrollbar-track {
-  background: rgba(60, 42, 30, 0.1);
+  background: rgba(196, 146, 16, 0.1);
   border-radius: 3px;
 }
 
 .help-view::-webkit-scrollbar-thumb {
-  background: rgba(60, 42, 30, 0.3);
+  background: rgba(196, 146, 16, 0.3);
   border-radius: 3px;
 }
 

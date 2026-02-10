@@ -16,7 +16,7 @@ CORS(app)
 
 # 初始化模型
 model_dir = os.path.join(os.path.dirname(__file__), '..', 'dynamic_gestures', 'models')
-detection_model = HandDetection(os.path.join(model_dir, 'hand_detector.onnx'), confidence_threshold=0.5)
+detection_model = HandDetection(os.path.join(model_dir, 'YOLOv10n_hands.onnx'), image_size=(640, 640), confidence_threshold=0.5)
 classification_model = HandClassification(os.path.join(model_dir, 'crops_classifier.onnx'))
 
 @app.route('/api/recognize', methods=['POST'])
@@ -69,8 +69,11 @@ def recognize_gesture():
         
         return jsonify({'detections': detections})
     except Exception as e:
+        import traceback
+        error_trace = traceback.format_exc()
         print(f'Error: {e}')
-        return jsonify({'error': str(e)}), 500
+        print(f'Traceback: {error_trace}')
+        return jsonify({'error': str(e), 'traceback': error_trace}), 500
 
 def get_gesture_name(gesture_id):
     # 手势名称映射

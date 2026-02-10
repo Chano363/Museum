@@ -2,6 +2,10 @@ import argparse
 import time
 import signal
 import os
+import sys
+
+# 添加当前目录到 Python 搜索路径
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
 import cv2
 import numpy as np
@@ -12,8 +16,10 @@ from parser import parse_args
 from config_manager import DynamicConfigManager
 
 def run(args):
+    # Get absolute path to config file
+    config_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "configs/remote_debugger_config.json")
     # Initialize dynamic config manager - monitor configs/remote_debugger_config.json
-    dynamic_config = DynamicConfigManager("configs/remote_debugger_config.json")
+    dynamic_config = DynamicConfigManager(config_path)
     
     # Initialize controller with initial parameters
     controller = MainController(
@@ -59,7 +65,9 @@ def run(args):
     dynamic_config.set_config_change_callback(on_config_change)
     
     # Create PID file
-    pid_file = "/tmp/model.pid"
+    import tempfile
+    temp_dir = tempfile.gettempdir()
+    pid_file = os.path.join(temp_dir, "model.pid")
     with open(pid_file, 'w') as f:
         f.write(str(os.getpid()))
     print(f"PID file created: {pid_file}")

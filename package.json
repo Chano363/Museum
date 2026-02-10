@@ -18,7 +18,9 @@
     "@tensorflow/tfjs-backend-webgl": "^4.22.0",
     "@tensorflow/tfjs-converter": "^4.22.0",
     "howler": "^2.2.4",
+    "jimp": "^1.6.0",
     "onnxruntime-web": "^1.23.2",
+    "request": "^2.88.2",
     "three": "^0.170.0",
     "vue": "^3.5.13"
   },

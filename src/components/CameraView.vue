@@ -105,11 +105,19 @@ export default {
         if (!videoRef.value || !canvasRef.value) return
         
         const ctx = canvasRef.value.getContext('2d')
+        
+        // 水平翻转canvas，以纠正视频的翻转效果
+        ctx.save()
+        ctx.translate(canvasWidth.value, 0)
+        ctx.scale(-1, 1)
+        
+        // 绘制视频帧
         ctx.drawImage(videoRef.value, 0, 0, canvasWidth.value, canvasHeight.value)
+        ctx.restore()
         
         const imageData = ctx.getImageData(0, 0, canvasWidth.value, canvasHeight.value)
         
-        // 发送帧数据
+        // 发送帧数据，确保每一帧都被处理
         emit('frame', imageData)
         
         // 更新FPS
@@ -175,7 +183,8 @@ export default {
       canvasHeight,
       onVideoLoaded,
       updateDetections,
-      stopCamera
+      stopCamera,
+      getBoxStyle
     }
   }
 }
@@ -186,6 +195,7 @@ export default {
   position: relative;
   width: 100%;
   height: 100%;
+  font-family: var(--font-family);
 }
 
 video {
@@ -241,13 +251,13 @@ canvas {
 }
 
 .value {
-  color: #409eff;
+  color: var(--text-color);
 }
 
 .detection-box {
   position: absolute;
-  border: 2px solid #409eff;
-  background: rgba(64, 158, 255, 0.1);
+  border: 2px solid var(--text-color);
+  background: rgba(196, 146, 16, 0.1);
   border-radius: 4px;
 }
 
@@ -255,7 +265,7 @@ canvas {
   position: absolute;
   top: -25px;
   left: 0;
-  background: #409eff;
+  background: var(--text-color);
   color: #fff;
   padding: 2px 8px;
   border-radius: 4px;
@@ -277,7 +287,7 @@ canvas {
   height: 40px;
   border: 4px solid rgba(255, 255, 255, 0.3);
   border-radius: 50%;
-  border-top-color: #409eff;
+  border-top-color: var(--text-color);
   animation: spin 1s ease-in-out infinite;
   margin: 0 auto 10px;
 }

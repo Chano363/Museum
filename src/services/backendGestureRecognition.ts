@@ -4,115 +4,130 @@ export class BackendGestureRecognitionService {
   private isInitialized = false
   private isProcessing = false
   
-  // 性能监控
-  private fps = 0
-  private frameCount = 0
-  private lastFpsUpdate = 0
+  // 重用canvas元素
+  private canvas: HTMLCanvasElement | null = null
+  private ctx: CanvasRenderingContext2D | null = null
+  
+  // 网络传输配置
+  private connectionTimeout = 5000 // 连接超时5秒
+  private retryCount = 0
+  private maxRetries = 1 // 最大1次重试
   
   async initialize(): Promise<void> {
     try {
       console.log('正在初始化后端手势识别服务...')
       
-      // 测试后端连接 - 创建一个简单的 1x1 像素的图像
-      const canvas = document.createElement('canvas')
-      canvas.width = 1
-      canvas.height = 1
-      const ctx = canvas.getContext('2d')
+      // 初始化canvas元素
+      this.canvas = document.createElement('canvas')
+      this.ctx = this.canvas.getContext('2d')
       
-      if (!ctx) {
+      if (!this.ctx) {
         throw new Error('无法创建画布上下文')
       }
       
-      ctx.fillStyle = '#000000'
-      ctx.fillRect(0, 0, 1, 1)
-      const base64Image = canvas.toDataURL('image/jpeg')
+      // 测试后端连接 - 创建一个简单的 1x1 像素的图像
+      this.canvas.width = 1
+      this.canvas.height = 1
+      this.ctx.fillStyle = '#000000'
+      this.ctx.fillRect(0, 0, 1, 1)
+      const base64Image = this.canvas.toDataURL('image/jpeg')
       
-      const response = await fetch('/api/recognize', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ image: base64Image })
-      })
-      
-      if (response.ok) {
-        console.log('后端手势识别服务初始化成功')
-        this.isInitialized = true
-      } else {
-        console.error('后端手势识别服务初始化失败:', await response.text())
-        throw new Error('后端服务连接失败')
+      try {
+        const response = await fetch('/api/recognize', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ image: base64Image })
+        })
+        
+        if (response.ok) {
+          console.log('后端手势识别服务初始化成功')
+          this.isInitialized = true
+        } else {
+          console.warn('后端手势识别服务初始化失败，将在需要时重试:', await response.text())
+          // 不抛出错误，允许服务继续运行
+        }
+      } catch (error) {
+        console.warn('后端服务连接失败，将在需要时重试:', error)
+        // 不抛出错误，允许服务继续运行
       }
     } catch (error) {
       console.error('后端手势识别服务初始化失败:', error)
-      throw error
+      // 不抛出错误，允许服务继续运行
     }
   }
   
   async processFrame(imageData: ImageData): Promise<HandDetection[]> {
-    if (!this.isInitialized || this.isProcessing) {
+    // 检查是否正在处理其他帧
+    if (this.isProcessing) {
       return []
     }
     
+    // 立即设置为处理中，避免并发处理
     this.isProcessing = true
     
     try {
-      const startTime = performance.now()
-      
-      // 将 ImageData 转换为 base64
-      const canvas = document.createElement('canvas')
-      canvas.width = imageData.width
-      canvas.height = imageData.height
-      const ctx = canvas.getContext('2d')
-      
-      if (!ctx) {
-        throw new Error('无法创建画布上下文')
+      // 前端图像处理
+      if (!this.canvas || !this.ctx) {
+        return []
       }
       
-      ctx.putImageData(imageData, 0, 0)
-      const base64Image = canvas.toDataURL('image/jpeg')
+      // 使用完整分辨率，不降低图像质量
+      this.canvas.width = imageData.width
+      this.canvas.height = imageData.height
+      this.ctx.putImageData(imageData, 0, 0)
       
-      // 发送到后端
-      const response = await fetch('/api/recognize', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ image: base64Image })
-      })
+      // 使用JPEG格式，质量0.7
+      const base64Image = this.canvas.toDataURL('image/jpeg', 0.7)
       
-      if (!response.ok) {
-        throw new Error(`后端服务错误: ${await response.text()}`)
+      // 发送到后端（带超时和重试）
+      let response
+      let retryCount = 0
+      
+      while (retryCount <= this.maxRetries) {
+        try {
+          // 使用Promise.race实现超时处理
+          const fetchPromise = fetch('/api/recognize', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ image: base64Image })
+          })
+          
+          const timeoutPromise = new Promise((_, reject) => 
+            setTimeout(() => reject(new Error('请求超时')), this.connectionTimeout)
+          )
+          
+          response = await Promise.race([fetchPromise, timeoutPromise])
+          
+          if (!response.ok) {
+            throw new Error(`后端服务错误: ${response.status}`)
+          }
+          break
+        } catch (error) {
+          retryCount++
+          if (retryCount > this.maxRetries) {
+            return []
+          }
+          await new Promise(resolve => setTimeout(resolve, 500))
+        }
       }
       
       const data = await response.json()
       const detections: HandDetection[] = data.detections || []
       
-      // 性能监控
-      this.updateFPS(startTime)
-      
       return detections
     } catch (error) {
-      console.error('后端手势识别处理失败:', error)
       return []
     } finally {
       this.isProcessing = false
     }
   }
   
-  private updateFPS(startTime: number) {
-    this.frameCount++
-    const now = performance.now()
-    
-    if (now - this.lastFpsUpdate >= 1000) {
-      this.fps = this.frameCount / ((now - this.lastFpsUpdate) / 1000)
-      this.frameCount = 0
-      this.lastFpsUpdate = now
-      console.log(`后端手势识别 FPS: ${this.fps.toFixed(1)}`)
-    }
-  }
-  
   getFPS(): number {
-    return this.fps
+    return 0
   }
   
   isReady(): boolean {

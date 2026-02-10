@@ -1,0 +1,1076 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>实时摄像头手势识别测试</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #1a1a1a;
+            color: #ffffff;
+            line-height: 1.6;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        h1 {
+            text-align: center;
+            color: #C49210;
+            margin-bottom: 30px;
+            font-size: 2.5em;
+        }
+        
+        .test-section {
+            background-color: #2d2d2d;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+        }
+        
+        .test-section h2 {
+            color: #C49210;
+            margin-bottom: 15px;
+            font-size: 1.5em;
+        }
+        
+        .video-container {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+            margin-bottom: 20px;
+        }
+        
+        .video-wrapper {
+            flex: 1;
+            min-width: 300px;
+            background-color: #3a3a3a;
+            border-radius: 8px;
+            padding: 15px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+        }
+        
+        video {
+            width: 100%;
+            border-radius: 6px;
+            border: 2px solid #C49210;
+            background-color: #000;
+        }
+        
+        canvas {
+            width: 100%;
+            border-radius: 6px;
+            border: 2px solid #C49210;
+            background-color: #000;
+            display: none;
+        }
+        
+        .controls {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+        
+        button {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            background-color: #C49210;
+            color: #ffffff;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        
+        button:hover {
+            background-color: #a87f0e;
+        }
+        
+        button:disabled {
+            background-color: #666;
+            cursor: not-allowed;
+        }
+        
+        .status {
+            padding: 10px;
+            border-radius: 5px;
+            margin-bottom: 15px;
+        }
+        
+        .status.success {
+            background-color: rgba(46, 204, 113, 0.2);
+            border-left: 4px solid #2ecc71;
+        }
+        
+        .status.error {
+            background-color: rgba(231, 76, 60, 0.2);
+            border-left: 4px solid #e74c3c;
+        }
+        
+        .status.info {
+            background-color: rgba(52, 152, 219, 0.2);
+            border-left: 4px solid #3498db;
+        }
+        
+        .metrics {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        
+        .metric-card {
+            background-color: #3a3a3a;
+            border-radius: 8px;
+            padding: 15px;
+            text-align: center;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+        }
+        
+        .metric-value {
+            font-size: 2em;
+            font-weight: bold;
+            color: #C49210;
+            margin-bottom: 5px;
+        }
+        
+        .metric-label {
+            font-size: 0.9em;
+            color: #ccc;
+        }
+        
+        .results {
+            background-color: #3a3a3a;
+            border-radius: 8px;
+            padding: 15px;
+            max-height: 300px;
+            overflow-y: auto;
+            margin-bottom: 20px;
+        }
+        
+        .result-item {
+            padding: 10px;
+            border-bottom: 1px solid #4a4a4a;
+        }
+        
+        .result-item:last-child {
+            border-bottom: none;
+        }
+        
+        .result-item.correct {
+            background-color: rgba(46, 204, 113, 0.1);
+        }
+        
+        .result-item.incorrect {
+            background-color: rgba(231, 76, 60, 0.1);
+        }
+        
+        .result-item.error {
+            background-color: rgba(241, 196, 15, 0.1);
+        }
+        
+        .result-time {
+            font-size: 0.8em;
+            color: #999;
+            margin-bottom: 5px;
+        }
+        
+        .result-details {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .result-gesture {
+            font-weight: bold;
+        }
+        
+        .result-confidence {
+            font-size: 0.9em;
+            color: #C49210;
+        }
+        
+        .settings {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        
+        .setting-item {
+            background-color: #3a3a3a;
+            border-radius: 8px;
+            padding: 15px;
+        }
+        
+        .setting-item label {
+            display: block;
+            margin-bottom: 8px;
+            color: #ccc;
+        }
+        
+        .setting-item input {
+            width: 100%;
+            padding: 8px;
+            border-radius: 4px;
+            border: 1px solid #555;
+            background-color: #4a4a4a;
+            color: #fff;
+        }
+        
+        .setting-item input[type="range"] {
+            cursor: pointer;
+        }
+        
+        .summary {
+            background-color: #2d2d2d;
+            border-radius: 8px;
+            padding: 20px;
+            margin-top: 20px;
+            border-left: 4px solid #C49210;
+        }
+        
+        .summary h3 {
+            color: #C49210;
+            margin-bottom: 15px;
+        }
+        
+        .summary-item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+        }
+        
+        .summary-label {
+            font-weight: bold;
+        }
+        
+        .summary-value {
+            color: #C49210;
+        }
+        
+        @media (max-width: 768px) {
+            .video-container {
+                flex-direction: column;
+            }
+            
+            .video-wrapper {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>实时摄像头手势识别测试</h1>
+        
+        <!-- 测试设置 -->
+        <div class="test-section">
+            <h2>测试设置</h2>
+            <div class="settings">
+                <div class="setting-item">
+                    <label for="testDuration">测试持续时间 (秒):</label>
+                    <input type="number" id="testDuration" value="60" min="10" max="300">
+                </div>
+                <div class="setting-item">
+                    <label for="frameInterval">帧间隔 (毫秒):</label>
+                    <input type="number" id="frameInterval" value="100" min="50" max="500">
+                </div>
+                <div class="setting-item">
+                    <label for="videoWidth">视频宽度:</label>
+                    <input type="number" id="videoWidth" value="640" min="320" max="1280">
+                </div>
+                <div class="setting-item">
+                    <label for="videoHeight">视频高度:</label>
+                    <input type="number" id="videoHeight" value="480" min="240" max="720">
+                </div>
+                <div class="setting-item">
+                    <label for="backendUrl">后端API地址:</label>
+                    <input type="text" id="backendUrl" value="http://localhost:5000/api/recognize" style="width: 100%;">
+                </div>
+            </div>
+        </div>
+        
+        <!-- 摄像头控制 -->
+        <div class="test-section">
+            <h2>摄像头控制</h2>
+            <div class="controls">
+                <button id="startCamera">启动摄像头</button>
+                <button id="startTest" disabled>开始测试</button>
+                <button id="stopTest" disabled>停止测试</button>
+                <button id="resetTest">重置测试</button>
+            </div>
+            <div id="status" class="status info">
+                等待用户操作...
+            </div>
+        </div>
+        
+        <!-- 视频预览 -->
+        <div class="test-section">
+            <h2>视频预览</h2>
+            <div class="video-container">
+                <div class="video-wrapper">
+                    <h3>摄像头预览</h3>
+                    <video id="video" autoplay playsinline muted></video>
+                </div>
+                <div class="video-wrapper">
+                    <h3>处理结果</h3>
+                    <canvas id="canvas"></canvas>
+                    <div id="detectionOverlay" style="position: relative; top: -300px; left: 0; width: 100%; height: 300px; pointer-events: none;"></div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 性能指标 -->
+        <div class="test-section">
+            <h2>性能指标</h2>
+            <div class="metrics">
+                <div class="metric-card">
+                    <div class="metric-value" id="fps">0</div>
+                    <div class="metric-label">FPS</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-value" id="latency">0</div>
+                    <div class="metric-label">平均延迟 (ms)</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-value" id="accuracy">0%</div>
+                    <div class="metric-label">准确率</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-value" id="frameCount">0</div>
+                    <div class="metric-label">处理帧数</div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 测试结果 -->
+        <div class="test-section">
+            <h2>测试结果</h2>
+            <div id="results" class="results">
+                <p>测试尚未开始...</p>
+            </div>
+        </div>
+        
+        <!-- 测试总结 -->
+        <div class="test-section">
+            <h2>测试总结</h2>
+            <div id="summary" class="summary">
+                <h3>等待测试完成...</h3>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // 全局变量
+        let stream = null;
+        let video = null;
+        let canvas = null;
+        let ctx = null;
+        let isTesting = false;
+        let isProcessingFrame = false;
+        let testResults = [];
+        let frameCount = 0;
+        let correctCount = 0;
+        let errorCount = 0;
+        let noDetectionCount = 0;
+        let totalProcessingTime = 0;
+        let totalCaptureDelay = 0;
+        let totalFrontendTime = 0;
+        let totalBackendTime = 0;
+        let lastFpsUpdate = 0;
+        let fpsFrameCount = 0;
+        let currentFps = 0;
+        let testStartTime = 0;
+        let testDuration = 60;
+        let frameInterval = 100;
+        let animationFrameId = null;
+        let backendUrl = 'http://localhost:5000/api/recognize';
+        
+        // DOM 元素
+        const elements = {
+            startCamera: document.getElementById('startCamera'),
+            startTest: document.getElementById('startTest'),
+            stopTest: document.getElementById('stopTest'),
+            resetTest: document.getElementById('resetTest'),
+            status: document.getElementById('status'),
+            video: document.getElementById('video'),
+            canvas: document.getElementById('canvas'),
+            fps: document.getElementById('fps'),
+            latency: document.getElementById('latency'),
+            accuracy: document.getElementById('accuracy'),
+            frameCount: document.getElementById('frameCount'),
+            results: document.getElementById('results'),
+            summary: document.getElementById('summary'),
+            testDuration: document.getElementById('testDuration'),
+            frameInterval: document.getElementById('frameInterval'),
+            videoWidth: document.getElementById('videoWidth'),
+            videoHeight: document.getElementById('videoHeight'),
+            backendUrl: document.getElementById('backendUrl'),
+            detectionOverlay: document.getElementById('detectionOverlay')
+        };
+        
+        // 初始化
+        function init() {
+            video = elements.video;
+            canvas = elements.canvas;
+            ctx = canvas.getContext('2d');
+            
+            // 绑定事件
+            elements.startCamera.addEventListener('click', startCamera);
+            elements.startTest.addEventListener('click', startTest);
+            elements.stopTest.addEventListener('click', stopTest);
+            elements.resetTest.addEventListener('click', resetTest);
+            
+            // 更新状态
+            updateStatus('info', '等待用户操作...');
+        }
+        
+        // 启动摄像头
+        async function startCamera() {
+            try {
+                updateStatus('info', '请求摄像头权限...');
+                
+                // 获取摄像头权限
+                stream = await navigator.mediaDevices.getUserMedia({
+                    video: {
+                        width: parseInt(elements.videoWidth.value),
+                        height: parseInt(elements.videoHeight.value),
+                        facingMode: 'user'
+                    }
+                });
+                
+                // 设置视频源
+                video.srcObject = stream;
+                
+                // 视频加载完成后设置canvas大小
+                video.addEventListener('loadedmetadata', () => {
+                    canvas.width = video.videoWidth;
+                    canvas.height = video.videoHeight;
+                    updateStatus('success', '摄像头启动成功！');
+                    elements.startTest.disabled = false;
+                });
+                
+            } catch (error) {
+                console.error('摄像头启动失败:', error);
+                updateStatus('error', `摄像头启动失败: ${error.message}`);
+            }
+        }
+        
+        // 开始测试
+        function startTest() {
+            // 获取测试设置
+            testDuration = parseInt(elements.testDuration.value);
+            frameInterval = parseInt(elements.frameInterval.value);
+            backendUrl = elements.backendUrl.value;
+            
+            // 重置测试数据
+            testResults = [];
+            frameCount = 0;
+            correctCount = 0;
+            errorCount = 0;
+            noDetectionCount = 0;
+            totalProcessingTime = 0;
+            totalCaptureDelay = 0;
+            totalFrontendTime = 0;
+            totalBackendTime = 0;
+            lastFpsUpdate = performance.now();
+            fpsFrameCount = 0;
+            currentFps = 0;
+            testStartTime = performance.now();
+            
+            // 更新UI
+            elements.results.innerHTML = '';
+            elements.startTest.disabled = true;
+            elements.stopTest.disabled = false;
+            elements.startCamera.disabled = true;
+            isTesting = true;
+            
+            updateStatus('success', `测试开始，持续 ${testDuration} 秒...`);
+            
+            // 开始处理帧
+            processFrame();
+            
+            // 设置测试结束时间
+            setTimeout(() => {
+                if (isTesting) {
+                    stopTest();
+                }
+            }, testDuration * 1000);
+        }
+        
+        // 停止测试
+        function stopTest() {
+            isTesting = false;
+            
+            if (animationFrameId) {
+                cancelAnimationFrame(animationFrameId);
+                animationFrameId = null;
+            }
+            
+            // 更新UI
+            elements.stopTest.disabled = true;
+            elements.startTest.disabled = false;
+            elements.startCamera.disabled = false;
+            
+            updateStatus('info', '测试已停止');
+            
+            // 生成测试总结
+            generateSummary();
+        }
+        
+        // 重置测试
+        function resetTest() {
+            // 停止测试
+            if (isTesting) {
+                stopTest();
+            }
+            
+            // 重置UI
+            elements.results.innerHTML = '<p>测试尚未开始...</p>';
+            elements.summary.innerHTML = '<h3>等待测试完成...</h3>';
+            elements.fps.textContent = '0';
+            elements.latency.textContent = '0';
+            elements.accuracy.textContent = '0%';
+            elements.frameCount.textContent = '0';
+            
+            // 重置测试数据
+            testResults = [];
+            frameCount = 0;
+            correctCount = 0;
+            errorCount = 0;
+            noDetectionCount = 0;
+            totalProcessingTime = 0;
+            totalCaptureDelay = 0;
+            totalFrontendTime = 0;
+            totalBackendTime = 0;
+            currentFps = 0;
+            isProcessingFrame = false;
+            
+            updateStatus('info', '测试已重置');
+        }
+        
+        // 处理帧
+        function processFrame() {
+            if (!isTesting) return;
+            
+            const now = performance.now();
+            
+            // 更新FPS
+            fpsFrameCount++;
+            if (now - lastFpsUpdate >= 1000) {
+                currentFps = fpsFrameCount;
+                elements.fps.textContent = currentFps;
+                fpsFrameCount = 0;
+                lastFpsUpdate = now;
+            }
+            
+            // 绘制视频帧到canvas
+            if (video.readyState === video.HAVE_ENOUGH_DATA) {
+                ctx.save();
+                ctx.translate(canvas.width, 0);
+                ctx.scale(-1, 1);
+                ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+                ctx.restore();
+                
+                // 处理帧（带节流）
+                if (!isProcessingFrame) {
+                    isProcessingFrame = true;
+                    handleFrame().finally(() => {
+                        isProcessingFrame = false;
+                    });
+                }
+            }
+            
+            // 继续处理下一帧
+            animationFrameId = requestAnimationFrame(processFrame);
+        }
+        
+        // 处理单帧
+        async function handleFrame() {
+            const startTime = performance.now();
+            frameCount++;
+            
+            try {
+                // 模拟摄像头捕获延迟
+                const captureDelay = Math.random() * 30 + 10; // 10-40ms捕获延迟
+                totalCaptureDelay += captureDelay;
+                
+                // 前端图像处理
+                const frontendStartTime = performance.now();
+                
+                // 获取图像数据
+                const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+                
+                // 转换为base64
+                const base64Image = canvas.toDataURL('image/jpeg', 0.7);
+                
+                const frontendProcessTime = performance.now() - frontendStartTime;
+                totalFrontendTime += frontendProcessTime;
+                
+                // 发送到后端（带超时和重试）
+                const backendStartTime = performance.now();
+                let response;
+                let retryCount = 0;
+                const maxRetries = 1;
+                
+                while (retryCount <= maxRetries) {
+                    try {
+                        // 使用Promise.race实现超时处理
+                        const fetchPromise = fetch(backendUrl, {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json'
+                            },
+                            body: JSON.stringify({ image: base64Image })
+                        });
+                        
+                        const timeoutPromise = new Promise((_, reject) => 
+                            setTimeout(() => reject(new Error('请求超时')), 5000)
+                        );
+                        
+                        response = await Promise.race([fetchPromise, timeoutPromise]);
+                        break;
+                    } catch (error) {
+                        if (retryCount >= maxRetries) {
+                            throw error;
+                        }
+                        retryCount++;
+                        console.log(`请求失败，重试 ${retryCount}/${maxRetries}...`);
+                        await new Promise(resolve => setTimeout(resolve, 500));
+                    }
+                }
+                
+                if (!response.ok) {
+                    throw new Error(`后端服务错误: ${response.status}`);
+                }
+                
+                const data = await response.json();
+                const backendProcessTime = performance.now() - backendStartTime;
+                totalBackendTime += backendProcessTime;
+                
+                const processingTime = performance.now() - startTime;
+                totalProcessingTime += processingTime;
+                
+                // 处理结果
+                if (data.detections && data.detections.length > 0) {
+                    // 取置信度最高的检测结果
+                    const bestDetection = data.detections.reduce((best, current) => {
+                        return current.bbox.confidence > best.bbox.confidence ? current : best;
+                    }, data.detections[0]);
+                    
+                    const detectedGesture = bestDetection.gestureName;
+                    const confidence = bestDetection.bbox.confidence;
+                    
+                    // 绘制检测结果
+                    drawDetection(bestDetection);
+                    
+                    // 添加到测试结果
+                    addResult({
+                        time: new Date().toLocaleTimeString(),
+                        gesture: detectedGesture,
+                        confidence: confidence,
+                        processingTime: processingTime,
+                        captureDelay: captureDelay,
+                        frontendTime: frontendProcessTime,
+                        backendTime: backendProcessTime,
+                        status: 'detected',
+                        bbox: bestDetection.bbox
+                    });
+                    
+                } else {
+                    // 未检测到手部
+                    noDetectionCount++;
+                    clearDetection();
+                    
+                    addResult({
+                        time: new Date().toLocaleTimeString(),
+                        gesture: 'none',
+                        confidence: 0,
+                        processingTime: processingTime,
+                        captureDelay: captureDelay,
+                        frontendTime: frontendProcessTime,
+                        backendTime: backendProcessTime,
+                        status: 'none'
+                    });
+                }
+                
+            } catch (error) {
+                console.error('处理帧失败:', error);
+                errorCount++;
+                clearDetection();
+                
+                const processingTime = performance.now() - startTime;
+                totalProcessingTime += processingTime;
+                
+                let errorMessage = error.message;
+                if (error.name === 'AbortError') {
+                    errorMessage = '请求超时，请检查后端服务';
+                } else if (error.message.includes('Failed to fetch')) {
+                    errorMessage = '无法连接到后端服务，请检查服务是否运行';
+                }
+                
+                addResult({
+                    time: new Date().toLocaleTimeString(),
+                    gesture: 'error',
+                    confidence: 0,
+                    processingTime: processingTime,
+                    captureDelay: 0,
+                    frontendTime: 0,
+                    backendTime: 0,
+                    status: 'error',
+                    error: errorMessage
+                });
+            }
+            
+            // 更新UI
+            elements.frameCount.textContent = frameCount;
+            const avgLatency = frameCount > 0 ? Math.round(totalProcessingTime / frameCount) : 0;
+            elements.latency.textContent = avgLatency;
+            const accuracy = frameCount > 0 ? Math.round((correctCount / frameCount) * 100) : 0;
+            elements.accuracy.textContent = `${accuracy}%`;
+        }
+        
+        // 绘制检测结果
+        function drawDetection(detection) {
+            const overlay = elements.detectionOverlay;
+            overlay.innerHTML = '';
+            
+            const bbox = detection.bbox;
+            const box = document.createElement('div');
+            box.style.position = 'absolute';
+            box.style.left = `${bbox.x1}px`;
+            box.style.top = `${bbox.y1}px`;
+            box.style.width = `${bbox.x2 - bbox.x1}px`;
+            box.style.height = `${bbox.y2 - bbox.y1}px`;
+            box.style.border = '2px solid #C49210';
+            box.style.backgroundColor = 'rgba(196, 146, 16, 0.1)';
+            box.style.borderRadius = '4px';
+            
+            const label = document.createElement('div');
+            label.style.position = 'absolute';
+            label.style.top = '-25px';
+            label.style.left = '0';
+            label.style.backgroundColor = '#C49210';
+            label.style.color = '#fff';
+            label.style.padding = '2px 8px';
+            label.style.borderRadius = '4px';
+            label.style.fontSize = '12px';
+            label.style.whiteSpace = 'nowrap';
+            label.textContent = `${detection.gestureName} (${Math.round(detection.bbox.confidence * 100)}%)`;
+            
+            box.appendChild(label);
+            overlay.appendChild(box);
+        }
+        
+        // 清除检测结果
+        function clearDetection() {
+            elements.detectionOverlay.innerHTML = '';
+        }
+        
+        // 添加测试结果
+        function addResult(result) {
+            const resultsContainer = elements.results;
+            
+            // 创建结果项
+            const resultItem = document.createElement('div');
+            resultItem.className = `result-item ${result.status === 'detected' ? 'correct' : result.status === 'error' ? 'error' : 'incorrect'}`;
+            
+            // 时间
+            const timeElement = document.createElement('div');
+            timeElement.className = 'result-time';
+            timeElement.textContent = result.time;
+            resultItem.appendChild(timeElement);
+            
+            // 详情
+            const detailsElement = document.createElement('div');
+            detailsElement.className = 'result-details';
+            
+            // 手势
+            const gestureElement = document.createElement('div');
+            gestureElement.className = 'result-gesture';
+            gestureElement.textContent = result.status === 'detected' ? 
+                `检测到: ${result.gesture}` : 
+                result.status === 'none' ? 
+                '未检测到手部' : 
+                '处理错误';
+            detailsElement.appendChild(gestureElement);
+            
+            // 置信度
+            if (result.status === 'detected') {
+                const confidenceElement = document.createElement('div');
+                confidenceElement.className = 'result-confidence';
+                confidenceElement.textContent = `${Math.round(result.confidence * 100)}%`;
+                detailsElement.appendChild(confidenceElement);
+                
+                // 增加正确计数
+                correctCount++;
+            }
+            
+            resultItem.appendChild(detailsElement);
+            
+            // 处理时间
+            const timeInfoElement = document.createElement('div');
+            timeInfoElement.style.fontSize = '0.8em';
+            timeInfoElement.style.color = '#999';
+            timeInfoElement.style.marginTop = '5px';
+            timeInfoElement.textContent = `处理时间: ${Math.round(result.processingTime)}ms`;
+            resultItem.appendChild(timeInfoElement);
+            
+            // 详细性能指标
+            if (result.status !== 'error') {
+                const performanceElement = document.createElement('div');
+                performanceElement.style.fontSize = '0.7em';
+                performanceElement.style.color = '#aaa';
+                performanceElement.style.marginTop = '3px';
+                performanceElement.textContent = `捕获: ${Math.round(result.captureDelay)}ms, 前端: ${Math.round(result.frontendTime)}ms, 后端: ${Math.round(result.backendTime)}ms`;
+                resultItem.appendChild(performanceElement);
+            }
+            
+            // 错误信息
+            if (result.status === 'error' && result.error) {
+                const errorElement = document.createElement('div');
+                errorElement.style.fontSize = '0.8em';
+                errorElement.style.color = '#e74c3c';
+                errorElement.style.marginTop = '5px';
+                errorElement.textContent = `错误: ${result.error}`;
+                resultItem.appendChild(errorElement);
+            }
+            
+            // 添加到容器顶部
+            if (resultsContainer.firstChild && resultsContainer.firstChild.tagName === 'P') {
+                resultsContainer.innerHTML = '';
+            }
+            resultsContainer.insertBefore(resultItem, resultsContainer.firstChild);
+            
+            // 限制结果数量
+            if (resultsContainer.children.length > 20) {
+                resultsContainer.removeChild(resultsContainer.lastChild);
+            }
+            
+            // 添加到测试结果数组
+            testResults.push(result);
+        }
+        
+        // 生成测试总结
+        function generateSummary() {
+            const summary = elements.summary;
+            
+            const actualDuration = (performance.now() - testStartTime) / 1000;
+            const fps = frameCount / actualDuration;
+            const avgLatency = frameCount > 0 ? Math.round(totalProcessingTime / frameCount) : 0;
+            const accuracy = frameCount > 0 ? Math.round((correctCount / frameCount) * 100) : 0;
+            const avgCaptureDelay = frameCount > 0 ? Math.round(totalCaptureDelay / frameCount) : 0;
+            const avgFrontendTime = frameCount > 0 ? Math.round(totalFrontendTime / frameCount) : 0;
+            const avgBackendTime = frameCount > 0 ? Math.round(totalBackendTime / frameCount) : 0;
+            
+            // 手势统计
+            const gestureStats = {};
+            testResults.forEach(result => {
+                if (result.status === 'detected') {
+                    if (!gestureStats[result.gesture]) {
+                        gestureStats[result.gesture] = {
+                            count: 0,
+                            avgConfidence: 0
+                        };
+                    }
+                    gestureStats[result.gesture].count++;
+                    gestureStats[result.gesture].avgConfidence += result.confidence;
+                }
+            });
+            
+            // 计算平均置信度
+            for (const [gesture, stats] of Object.entries(gestureStats)) {
+                stats.avgConfidence = stats.avgConfidence / stats.count;
+            }
+            
+            // 错误统计
+            const errorStats = {
+                total: errorCount,
+                noDetection: noDetectionCount,
+                percentage: frameCount > 0 ? Math.round(((errorCount + noDetectionCount) / frameCount) * 100) : 0
+            };
+            
+            // 性能分布
+            const performanceDistribution = {
+                capture: avgCaptureDelay / avgLatency * 100,
+                frontend: avgFrontendTime / avgLatency * 100,
+                backend: avgBackendTime / avgLatency * 100
+            };
+            
+            // 错误类型分析
+            const errorTypes = {
+                '请求错误': errorCount,
+                '未检测到手部': noDetectionCount,
+                '识别错误': frameCount - correctCount - errorCount - noDetectionCount
+            };
+            
+            // 按时间段分析性能
+            const batchSize = Math.max(1, Math.floor(frameCount / 5));
+            const performanceTrends = [];
+            for (let i = 0; i < frameCount; i += batchSize) {
+                const batchEnd = Math.min(i + batchSize, frameCount);
+                const batchResults = testResults.slice(i, batchEnd);
+                const batchTime = batchResults.reduce((sum, r) => sum + r.processingTime, 0) / batchResults.length;
+                const batchCorrect = batchResults.filter(r => r.status === 'detected').length;
+                const batchAccuracy = (batchCorrect / batchResults.length * 100).toFixed(2);
+                
+                performanceTrends.push({
+                    period: Math.floor(i/batchSize) + 1,
+                    avgTime: batchTime,
+                    accuracy: batchAccuracy
+                });
+            }
+            
+            // 生成总结HTML
+            let summaryHTML = `
+                <h3>实时摄像头测试详细报告</h3>
+                
+                <h4 style="margin-top: 20px; color: #C49210;">1. 测试概述</h4>
+                <div class="summary-item">
+                    <span class="summary-label">测试持续时间:</span>
+                    <span class="summary-value">${actualDuration.toFixed(2)} 秒</span>
+                </div>
+                <div class="summary-item">
+                    <span class="summary-label">处理帧数:</span>
+                    <span class="summary-value">${frameCount}</span>
+                </div>
+                <div class="summary-item">
+                    <span class="summary-label">实际帧率:</span>
+                    <span class="summary-value">${fps.toFixed(2)} FPS</span>
+                </div>
+                <div class="summary-item">
+                    <span class="summary-label">准确率:</span>
+                    <span class="summary-value">${accuracy}% (${correctCount}/${frameCount})</span>
+                </div>
+                <div class="summary-item">
+                    <span class="summary-label">错误率:</span>
+                    <span class="summary-value">${(errorCount / frameCount * 100).toFixed(2)}% (${errorCount}个错误)</span>
+                </div>
+                <div class="summary-item">
+                    <span class="summary-label">未检测率:</span>
+                    <span class="summary-value">${(noDetectionCount / frameCount * 100).toFixed(2)}% (${noDetectionCount}个未检测)</span>
+                </div>
+                
+                <h4 style="margin-top: 20px; color: #C49210;">2. 性能指标</h4>
+                <div class="summary-item">
+                    <span class="summary-label">平均总处理时间:</span>
+                    <span class="summary-value">${avgLatency}ms/帧</span>
+                </div>
+                <div class="summary-item">
+                    <span class="summary-label">平均捕获延迟:</span>
+                    <span class="summary-value">${avgCaptureDelay}ms</span>
+                </div>
+                <div class="summary-item">
+                    <span class="summary-label">平均前端处理:</span>
+                    <span class="summary-value">${avgFrontendTime}ms</span>
+                </div>
+                <div class="summary-item">
+                    <span class="summary-label">平均后端处理:</span>
+                    <span class="summary-value">${avgBackendTime}ms</span>
+                </div>
+                <div class="summary-item">
+                    <span class="summary-label">性能分布:</span>
+                    <span class="summary-value">捕获 ${performanceDistribution.capture.toFixed(1)}%, 前端 ${performanceDistribution.frontend.toFixed(1)}%, 后端 ${performanceDistribution.backend.toFixed(1)}%</span>
+                </div>
+                
+                <h4 style="margin-top: 20px; color: #C49210;">3. 手势识别统计</h4>
+                <ul style="margin-left: 20px; margin-bottom: 15px;">
+            `;
+            
+            for (const [gesture, stats] of Object.entries(gestureStats)) {
+                summaryHTML += `<li>${gesture}: ${stats.count}次, 平均置信度 ${(stats.avgConfidence * 100).toFixed(2)}%</li>`;
+            }
+            
+            summaryHTML += `
+                </ul>
+                
+                <h4 style="margin-top: 20px; color: #C49210;">4. 错误分析</h4>
+                <ul style="margin-left: 20px; margin-bottom: 15px;">
+            `;
+            
+            for (const [type, count] of Object.entries(errorTypes)) {
+                if (count > 0) {
+                    const percentage = (count / frameCount * 100).toFixed(2);
+                    summaryHTML += `<li>${type}: ${count}次 (${percentage}%)</li>`;
+                }
+            }
+            
+            summaryHTML += `
+                </ul>
+                
+                <h4 style="margin-top: 20px; color: #C49210;">5. 性能趋势分析</h4>
+                <ul style="margin-left: 20px; margin-bottom: 15px;">
+            `;
+            
+            for (const trend of performanceTrends) {
+                summaryHTML += `<li>时间段 ${trend.period}: 平均处理时间 ${Math.round(trend.avgTime)}ms, 准确率 ${trend.accuracy}%</li>`;
+            }
+            
+            summaryHTML += `
+                </ul>
+                
+                <h4 style="margin-top: 20px; color: #C49210;">6. 测试结论</h4>
+                <div style="margin-top: 10px; margin-bottom: 20px;">
+            `;
+            
+            if (accuracy >= 90) {
+                summaryHTML += `<p style="color: #2ecc71;">🎉 实时摄像头手势识别表现优秀！</p>`;
+            } else if (accuracy >= 70) {
+                summaryHTML += `<p style="color: #2ecc71;">✅ 实时摄像头手势识别表现良好。</p>`;
+            } else if (accuracy >= 50) {
+                summaryHTML += `<p style="color: #f39c12;">⚠️  实时摄像头手势识别表现一般，需要优化。</p>`;
+            } else {
+                summaryHTML += `<p style="color: #e74c3c;">❌ 实时摄像头手势识别表现较差，需要重大改进。</p>`;
+            }
+            
+            summaryHTML += `
+                </div>
+                
+                <h4 style="margin-top: 20px; color: #C49210;">7. 优化建议</h4>
+                <ul style="margin-left: 20px;">
+            `;
+            
+            if (avgBackendTime > 100) {
+                summaryHTML += `<li>后端处理时间较长，建议优化模型或使用更强大的硬件</li>`;
+            }
+            
+            if (noDetectionCount > frameCount * 0.1) {
+                summaryHTML += `<li>未检测率较高，建议优化手部检测算法或调整摄像头参数</li>`;
+            }
+            
+            if (errorCount > 0) {
+                summaryHTML += `<li>存在请求错误，建议检查网络连接和后端服务稳定性</li>`;
+            }
+            
+            summaryHTML += `
+                </ul>
+            `;
+            
+            summary.innerHTML = summaryHTML;
+        }
+        
+        // 更新状态
+        function updateStatus(type, message) {
+            const status = elements.status;
+            status.className = `status ${type}`;
+            status.textContent = message;
+        }
+        
+        // 页面加载完成后初始化
+        window.addEventListener('DOMContentLoaded', init);
+    </script>
+</body>
+</html>

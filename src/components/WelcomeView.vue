@@ -47,6 +47,7 @@ export default {
   align-items: center;
   position: relative;
   overflow: hidden;
+  background-color: var(--background-color);
 }
 
 .welcome-bg {
@@ -55,7 +56,7 @@ export default {
   left: 0;
   right: 0;
   bottom: 0;
-  background: linear-gradient(135deg, #f5f1e8 0%, #e8dfd0 100%);
+  background: linear-gradient(135deg, var(--background-color) 0%, #333 100%);
   z-index: 1;
 }
 
@@ -66,7 +67,7 @@ export default {
   left: 0;
   right: 0;
   bottom: 0;
-  background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100"><rect width="100" height="100" fill="none" stroke="%23d1c4b0" stroke-width="0.5" stroke-opacity="0.3"/></svg>');
+  background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100"><rect width="100" height="100" fill="none" stroke="%23C49210" stroke-width="0.5" stroke-opacity="0.3"/></svg>');
   opacity: 0.3;
   z-index: 2;
 }
@@ -86,23 +87,25 @@ export default {
 .app-title {
   font-size: 5rem;
   font-weight: bold;
-  color: #3c2a1e;
+  color: var(--text-color);
   margin-bottom: 1rem;
   text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
-  font-family: 'PingFang SC', 'Microsoft YaHei', serif;
+  font-family: var(--font-family);
 }
 
 .app-subtitle {
   font-size: 1.5rem;
-  color: #6b5645;
+  color: var(--text-color);
   margin-bottom: 2rem;
   font-weight: 500;
+  font-family: var(--font-family);
 }
 
 .welcome-description {
   margin-bottom: 3rem;
   line-height: 1.6;
-  color: #5a4535;
+  color: var(--text-color);
+  font-family: var(--font-family);
 }
 
 .welcome-description p {
@@ -115,7 +118,7 @@ export default {
   height: 65px;
   font-size: 1.3rem;
   font-weight: bold;
-  color: #f5f1e8;
+  color: var(--background-color);
   background-color: #8b0000; /* 朱砂红 */
   border: none;
   border-radius: 35px;
@@ -123,6 +126,7 @@ export default {
   transition: all 0.3s ease;
   margin-bottom: 1.5rem;
   box-shadow: 0 4px 12px rgba(139, 0, 0, 0.2);
+  font-family: var(--font-family);
 }
 
 .enter-btn:hover {
@@ -134,16 +138,17 @@ export default {
   width: 160px;
   height: 45px;
   font-size: 1.1rem;
-  color: #3c2a1e;
+  color: var(--text-color);
   background-color: transparent;
-  border: 2px solid #3c2a1e;
+  border: 2px solid var(--text-color);
   border-radius: 25px;
   cursor: pointer;
   transition: all 0.3s ease;
+  font-family: var(--font-family);
 }
 
 .gesture-btn:hover {
-  background-color: rgba(60, 42, 30, 0.1);
+  background-color: rgba(196, 146, 16, 0.1);
   transform: translateY(-2px);
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }

@@ -69,28 +69,39 @@ class OnnxModel(ABC):
         providers : list
             List of providers
         """
-        providers = ["CPUExecutionProvider"]
         options = ort.SessionOptions()
         options.enable_mem_pattern = False
         options.execution_mode = ort.ExecutionMode.ORT_SEQUENTIAL
-        prov_opts = [{}]  # CPU provider has empty options
-        print("Using ONNX Runtime", ort.get_device())
+        providers = []
+        prov_opts = []
+        
+        # 获取设备信息
+        device = ort.get_device()
+        print(f"Using ONNX Runtime on device: {device}")
 
-        if "DML" in ort.get_device():
-            prov_opts.append({"device_id": 0})
-            providers.append("DmlExecutionProvider")
-
-        elif "GPU" in ort.get_device():
-            prov_opts.append(
-                {
-                    "device_id": 0,
-                    "arena_extend_strategy": "kNextPowerOfTwo",
-                    "gpu_mem_limit": 2 * 1024 * 1024 * 1024,
-                    "cudnn_conv_algo_search": "EXHAUSTIVE",
-                    "do_copy_in_default_stream": True,
-                }
-            )
-            providers.append("CUDAExecutionProvider")
+        # 优先使用GPU
+        if "GPU" in device or "DML" in device:
+            if "DML" in device:
+                print("Using DirectML Execution Provider (GPU)")
+                providers.append("DmlExecutionProvider")
+                prov_opts.append({"device_id": 0})
+            elif "GPU" in device:
+                print("Using CUDA Execution Provider (GPU)")
+                providers.append("CUDAExecutionProvider")
+                prov_opts.append(
+                    {
+                        "device_id": 0,
+                        "arena_extend_strategy": "kNextPowerOfTwo",
+                        "gpu_mem_limit": 2 * 1024 * 1024 * 1024,
+                        "cudnn_conv_algo_search": "EXHAUSTIVE",
+                        "do_copy_in_default_stream": True,
+                    }
+                )
+        
+        # 最后添加CPU作为后备
+        print("Adding CPU Execution Provider as fallback")
+        providers.append("CPUExecutionProvider")
+        prov_opts.append({})  # CPU provider has empty options
 
         return options, prov_opts, providers
 
@@ -104,13 +115,22 @@ class OnnxModel(ABC):
         )
 
 class HandDetection(OnnxModel):
-    def __init__(self, model_path, image_size=(320, 240), confidence_threshold=0.5):
+    def __init__(self, model_path, image_size=(640, 640), confidence_threshold=0.5):
+        # 强制使用640x640的输入大小，因为YOLOv10模型通常需要这个大小
+        print(f"Using fixed image size: {image_size}")
+        
         super().__init__(model_path, image_size)
         self.image_size = image_size
         self.confidence_threshold = confidence_threshold
-        self.sess = ort.InferenceSession(model_path)
-        self.input_name = self.sess.get_inputs()[0].name
-        self.output_names = [output.name for output in self.sess.get_outputs()]
+        # 使用父类创建的session
+        inputs = self.sess.get_inputs()
+        if not inputs:
+            raise ValueError("Model has no inputs")
+        self.input_name = inputs[0].name
+        outputs = self.sess.get_outputs()
+        if not outputs:
+            raise ValueError("Model has no outputs")
+        self.output_names = [output.name for output in outputs]
     
     def set_confidence(self, confidence):
         self.confidence_threshold = confidence
@@ -121,23 +141,47 @@ class HandDetection(OnnxModel):
         if input_tensor is None:
             return np.array([]), np.array([])
         
+        # 使用更高效的推理方式
         results = self.sess.run(self.output_names, {self.input_name: input_tensor})
         output = results[0]
+        
+        # 快速检查output是否为空
+        if output.size == 0:
+            return np.array([]), np.array([])
+        
         detections = output[0]
         
+        # 快速检查detections是否为空或维度不正确
+        if detections.size == 0:
+            return np.array([]), np.array([])
+        
+        # 确保detections是二维数组
+        if len(detections.shape) != 2:
+            print(f"Warning: detections has unexpected shape: {detections.shape}, expected 2D array")
+            return np.array([]), np.array([])
+        
+        # 确保detections有足够的列
+        if detections.shape[1] < 5:
+            print(f"Warning: detections has insufficient columns: {detections.shape[1]}, expected at least 5")
+            return np.array([]), np.array([])
+        
+        # 过滤低置信度检测
         valid_detections = detections[detections[:, 4] > self.confidence_threshold]
         
+        if valid_detections.size == 0:
+            return np.array([]), np.array([])
+        
+        # 提取边界框和概率
         boxes = valid_detections[:, :4]
         probs = valid_detections[:, 4]
         
+        # 快速计算缩放因子
         height, width = frame.shape[:2]
-        scale_x = width / self.image_size[0]  # width / 320
-        scale_y = height / self.image_size[1]  # height / 256
+        scale_x = width / self.image_size[0]
+        scale_y = height / self.image_size[1]
         
-        boxes[:, 0] *= scale_x
-        boxes[:, 1] *= scale_y
-        boxes[:, 2] *= scale_x
-        boxes[:, 3] *= scale_y
+        # 批量应用缩放
+        boxes *= np.array([scale_x, scale_y, scale_x, scale_y])
         
         return boxes.astype(np.int32), probs
 
@@ -226,11 +270,13 @@ class HandClassification(OnnxModel):
         predictions : list
             Predictions from model (may be empty if no valid crops)
         """
-        if len(bboxes) == 0:
+        if bboxes.size == 0:
             return []
 
+        # 快速获取裁剪区域
         crops = self.get_crops(image, bboxes)
 
+        # 过滤有效裁剪并预处理
         valid_processed_crops = []
         for crop in crops:
             if crop is not None and crop.size > 0:
@@ -243,13 +289,15 @@ class HandClassification(OnnxModel):
                     continue
                 
         if not valid_processed_crops:
-            print("No valid crops to process")
             return []
 
         try:
             input_name = self.sess.get_inputs()[0].name
+            # 批量处理所有裁剪区域
             concatenated_crops = np.concatenate(valid_processed_crops, axis=0)
+            # 批量推理
             outputs = self.sess.run(None, {input_name: concatenated_crops})[0]
+            # 批量获取预测结果
             labels = np.argmax(outputs, axis=1)
             return labels.tolist()
         except Exception as e:

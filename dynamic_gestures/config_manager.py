@@ -253,8 +253,13 @@ class DynamicConfigManager:
     
     def setup_signal_handlers(self):
         """Set up signal handlers"""
-        signal.signal(signal.SIGUSR1, self.handle_config_reload_signal)
-        logger.info("Signal handler set up")
+        import platform
+        if platform.system() != 'Windows':
+            # SIGUSR1 is only available on Unix/Linux systems
+            signal.signal(signal.SIGUSR1, self.handle_config_reload_signal)
+            logger.info("Signal handler set up")
+        else:
+            logger.info("Signal handler not set up (Windows system)")
     
     def handle_config_reload_signal(self, signum, frame):
         """Handle configuration reload signal"""

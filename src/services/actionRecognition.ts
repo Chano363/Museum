@@ -187,6 +187,8 @@ export class ActionRecognitionService {
     if (mostFrequentGesture !== null && maxCount >= this.MIN_FRAMES_FOR_ACTION * 0.7) {
       // 根据手势类型返回相应的动作
       switch (mostFrequentGesture) {
+        case 19: // point (手指指向)
+          return AT.TAP // 用于触发手指追踪
         case 25: // fist (拳头)
           return AT.DRAG // 用于锁定/解锁旋转
         case 31: // palm (张开手)
@@ -195,8 +197,6 @@ export class ActionRecognitionService {
           return AT.ZOOM_IN // 用于放大
         case 24: // dislike (拇指向下)
           return AT.ZOOM_OUT // 用于缩小
-        case 32: // peace (剪刀手)
-          return AT.SWIPE_RIGHT // 用于切换到下一个模型
         case 29: // ok (OK手势)
           return AT.TAP // 用于显示信息
         default:

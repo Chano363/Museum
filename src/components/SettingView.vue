@@ -158,13 +158,15 @@ export default {
   width: 400px;
   max-width: 90vw;
   max-height: 80vh;
-  background-color: #f5f1e8; /* 宣纸米白 */
+  background-color: #333;
   border-radius: 10px;
   padding: 30px;
   box-shadow: 0 5px 20px rgba(0, 0, 0, 0.3);
   animation: slideIn 0.3s ease;
   overflow-y: auto;
   position: relative;
+  font-family: var(--font-family);
+  color: #ccc;
 }
 
 .close-btn {
@@ -177,19 +179,19 @@ export default {
   background-color: transparent;
   font-size: 24px;
   cursor: pointer;
-  color: #3c2a1e;
+  color: var(--text-color);
   transition: all 0.3s ease;
 }
 
 .close-btn:hover {
   transform: scale(1.2);
-  color: #8b0000; /* 朱砂红 */
+  color: var(--text-color);
 }
 
 .setting-title {
   font-size: 1.8rem;
   font-weight: bold;
-  color: #3c2a1e;
+  color: var(--text-color);
   margin-bottom: 20px;
   text-align: center;
 }
@@ -197,7 +199,7 @@ export default {
 .setting-section {
   margin-bottom: 25px;
   padding-bottom: 20px;
-  border-bottom: 1px solid rgba(60, 42, 30, 0.2);
+  border-bottom: 1px solid rgba(196, 146, 16, 0.2);
 }
 
 .setting-section:last-child {
@@ -209,7 +211,7 @@ export default {
 .section-title {
   font-size: 1.2rem;
   font-weight: bold;
-  color: #6b5645;
+  color: var(--text-color);
   margin-bottom: 15px;
 }
 
@@ -241,7 +243,7 @@ export default {
   margin: 0 15px;
   height: 6px;
   border-radius: 3px;
-  background: rgba(60, 42, 30, 0.2);
+  background: rgba(196, 146, 16, 0.2);
   outline: none;
   -webkit-appearance: none;
 }
@@ -252,7 +254,7 @@ export default {
   width: 18px;
   height: 18px;
   border-radius: 50%;
-  background: #8b0000; /* 朱砂红 */
+  background: var(--text-color);
   cursor: pointer;
 }
 
@@ -260,7 +262,7 @@ export default {
   width: 18px;
   height: 18px;
   border-radius: 50%;
-  background: #8b0000; /* 朱砂红 */
+  background: var(--text-color);
   cursor: pointer;
   border: none;
 }
@@ -285,7 +287,7 @@ export default {
   left: 0;
   right: 0;
   bottom: 0;
-  background-color: rgba(60, 42, 30, 0.2);
+  background-color: rgba(196, 146, 16, 0.2);
   transition: .4s;
   border-radius: 24px;
 }
@@ -303,7 +305,7 @@ export default {
 }
 
 input:checked + .toggle-slider {
-  background-color: #8b0000; /* 朱砂红 */
+  background-color: var(--text-color);
 }
 
 input:checked + .toggle-slider:before {
@@ -329,9 +331,9 @@ input:checked + .toggle-slider:before {
 .info-btn {
   width: 100%;
   padding: 10px;
-  background-color: rgba(60, 42, 30, 0.1);
-  color: #3c2a1e;
-  border: 1px solid rgba(60, 42, 30, 0.3);
+  background-color: rgba(196, 146, 16, 0.05);
+  color: var(--text-color);
+  border: 1px solid rgba(196, 146, 16, 0.3);
   border-radius: 5px;
   cursor: pointer;
   transition: all 0.3s ease;
@@ -339,7 +341,7 @@ input:checked + .toggle-slider:before {
 }
 
 .info-btn:hover {
-  background-color: rgba(60, 42, 30, 0.2);
+  background-color: rgba(196, 146, 16, 0.1);
   transform: translateY(-2px);
 }
 
@@ -369,16 +371,16 @@ input:checked + .toggle-slider:before {
 }
 
 .setting-view::-webkit-scrollbar-track {
-  background: rgba(60, 42, 30, 0.1);
+  background: rgba(196, 146, 16, 0.1);
   border-radius: 3px;
 }
 
 .setting-view::-webkit-scrollbar-thumb {
-  background: rgba(60, 42, 30, 0.3);
+  background: rgba(196, 146, 16, 0.3);
   border-radius: 3px;
 }
 
 .setting-view::-webkit-scrollbar-thumb:hover {
-  background: rgba(60, 42, 30, 0.5);
+  background: rgba(196, 146, 16, 0.5);
 }
 </style>

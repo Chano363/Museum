@@ -40,7 +40,7 @@ export default {
   left: 20px;
   right: 20px;
   height: 120px;
-  background-color: rgba(60, 42, 30, 0.1);
+  background-color: rgba(196, 146, 16, 0.1);
   border-radius: 10px;
   padding: 10px;
   z-index: 100;
@@ -63,7 +63,7 @@ export default {
   gap: 10px;
   min-width: 200px;
   padding: 10px;
-  background-color: rgba(245, 241, 232, 0.8);
+  background-color: rgba(60, 60, 60, 0.8);
   border-radius: 8px;
   cursor: pointer;
   transition: all 0.3s ease;
@@ -114,20 +114,22 @@ export default {
 .thumb-info h3 {
   font-size: 1rem;
   font-weight: bold;
-  color: #3c2a1e;
+  color: var(--text-color);
   margin: 0 0 5px 0;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  font-family: var(--font-family);
 }
 
 .thumb-info p {
   font-size: 0.8rem;
-  color: #6b5645;
+  color: var(--text-color);
   margin: 0;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  font-family: var(--font-family);
 }
 
 /* 滚动条样式 */
@@ -136,17 +138,17 @@ export default {
 }
 
 .thumb-container::-webkit-scrollbar-track {
-  background: rgba(60, 42, 30, 0.1);
+  background: rgba(196, 146, 16, 0.1);
   border-radius: 3px;
 }
 
 .thumb-container::-webkit-scrollbar-thumb {
-  background: rgba(60, 42, 30, 0.3);
+  background: rgba(196, 146, 16, 0.3);
   border-radius: 3px;
 }
 
 .thumb-container::-webkit-scrollbar-thumb:hover {
-  background: rgba(60, 42, 30, 0.5);
+  background: rgba(196, 146, 16, 0.5);
 }
 
 /* 响应式设计 */

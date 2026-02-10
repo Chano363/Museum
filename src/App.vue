@@ -149,12 +149,14 @@ export default {
     }
   },
   mounted() {
+    console.log('App组件已挂载')
     // 初始化全局CSS变量
     document.documentElement.style.setProperty('--brightness', '1')
     // 将Howler挂载到window对象
     window.Howl = Howl
     // 初始化音效
     this.initSounds()
+    console.log('App组件初始化完成')
   },
   methods: {
     initSounds() {
@@ -173,9 +175,12 @@ export default {
       }
     },
     enterMuseum() {
+      console.log('=== 进入博物馆事件触发 ===')
       this.currentView = 'main'
+      console.log('当前视图已切换到:', this.currentView)
     },
     selectArtifact(index) {
+      console.log('=== 选择文物事件触发 ===')
       console.log('选择文物:', index, this.artifacts[index])
       this.selectedArtifactIndex = index
       this.showGestureHint = true
@@ -186,12 +191,17 @@ export default {
       console.log('文物选择完成，当前选中:', this.selectedArtifactIndex)
     },
     showArtifactInfo() {
+      console.log('=== 显示文物信息事件触发 ===')
       this.showInfoPanel = true
+      console.log('文物信息面板显示状态:', this.showInfoPanel)
     },
     toggleSettings() {
+      console.log('=== 切换设置事件触发 ===')
       this.showSettings = !this.showSettings
+      console.log('设置面板显示状态:', this.showSettings)
     },
     nextModel() {
+      console.log('=== 切换模型事件触发 ===')
       // 切换到下一个模型
       this.selectedArtifactIndex = (this.selectedArtifactIndex + 1) % this.artifacts.length
       this.showGestureHint = true
@@ -199,8 +209,11 @@ export default {
       setTimeout(() => {
         this.showGestureHint = false
       }, 800)
+      console.log('模型已切换到索引:', this.selectedArtifactIndex)
     },
     displayGestureHint(hint) {
+      console.log('=== 显示手势提示事件触发 ===')
+      console.log('手势提示内容:', hint)
       this.showGestureHint = true
       this.currentGestureHint = hint
       setTimeout(() => {
@@ -217,9 +230,34 @@ export default {
 </script>
 
 <style>
+/* 引入新字体 */
+@font-face {
+  font-family: 'ChillHuoKai';
+  src: url('/fonts/ChillHuoKai_Regular.otf') format('opentype');
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'ChillHuoKaiCon';
+  src: url('/fonts/ChillHuoKai_ConRegular.otf') format('opentype');
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'HanChan';
+  src: url('/fonts/寒蝉书体 春秋 秋鸿.otf') format('opentype');
+  font-weight: normal;
+  font-style: normal;
+}
+
 /* 全局样式 */
 :root {
   --brightness: 1;
+  --background-color: #1a1a1a;
+  --text-color: #C49210;
+  --font-family: 'ChillHuoKai', 'ChillHuoKaiCon', 'HanChan', sans-serif;
 }
 
 * {
@@ -229,9 +267,9 @@ export default {
 }
 
 body {
-  font-family: 'PingFang SC', 'Microsoft YaHei', sans-serif;
-  background-color: #f5f1e8;
-  color: #3c2a1e;
+  font-family: var(--font-family);
+  background-color: var(--background-color);
+  color: var(--text-color);
   filter: brightness(var(--brightness));
   transition: filter 0.3s ease;
 }
@@ -241,7 +279,7 @@ body {
 .app-container {
   width: 100vw;
   height: 100vh;
-  background-color: #f5f1e8;
+  background-color: var(--background-color);
   position: relative;
   overflow: hidden;
 }
@@ -250,6 +288,7 @@ body {
   width: 100%;
   height: 100%;
   position: relative;
+  z-index: 1;
 }
 
 .settings-btn {
@@ -260,8 +299,8 @@ body {
   height: 40px;
   border: none;
   border-radius: 50%;
-  background-color: rgba(60, 42, 30, 0.8);
-  color: #f5f1e8;
+  background-color: rgba(196, 146, 16, 0.8);
+  color: var(--background-color);
   font-size: 20px;
   cursor: pointer;
   z-index: 1000;
@@ -270,7 +309,7 @@ body {
 }
 
 .settings-btn:hover {
-  background-color: rgba(60, 42, 30, 1);
+  background-color: rgba(196, 146, 16, 1);
   transform: scale(1.1);
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
 }

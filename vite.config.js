@@ -3,9 +3,18 @@ import vue from '@vitejs/plugin-vue'
 
 // https://vite.dev/config/
 export default defineConfig({
-  plugins: [vue()],
+  plugins: [
+    vue({
+      template: {
+        compilerOptions: {
+          // 将model-viewer标记为自定义元素
+          isCustomElement: (tag) => tag === 'model-viewer'
+        }
+      }
+    })
+  ],
   server: {
-    port: 3000,
+    port: 3002,
     open: true,
     proxy: {
       '/api': {
