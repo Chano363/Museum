@@ -118,6 +118,9 @@ class HandDetection(OnnxModel):
     
     def __call__(self, frame):
         input_tensor = self.preprocess(frame)
+        if input_tensor is None:
+            return np.array([]), np.array([])
+        
         results = self.sess.run(self.output_names, {self.input_name: input_tensor})
         output = results[0]
         detections = output[0]

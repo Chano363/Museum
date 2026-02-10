@@ -76,6 +76,7 @@ export default {
 
     const startCamera = async () => {
       try {
+        // 请求摄像头权限
         stream = await navigator.mediaDevices.getUserMedia({
           video: {
             width: { ideal: props.width },
@@ -89,7 +90,13 @@ export default {
         }
       } catch (error) {
         console.error('摄像头启动失败:', error)
-        alert('无法访问摄像头，请检查权限设置')
+        if (error.name === 'NotAllowedError') {
+          alert('无法访问摄像头，请在浏览器设置中允许摄像头权限')
+        } else if (error.name === 'NotFoundError') {
+          alert('未找到摄像头设备')
+        } else {
+          alert('摄像头启动失败，请检查设备连接')
+        }
       }
     }
 

@@ -25,7 +25,7 @@ export default {
   left: 50%;
   transform: translate(-50%, -50%);
   z-index: 1000;
-  animation: fadeInOut 0.3s ease-in-out;
+  animation: fadeInOut 0.8s ease-in-out;
 }
 
 .hint-content {

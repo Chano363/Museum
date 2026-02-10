@@ -11,6 +11,7 @@
     "backend": "python backend/app.py"
   },
   "dependencies": {
+    "@google/model-viewer": "^4.1.0",
     "@tensorflow-models/handpose": "^0.1.0",
     "@tensorflow/tfjs": "^4.22.0",
     "@tensorflow/tfjs-backend-cpu": "^4.22.0",

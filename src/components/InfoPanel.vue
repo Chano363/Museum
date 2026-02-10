@@ -9,6 +9,9 @@
       <div class="artifact-description">
         {{ artifact.description }}
       </div>
+      <a href="/3Dmodels/模型相关信息.docx" class="info-link" target="_blank">
+        📄 查看详细信息
+      </a>
       <button class="play-btn" @click="playAudio">
         🔊 播放讲解
       </button>
@@ -100,9 +103,30 @@ export default {
   font-size: 1rem;
   line-height: 1.6;
   color: #3c2a1e;
-  margin-bottom: 30px;
+  margin-bottom: 20px;
   flex: 1;
   overflow-y: auto;
+}
+
+.info-link {
+  display: block;
+  width: 100%;
+  padding: 12px;
+  background-color: rgba(60, 42, 30, 0.1);
+  color: #3c2a1e;
+  border: 1px solid rgba(60, 42, 30, 0.3);
+  border-radius: 8px;
+  font-size: 1rem;
+  text-align: center;
+  text-decoration: none;
+  margin-bottom: 15px;
+  transition: all 0.3s ease;
+}
+
+.info-link:hover {
+  background-color: rgba(60, 42, 30, 0.2);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 }
 
 .play-btn {

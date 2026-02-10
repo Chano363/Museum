@@ -63,6 +63,10 @@ def recognize_gesture():
                 'gestureName': gesture_name
             })
         
+        # 如果没有检测结果，返回空数组
+        if not detections:
+            return jsonify({'detections': []})
+        
         return jsonify({'detections': detections})
     except Exception as e:
         print(f'Error: {e}')

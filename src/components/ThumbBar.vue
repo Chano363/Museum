@@ -3,7 +3,10 @@
     <div class="thumb-container">
       <div v-for="(artifact, index) in artifacts" :key="artifact.id" class="thumb-item"
         :class="{ 'selected': index === selectedIndex }" @click="$emit('select', index)">
-        <div class="thumb-color" :style="{ backgroundColor: artifact.color }"></div>
+        <div v-if="artifact.iconPath" class="thumb-icon">
+          <img :src="artifact.iconPath" :alt="artifact.name">
+        </div>
+        <div v-else class="thumb-color" :style="{ backgroundColor: artifact.color }"></div>
         <div class="thumb-info">
           <h3>{{ artifact.name }}</h3>
           <p>{{ artifact.dynasty }}</p>
@@ -88,6 +91,21 @@ export default {
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 }
 
+.thumb-icon {
+  width: 60px;
+  height: 60px;
+  border-radius: 8px;
+  flex-shrink: 0;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  overflow: hidden;
+}
+
+.thumb-icon img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
 .thumb-info {
   flex: 1;
   min-width: 0;
@@ -151,6 +169,11 @@ export default {
     width: 48px;
     height: 48px;
   }
+  
+  .thumb-icon {
+    width: 48px;
+    height: 48px;
+  }
 
   .thumb-info h3 {
     font-size: 0.9rem;
@@ -177,6 +200,11 @@ export default {
   }
 
   .thumb-color {
+    width: 40px;
+    height: 40px;
+  }
+  
+  .thumb-icon {
     width: 40px;
     height: 40px;
   }

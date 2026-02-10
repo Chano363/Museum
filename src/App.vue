@@ -17,7 +17,7 @@
         :selectedArtifact="selectedArtifact"
         @showInfo="showArtifactInfo"
         @nextModel="nextModel"
-        @showGestureHint="showGestureHint"
+        @displayGestureHint="displayGestureHint"
       />
       
       <!-- 文物详情浮层 -->
@@ -69,63 +69,73 @@ export default {
       artifacts: [
         {
           id: 1,
-          name: '古代花瓶',
-          dynasty: '宋代',
-          description: '宋代青花瓷瓶，造型优美，纹饰精致，是宋代陶瓷艺术的代表作品。',
-          model: 'cube', // 使用简单立方体
-          color: '#3498db' // 蓝色
+          name: '卣（盛酒器）',
+          dynasty: '商代',
+          description: '商代青铜盛酒器，造型庄重，纹饰精美，是中国古代青铜文明的重要象征。',
+          model: 'external',
+          modelPath: '/3Dmodels/卣（盛酒器）/you_wine_vessel_12th-11th_c_bce/scene.gltf',
+          iconPath: '/3Dmodels/卣（盛酒器）/you_wine_vessel_12th-11th_c_bce/textures/Mia_017453_Fangyou_250k_diffuse.jpeg',
+          color: '#cd7f32' // 青铜色
         },
         {
           id: 2,
-          name: '青铜雕像',
-          dynasty: '汉代',
-          description: '汉代青铜雕像，姿态庄重，工艺精湛，反映了汉代高超的青铜铸造技术。',
-          model: 'sphere', // 使用简单球体
-          color: '#e67e22' // 橙色
+          name: '双鸮形卣（盛酒器）',
+          dynasty: '商代',
+          description: '商代双鸮形青铜盛酒器，造型独特，工艺精湛，反映了商代高超的青铜铸造技术。',
+          model: 'external',
+          modelPath: '/3Dmodels/双鸮形卣（盛酒器）/you_vessel_in_double-owl_shape_12th-11th_c_bce/scene.gltf',
+          iconPath: '/3Dmodels/双鸮形卣（盛酒器）/mia_6003189_full.jpg',
+          color: '#cd7f32' // 青铜色
         },
         {
           id: 3,
-          name: '古代钱币',
-          dynasty: '唐代',
-          description: '唐代钱币，形制规整，文字清晰，是研究唐代经济的重要实物资料。',
-          model: 'cylinder', // 使用简单圆柱体
-          color: '#27ae60' // 绿色
+          name: '爵（饮酒器）',
+          dynasty: '商代',
+          description: '商代青铜饮酒器，形制规整，纹饰清晰，是研究商代酒文化的重要实物资料。',
+          model: 'external',
+          modelPath: '/3Dmodels/爵（饮酒器）/jue_wine_vessel_12th11th_c_bce/scene.gltf',
+          iconPath: '/3Dmodels/爵（饮酒器）/jue_wine_vessel_12th11th_c_bce/textures/Mia_001146_Jue_100k_baseColor.jpeg',
+          color: '#cd7f32' // 青铜色
         },
         {
           id: 4,
-          name: '龙戏珠',
-          dynasty: '清代',
-          description: '清代龙戏珠雕塑，工艺精湛，造型生动，是中国传统工艺的杰出代表。',
-          model: 'external', // 使用外部GLTF模型
-          modelPath: '/3Dmodels/dragon_with_pearl/scene.gltf',
-          color: '#8b0000' // 红色
+          name: '瓷器花瓶',
+          dynasty: '明代',
+          description: '明代青花瓷花瓶，胎质细腻，釉色莹润，纹饰流畅，是中国陶瓷艺术的珍品。',
+          model: 'external',
+          modelPath: '/3Dmodels/瓷器花瓶/chinese_porcelain_vase/scene.gltf',
+          iconPath: '/3Dmodels/瓷器花瓶/chinese_porcelain_vase/textures/defaultMat_baseColor.jpeg',
+          color: '#2e8b57' // 青花色
         },
         {
           id: 5,
-          name: '青铜器鼎',
-          dynasty: '商代',
-          description: '商代青铜器鼎，造型庄重，纹饰精美，是中国古代青铜文明的重要象征。',
-          model: 'external', // 使用外部OBJ模型
-          modelPath: '/3Dmodels/chinese-bronze-ding-vessel/Figur-Opferschale-Chinesisch-v2_1M/Figur-Trog-Chinesisch-v2_1M.obj',
+          name: '簋（食器）',
+          dynasty: '周代',
+          description: '周代青铜食器，造型典雅，工艺精湛，是中国古代青铜文明的重要象征。',
+          model: 'external',
+          modelPath: '/3Dmodels/簋（食器）/gui_chinese_food_vessel/scene.gltf',
+          iconPath: '/3Dmodels/簋（食器）/gui_chinese_food_vessel/textures/150625_mia337_000833_100_64Kfaces_OBJ3_baseColor.jpeg',
           color: '#cd7f32' // 青铜色
         },
         {
           id: 6,
-          name: '青花瓷花瓶',
-          dynasty: '明代',
-          description: '明代青花瓷花瓶，胎质细腻，釉色莹润，纹饰流畅，是中国陶瓷艺术的珍品。',
-          model: 'external', // 使用外部OBJ模型
-          modelPath: '/3Dmodels/porcelain-china-vase/fin_cy_180313_low.obj',
-          color: '#2e8b57' // 青花色
+          name: '镀金银器装裱中国碗',
+          dynasty: '清代',
+          description: '清代镀金银器装裱中国碗，工艺精湛，造型优美，是中国传统工艺的杰出代表。',
+          model: 'external',
+          modelPath: '/3Dmodels/镀金银器装裱中国碗/silver_gilt_mounted_chinese_bowl/scene.gltf',
+          iconPath: '/3Dmodels/镀金银器装裱中国碗/silver_gilt_mounted_chinese_bowl/textures/material_0_baseColor.jpeg',
+          color: '#c0c0c0' // 银色
         },
         {
           id: 7,
-          name: '铜香炉',
-          dynasty: '清代',
-          description: '清代铜香炉，造型典雅，工艺精湛，是中国传统香道文化的重要器物。',
-          model: 'external', // 使用外部OBJ模型
-          modelPath: '/3Dmodels/chinese-censer/model.obj',
-          color: '#b87333' // 铜色
+          name: '黄金面具（三星堆）',
+          dynasty: '商代',
+          description: '三星堆文化黄金面具，造型奇特，工艺精湛，是中国古代文明的重要实物资料。',
+          model: 'external',
+          modelPath: '/3Dmodels/黄金面具（三星堆）/sanxingdui/scene.gltf',
+          iconPath: '/3Dmodels/黄金面具（三星堆）/sanxingdui/textures/SM_SXD_FACE_baseColor.jpeg',
+          color: '#ffd700' // 金色
         }
       ],
       selectedArtifactIndex: 0,
@@ -172,7 +182,7 @@ export default {
       this.currentGestureHint = '模型切换成功'
       setTimeout(() => {
         this.showGestureHint = false
-      }, 300)
+      }, 800)
       console.log('文物选择完成，当前选中:', this.selectedArtifactIndex)
     },
     showArtifactInfo() {
@@ -188,14 +198,14 @@ export default {
       this.currentGestureHint = '模型切换成功'
       setTimeout(() => {
         this.showGestureHint = false
-      }, 300)
+      }, 800)
     },
-    showGestureHint(hint) {
+    displayGestureHint(hint) {
       this.showGestureHint = true
       this.currentGestureHint = hint
       setTimeout(() => {
         this.showGestureHint = false
-      }, 300)
+      }, 800)
     }
   },
   computed: {
