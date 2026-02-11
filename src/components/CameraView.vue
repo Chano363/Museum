@@ -51,6 +51,10 @@ export default {
     showOverlay: {
       type: Boolean,
       default: true
+    },
+    handLandmarks: {
+      type: Object,
+      default: null
     }
   },
   emits: ['frame', 'detections'],
@@ -101,39 +105,47 @@ export default {
     }
 
     const startProcessing = () => {
-      const processFrame = () => {
-        if (!videoRef.value || !canvasRef.value) return
-        
-        const ctx = canvasRef.value.getContext('2d')
-        
-        // 水平翻转canvas，以纠正视频的翻转效果
-        ctx.save()
-        ctx.translate(canvasWidth.value, 0)
-        ctx.scale(-1, 1)
-        
-        // 绘制视频帧
-        ctx.drawImage(videoRef.value, 0, 0, canvasWidth.value, canvasHeight.value)
-        ctx.restore()
-        
-        const imageData = ctx.getImageData(0, 0, canvasWidth.value, canvasHeight.value)
-        
-        // 发送帧数据，确保每一帧都被处理
-        emit('frame', imageData)
-        
-        // 更新FPS
-        frameCount++
-        const currentTime = performance.now()
-        if (currentTime - lastFpsUpdate >= 1000) {
-          fps.value = frameCount
-          frameCount = 0
-          lastFpsUpdate = currentTime
-        }
-        
-        animationFrameId = requestAnimationFrame(processFrame)
+    const processFrame = () => {
+      if (!videoRef.value || !canvasRef.value) return
+      
+      // 获取 canvas context 并设置 willReadFrequently 属性以优化性能
+      const ctx = canvasRef.value.getContext('2d', { willReadFrequently: true })
+      
+      // 水平翻转canvas，以纠正视频的翻转效果
+      ctx.save()
+      ctx.translate(canvasWidth.value, 0)
+      ctx.scale(-1, 1)
+      
+      // 绘制视频帧
+      ctx.drawImage(videoRef.value, 0, 0, canvasWidth.value, canvasHeight.value)
+      
+      // 绘制手部关键点
+      if (props.handLandmarks && props.handLandmarks.landmarks && props.handLandmarks.landmarks.length > 0) {
+        console.log('CameraView.processFrame: 绘制手部关键点:', props.handLandmarks)
+        drawHandLandmarks(ctx, props.handLandmarks)
       }
       
-      processFrame()
+      ctx.restore()
+      
+      const imageData = ctx.getImageData(0, 0, canvasWidth.value, canvasHeight.value)
+      
+      // 发送帧数据，确保每一帧都被处理
+      emit('frame', imageData)
+      
+      // 更新FPS
+      frameCount++
+      const currentTime = performance.now()
+      if (currentTime - lastFpsUpdate >= 1000) {
+        fps.value = frameCount
+        frameCount = 0
+        lastFpsUpdate = currentTime
+      }
+      
+      animationFrameId = requestAnimationFrame(processFrame)
     }
+    
+    processFrame()
+  }
 
     const updateDetections = (newDetections) => {
       detections.value = newDetections
@@ -148,6 +160,120 @@ export default {
         height: `${bbox.y2 - bbox.y1}px`
       }
     }
+    
+    const drawHandLandmarks = (ctx, handLandmarks) => {
+    console.log('CameraView.drawHandLandmarks: 开始绘制手部关键点:', handLandmarks)
+    if (!handLandmarks || !handLandmarks.landmarks) {
+      console.log('CameraView.drawHandLandmarks: 无效的手部关键点数据')
+      return
+    }
+    
+    const landmarks = handLandmarks.landmarks
+    console.log('CameraView.drawHandLandmarks: 关键点数量:', landmarks.length)
+    
+    if (landmarks.length < 21) {
+      console.log('CameraView.drawHandLandmarks: 关键点数量不足')
+      return
+    }
+    
+    // 获取canvas的实际显示大小
+    const canvasElement = canvasRef.value
+    if (!canvasElement) {
+      console.log('CameraView.drawHandLandmarks: canvas元素不存在')
+      return
+    }
+    
+    const displayWidth = canvasElement.offsetWidth
+    const displayHeight = canvasElement.offsetHeight
+    
+    console.log('CameraView.drawHandLandmarks: canvas显示大小:', { displayWidth, displayHeight })
+    
+    // 坐标映射函数：将原始640x480坐标转换为实际显示坐标
+    const mapCoordinates = (x, y) => {
+      // 注意：摄像头画面是水平翻转的，需要调整x坐标
+      // 同时，确保坐标在有效范围内
+      const clampedX = Math.max(0, Math.min(640, x))
+      const clampedY = Math.max(0, Math.min(480, y))
+      
+      // 水平翻转x坐标
+      const flippedX = 640 - clampedX
+      
+      // 映射到实际显示尺寸
+      const mappedX = (flippedX / 640) * displayWidth
+      const mappedY = (clampedY / 480) * displayHeight
+      
+      console.log(`CameraView.mapCoordinates: 原始坐标 (${x}, ${y}) -> 限制后 (${clampedX}, ${clampedY}) -> 翻转后 (${flippedX}, ${clampedY}) -> 映射后 (${mappedX}, ${mappedY})`)
+      
+      return { x: mappedX, y: mappedY }
+    }
+    
+    // 定义手指的连接关系
+    const connections = [
+      // 手腕到手指根部
+      [0, 1], [1, 2], [2, 3], [3, 4], // 拇指
+      [0, 5], [5, 6], [6, 7], [7, 8], // 食指
+      [0, 9], [9, 10], [10, 11], [11, 12], // 中指
+      [0, 13], [13, 14], [14, 15], [15, 16], // 无名指
+      [0, 17], [17, 18], [18, 19], [19, 20]  // 小指
+    ]
+    
+    // 绘制连接线
+    ctx.strokeStyle = '#FF0000'
+    ctx.lineWidth = 3
+    console.log('CameraView.drawHandLandmarks: 开始绘制骨骼连接线')
+    
+    connections.forEach(([start, end]) => {
+      const startPoint = landmarks[start]
+      const endPoint = landmarks[end]
+      
+      if (startPoint && endPoint) {
+        console.log(`CameraView.drawHandLandmarks: 绘制连接 ${start} -> ${end}: 起点 ${JSON.stringify(startPoint)}, 终点 ${JSON.stringify(endPoint)}`)
+        const mappedStart = mapCoordinates(startPoint.x, startPoint.y)
+        const mappedEnd = mapCoordinates(endPoint.x, endPoint.y)
+        console.log(`CameraView.drawHandLandmarks: 映射后起点 ${JSON.stringify(mappedStart)}, 映射后终点 ${JSON.stringify(mappedEnd)}`)
+        
+        ctx.beginPath()
+        ctx.moveTo(mappedStart.x, mappedStart.y)
+        ctx.lineTo(mappedEnd.x, mappedEnd.y)
+        ctx.stroke()
+        console.log(`CameraView.drawHandLandmarks: 连接线 ${start} -> ${end} 绘制完成`)
+      } else {
+        console.log(`CameraView.drawHandLandmarks: 连接 ${start} -> ${end} 点数据无效`)
+      }
+    })
+    
+    // 绘制关键点
+    ctx.lineWidth = 2
+    console.log('CameraView.drawHandLandmarks: 开始绘制关键点')
+    
+    landmarks.forEach((landmark, index) => {
+      if (landmark) {
+        console.log(`CameraView.drawHandLandmarks: 绘制关键点 ${index}: ${JSON.stringify(landmark)}`)
+        const mappedPoint = mapCoordinates(landmark.x, landmark.y)
+        console.log(`CameraView.drawHandLandmarks: 映射后关键点 ${index}: ${JSON.stringify(mappedPoint)}`)
+        
+        // 绘制外圈 - 增大尺寸
+        ctx.beginPath()
+        ctx.arc(mappedPoint.x, mappedPoint.y, 10, 0, Math.PI * 2)
+        ctx.fillStyle = '#FFFFFF'
+        ctx.fill()
+        ctx.strokeStyle = '#FF0000'
+        ctx.stroke()
+        
+        // 绘制内圈 - 增大尺寸
+        ctx.beginPath()
+        ctx.arc(mappedPoint.x, mappedPoint.y, 6, 0, Math.PI * 2)
+        ctx.fillStyle = '#FF0000'
+        ctx.fill()
+        
+        console.log(`CameraView.drawHandLandmarks: 关键点 ${index} 绘制完成`)
+      } else {
+        console.log(`CameraView.drawHandLandmarks: 关键点 ${index} 数据无效`)
+      }
+    })
+    
+    console.log('CameraView.drawHandLandmarks: 手部关键点绘制完成')
+  }
 
     const stopCamera = () => {
       if (animationFrameId) {
@@ -184,7 +310,8 @@ export default {
       onVideoLoaded,
       updateDetections,
       stopCamera,
-      getBoxStyle
+      getBoxStyle,
+      drawHandLandmarks
     }
   }
 }
@@ -214,7 +341,9 @@ canvas {
   left: 0;
   width: 100%;
   height: 100%;
-  display: none;
+  /* 显示 canvas 以展示手部关键点 */
+  z-index: 10;
+  pointer-events: none;
 }
 
 .overlay {

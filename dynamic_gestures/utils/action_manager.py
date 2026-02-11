@@ -23,39 +23,42 @@ class ActionManager:
             for handler in self._handlers[action_type]:
                 handler(action_type, hand_object)
 
-def fistAction(action_type, hand_object):
-    ShowImg(0)
-
-def showAction(action_type, hand_object):
-    if action_type in [Event.SWIPE_LEFT, Event.SWIPE_LEFT2, Event.SWIPE_LEFT3]:
-        id = 1
-    if action_type in [Event.SWIPE_RIGHT, Event.SWIPE_RIGHT2, Event.SWIPE_RIGHT3]:
-        id = 2
-    if action_type in [Event.SWIPE_UP, Event.SWIPE_UP2, Event.SWIPE_UP3, Event.FAST_SWIPE_UP]:
-        id = 3
-    if action_type in [Event.SWIPE_DOWN, Event.SWIPE_DOWN2, Event.SWIPE_DOWN3, Event.FAST_SWIPE_DOWN]:
-        id = 4
-
-    ShowImg(id)
-
-def keyAction(action_type, hand_object):
-    if action_type in [Event.SWIPE_LEFT, Event.SWIPE_LEFT2, Event.SWIPE_LEFT3]:
-        arg = "left"
-    if action_type in [Event.SWIPE_RIGHT, Event.SWIPE_RIGHT2, Event.SWIPE_RIGHT3]:
-        arg = "right"
-    if action_type in [Event.SWIPE_UP, Event.SWIPE_UP2, Event.SWIPE_UP3, Event.FAST_SWIPE_UP]:
-        arg = "up"
-    if action_type in [Event.SWIPE_DOWN, Event.SWIPE_DOWN2, Event.SWIPE_DOWN3, Event.FAST_SWIPE_DOWN]:
-        arg = "down"
-
-    PressKey(arg)
-
-for action in [Event.SWIPE_LEFT, Event.SWIPE_LEFT2, Event.SWIPE_LEFT3,
-               Event.SWIPE_RIGHT, Event.SWIPE_RIGHT2, Event.SWIPE_RIGHT3,
-               Event.SWIPE_UP, Event.SWIPE_UP2, Event.SWIPE_UP3, Event.FAST_SWIPE_UP,
-               Event.SWIPE_DOWN, Event.SWIPE_DOWN2, Event.SWIPE_DOWN3, Event.FAST_SWIPE_DOWN]:
-    
-    ActionManager().register_action_handler(action, showAction)
-    ActionManager().register_action_handler(action, keyAction)
-
-ActionManager().register_action_handler(Event.FIST, fistAction)
+# 注意：以下动作映射逻辑已被注释
+# 前端将使用自己的手势映射逻辑，允许多个相似手势ID触发同一操作
+# 这样可以提高操作成功率，因为模型可能识别到相似的手势
+#
+# 原始动作映射（已注释）：
+# def fistAction(action_type, hand_object):
+#     ShowImg(0)
+# 
+# def showAction(action_type, hand_object):
+#     if action_type in [Event.SWIPE_LEFT, Event.SWIPE_LEFT2, Event.SWIPE_LEFT3]:
+#         id = 1
+#     if action_type in [Event.SWIPE_RIGHT, Event.SWIPE_RIGHT2, Event.SWIPE_RIGHT3]:
+#         id = 2
+#     if action_type in [Event.SWIPE_UP, Event.SWIPE_UP2, Event.SWIPE_UP3, Event.FAST_SWIPE_UP]:
+#         id = 3
+#     if action_type in [Event.SWIPE_DOWN, Event.SWIPE_DOWN2, Event.SWIPE_DOWN3, Event.FAST_SWIPE_DOWN]:
+#         id = 4
+#     ShowImg(id)
+# 
+# def keyAction(action_type, hand_object):
+#     if action_type in [Event.SWIPE_LEFT, Event.SWIPE_LEFT2, Event.SWIPE_LEFT3]:
+#         arg = "left"
+#     if action_type in [Event.SWIPE_RIGHT, Event.SWIPE_RIGHT2, Event.SWIPE_RIGHT3]:
+#         arg = "right"
+#     if action_type in [Event.SWIPE_UP, Event.SWIPE_UP2, Event.SWIPE_UP3, Event.FAST_SWIPE_UP]:
+#         arg = "up"
+#     if action_type in [Event.SWIPE_DOWN, Event.SWIPE_DOWN2, Event.SWIPE_DOWN3, Event.FAST_SWIPE_DOWN]:
+#         arg = "down"
+#     PressKey(arg)
+# 
+# for action in [Event.SWIPE_LEFT, Event.SWIPE_LEFT2, Event.SWIPE_LEFT3,
+#                Event.SWIPE_RIGHT, Event.SWIPE_RIGHT2, Event.SWIPE_RIGHT3,
+#                Event.SWIPE_UP, Event.SWIPE_UP2, Event.SWIPE_UP3, Event.FAST_SWIPE_UP,
+#                Event.SWIPE_DOWN, Event.SWIPE_DOWN2, Event.SWIPE_DOWN3, Event.FAST_SWIPE_DOWN]:
+#     
+#     ActionManager().register_action_handler(action, showAction)
+#     ActionManager().register_action_handler(action, keyAction)
+# 
+# ActionManager().register_action_handler(Event.FIST, fistAction)

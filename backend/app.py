@@ -16,7 +16,7 @@ CORS(app)
 
 # 初始化模型
 model_dir = os.path.join(os.path.dirname(__file__), '..', 'dynamic_gestures', 'models')
-detection_model = HandDetection(os.path.join(model_dir, 'YOLOv10n_hands.onnx'), image_size=(640, 640), confidence_threshold=0.5)
+detection_model = HandDetection(os.path.join(model_dir, 'YOLOv10n_hands.onnx'), image_size=(640, 640), confidence_threshold=0.4)  # 调整为0.4以减少误识别
 classification_model = HandClassification(os.path.join(model_dir, 'crops_classifier.onnx'))
 
 @app.route('/api/recognize', methods=['POST'])

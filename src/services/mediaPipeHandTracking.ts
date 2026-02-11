@@ -1,10 +1,16 @@
 import { Hands } from '@mediapipe/hands'
 import { Camera } from '@mediapipe/camera_utils'
+import { MEDIAPIPE_CONFIG } from '../constants/gestureConstants'
 
 export interface FingerPosition {
   x: number
   y: number
   z?: number
+}
+
+export interface HandLandmarks {
+  landmarks: FingerPosition[]
+  handInViewConfidence: number
 }
 
 export class MediaPipeHandTrackingService {
@@ -14,11 +20,19 @@ export class MediaPipeHandTrackingService {
   
   // 平滑处理相关
   private positionHistory: FingerPosition[] = []
-  private readonly MAX_HISTORY = 5
-  private readonly SMOOTHING_FACTOR = 0.7
+  private readonly MAX_HISTORY = 15
+  private readonly SMOOTHING_FACTOR = 0.98
+  private readonly LANDMARK_SMOOTHING_FACTOR = 0.95
   
   // 回调函数
   private onResultCallback: ((position: FingerPosition) => void) | null = null
+  
+  // 最新的手部关键点
+  private latestLandmarks: HandLandmarks | null = null
+  
+  // 重用 canvas 元素，避免频繁创建
+  private canvas: HTMLCanvasElement | null = null
+  private ctx: CanvasRenderingContext2D | null = null
   
   async initialize(): Promise<void> {
     if (this.isInitialized) {
@@ -26,8 +40,6 @@ export class MediaPipeHandTrackingService {
     }
     
     try {
-      console.log('初始化MediaPipe Hands服务...')
-      
       this.hands = new Hands({
         locateFile: (file) => {
           return `https://cdn.jsdelivr.net/npm/@mediapipe/hands/${file}`
@@ -36,15 +48,14 @@ export class MediaPipeHandTrackingService {
       
       this.hands.setOptions({
         maxNumHands: 1,
-        modelComplexity: 1,
-        minDetectionConfidence: 0.5,
-        minTrackingConfidence: 0.5
+        modelComplexity: 0, // 降低模型复杂度，提高处理速度
+        minDetectionConfidence: MEDIAPIPE_CONFIG.MIN_DETECTION_CONFIDENCE,
+        minTrackingConfidence: MEDIAPIPE_CONFIG.MIN_TRACKING_CONFIDENCE
       })
       
       this.hands.onResults(this.onResults.bind(this))
       
       this.isInitialized = true
-      console.log('MediaPipe Hands服务初始化成功')
     } catch (error) {
       console.error('MediaPipe Hands服务初始化失败:', error)
       throw error
@@ -63,46 +74,135 @@ export class MediaPipeHandTrackingService {
         return null
       }
       
-      // 创建临时canvas用于处理图像数据
-      const canvas = document.createElement('canvas')
-      const ctx = canvas.getContext('2d')
-      
-      if (!ctx) {
+      // 检查图像数据
+      if (!imageData || !imageData.data) {
         return null
       }
       
-      canvas.width = imageData.width
-      canvas.height = imageData.height
-      ctx.putImageData(imageData, 0, 0)
+      // 重用 canvas 元素，避免频繁创建
+      if (!this.canvas) {
+        this.canvas = document.createElement('canvas')
+        this.ctx = this.canvas.getContext('2d')
+      }
       
-      // 发送到MediaPipe处理
-      await this.hands.send({ image: canvas })
+      if (!this.ctx) {
+        return null
+      }
+      
+      // 减小画布尺寸，提高处理速度
+      this.canvas.width = 320
+      this.canvas.height = 240
+      
+      // 绘制图像数据
+      this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height)
+      this.ctx.putImageData(imageData, 0, 0)
+      
+      try {
+        // 发送图像数据到 MediaPipe
+        await this.hands.send({ image: this.canvas })
+      } catch (error) {
+        console.error('MediaPipeHandTrackingService.processFrame: 发送图像数据失败:', error)
+        // 尝试重新初始化 MediaPipe
+        try {
+          await this.initialize()
+        } catch (reinitError) {
+          console.error('MediaPipeHandTrackingService.processFrame: 重新初始化失败:', reinitError)
+        }
+        return null
+      }
+      
+      // 减少等待时间，提高实时性
+      await new Promise(resolve => setTimeout(resolve, 10))
+      
+      // 检查是否有最新的手部关键点
+      const landmarks = this.getLatestLandmarks()
+      
+      if (landmarks && landmarks.landmarks && landmarks.landmarks.length > 8) {
+        // 确保 landmarks.landmarks[8] 存在且有效
+        if (landmarks.landmarks[8] && typeof landmarks.landmarks[8].x === 'number' && typeof landmarks.landmarks[8].y === 'number') {
+          // 返回食指指尖（关键点8）的坐标
+          return landmarks.landmarks[8]
+        } else {
+          return null
+        }
+      }
       
       return null
     } catch (error) {
       console.error('MediaPipe处理失败:', error)
+      // 尝试重新初始化 MediaPipe
+      try {
+        await this.initialize()
+      } catch (reinitError) {
+        console.error('MediaPipeHandTrackingService.processFrame: 重新初始化失败:', reinitError)
+      }
       return null
     } finally {
+      // 确保 isProcessing 标志重置为 false
       this.isProcessing = false
     }
   }
   
+  // 存储历史关键点数据
+  private landmarksHistory: FingerPosition[][] = []
+  private readonly MAX_LANDMARKS_HISTORY = 12
+  
   private onResults(results: any): void {
-    if (!results || !results.multiHandLandmarks || results.multiHandLandmarks.length === 0) {
+    if (!results) {
+      // 不设置latestLandmarks为null，保留上次的关键点
+      return
+    }
+    
+    if (!results.multiHandLandmarks) {
+      // 不设置latestLandmarks为null，保留上次的关键点
+      return
+    }
+    
+    if (results.multiHandLandmarks.length === 0) {
+      // 不设置latestLandmarks为null，保留上次的关键点
       return
     }
     
     const landmarks = results.multiHandLandmarks[0]
     
-    if (!landmarks || landmarks.length < 9) {
+    if (!landmarks) {
+      this.latestLandmarks = null
       return
+    }
+    
+    if (landmarks.length < 21) {
+      this.latestLandmarks = null
+      return
+    }
+    
+    // 存储所有关键点
+    const normalizedLandmarks: FingerPosition[] = landmarks.map((landmark: any) => ({
+      x: landmark.x * 640, // 保持与原始逻辑一致，映射到640x480坐标
+      y: landmark.y * 480, // 保持与原始逻辑一致，映射到640x480坐标
+      z: landmark.z
+    }))
+    
+    // 平滑处理手部关键点
+    const smoothedLandmarks = this.smoothLandmarks(normalizedLandmarks)
+    
+    // 检查是否有 multiHandedness 属性
+    if (!results.multiHandedness || results.multiHandedness.length === 0) {
+      this.latestLandmarks = {
+        landmarks: smoothedLandmarks,
+        handInViewConfidence: 0.5 // 使用默认值
+      }
+    } else {
+      this.latestLandmarks = {
+        landmarks: smoothedLandmarks,
+        handInViewConfidence: results.multiHandedness[0].score
+      }
     }
     
     // 获取食指指尖（关键点8）的坐标
     const indexFingerTip = landmarks[8]
     const position: FingerPosition = {
-      x: indexFingerTip.x * 640, // 假设图像宽度为640
-      y: indexFingerTip.y * 480, // 假设图像高度为480
+      x: indexFingerTip.x * 640, // 保持与原始逻辑一致，映射到640x480坐标
+      y: indexFingerTip.y * 480, // 保持与原始逻辑一致，映射到640x480坐标
       z: indexFingerTip.z
     }
     
@@ -113,6 +213,62 @@ export class MediaPipeHandTrackingService {
     if (this.onResultCallback) {
       this.onResultCallback(smoothedPosition)
     }
+  }
+  
+  // 平滑处理手部关键点
+  private smoothLandmarks(landmarks: FingerPosition[]): FingerPosition[] {
+    // 添加到历史记录
+    this.landmarksHistory.push(landmarks)
+    
+    // 限制历史记录长度
+    if (this.landmarksHistory.length > this.MAX_LANDMARKS_HISTORY) {
+      this.landmarksHistory.shift()
+    }
+    
+    // 如果历史记录不足，直接返回当前关键点
+    if (this.landmarksHistory.length < 2) {
+      return landmarks
+    }
+    
+    // 平滑处理每个关键点
+    const smoothedLandmarks: FingerPosition[] = landmarks.map((landmark, index) => {
+      // 收集所有历史记录中对应索引的关键点
+      const historyPoints = this.landmarksHistory.map(history => history[index])
+        .filter(point => point !== undefined && point !== null)
+      
+      if (historyPoints.length < 2) {
+        return landmark
+      }
+      
+      // 计算移动平均
+      let sumX = 0
+      let sumY = 0
+      let sumZ = 0
+      
+      for (const point of historyPoints) {
+        sumX += point.x
+        sumY += point.y
+        sumZ += point.z || 0
+      }
+      
+      const avgX = sumX / historyPoints.length
+      const avgY = sumY / historyPoints.length
+      const avgZ = sumZ / historyPoints.length
+      
+      // 混合当前位置和平滑位置
+      return {
+        x: landmark.x * (1 - this.LANDMARK_SMOOTHING_FACTOR) + avgX * this.LANDMARK_SMOOTHING_FACTOR,
+        y: landmark.y * (1 - this.LANDMARK_SMOOTHING_FACTOR) + avgY * this.LANDMARK_SMOOTHING_FACTOR,
+        z: (landmark.z || 0) * (1 - this.LANDMARK_SMOOTHING_FACTOR) + avgZ * this.LANDMARK_SMOOTHING_FACTOR
+      }
+    })
+    
+    return smoothedLandmarks
+  }
+  
+  // 获取最新的手部关键点
+  getLatestLandmarks(): HandLandmarks | null {
+    return this.latestLandmarks
   }
   
   private smoothPosition(position: FingerPosition): FingerPosition {
@@ -155,6 +311,7 @@ export class MediaPipeHandTrackingService {
   
   clearHistory(): void {
     this.positionHistory = []
+    this.landmarksHistory = []
   }
   
   async destroy(): Promise<void> {
@@ -166,11 +323,15 @@ export class MediaPipeHandTrackingService {
     this.isInitialized = false
     this.onResultCallback = null
     this.positionHistory = []
-    
-    console.log('MediaPipe Hands服务已销毁')
+    this.landmarksHistory = []
+    this.latestLandmarks = null
   }
   
   isReady(): boolean {
     return this.isInitialized
+  }
+  
+  async dispose(): Promise<void> {
+    await this.destroy()
   }
 }

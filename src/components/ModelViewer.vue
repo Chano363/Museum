@@ -43,6 +43,42 @@ export default {
       if (this.$refs.modelViewerRef) {
         this.$refs.modelViewerRef.resetCamera()
       }
+    },
+    // 旋转模型
+    rotate(delta) {
+      if (this.$refs.modelViewerRef) {
+        const currentRotation = this.$refs.modelViewerRef.cameraOrbit || '0deg 75deg 100%'
+        const [yaw, pitch, radius] = currentRotation.split(' ')
+        const newYaw = parseFloat(yaw) + delta
+        this.$refs.modelViewerRef.cameraOrbit = `${newYaw}deg ${pitch} ${radius}`
+      }
+    },
+    // 缩放模型
+    zoom(delta) {
+      if (this.$refs.modelViewerRef) {
+        const currentRadius = this.$refs.modelViewerRef.cameraOrbit ? 
+          parseFloat(this.$refs.modelViewerRef.cameraOrbit.split(' ')[2]) : 100
+        const newRadius = Math.max(10, Math.min(200, currentRadius - delta * 100))
+        const currentRotation = this.$refs.modelViewerRef.cameraOrbit || '0deg 75deg 100%'
+        const [yaw, pitch] = currentRotation.split(' ')
+        this.$refs.modelViewerRef.cameraOrbit = `${yaw} ${pitch} ${newRadius}%`
+      }
+    },
+    // 平移模型
+    pan(deltaX, deltaY) {
+      if (this.$refs.modelViewerRef) {
+        const currentTarget = this.$refs.modelViewerRef.cameraTarget || '0m 0m 0m'
+        const [x, y, z] = currentTarget.split(' ').map(val => parseFloat(val))
+        const newX = x + deltaX
+        const newY = y + deltaY
+        this.$refs.modelViewerRef.cameraTarget = `${newX}m ${newY}m ${z}m`
+      }
+    },
+    // 播放动作
+    playAction(action) {
+      console.log('播放动作:', action)
+      // 这里可以添加动作的具体实现
+      // 例如，播放动画、切换视角等
     }
   },
   mounted() {

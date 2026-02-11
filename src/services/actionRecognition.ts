@@ -1,215 +1,263 @@
-import type { HandDetection, ActionType } from '../types/gesture'
-import { ActionType as AT } from '../types/gesture'
+import type { HandDetection } from '../types/gesture'
+import { GESTURE_MAPPINGS, ACTION_RECOGNITION_CONFIG, type ActionType } from '../constants/gestureConstants'
 
-interface HandHistory {
-  detections: HandDetection[]
-  lastUpdate: number
+// 灵活的手势映射表：允许多个手势ID映射到同一个操作
+// 这样可以提高操作成功率，因为模型可能识别到相似的手势
+const gestureToActionMap: Record<number, ActionType> = {
+  // 放大操作
+  27: 'zoom_in',      // like (点赞)
+  3: 'zoom_in',       // thumb_index (拇指食指) - 也是拇指向上动作
+  39: 'zoom_in',       // two_up (二上) - 向上动作
+  18: 'zoom_in',      // grabbing (抓取) - 增加更多手势映射
+  
+  // 缩小操作
+  24: 'zoom_out',      // dislike (点踩)
+  20: 'zoom_out',      // call (打电话手势) - 增加更多手势映射
+  
+  // 移动模型操作
+  38: 'rotate',       // three2 (三指向下)
+  
+  // 旋转操作
+  31: 'rotate',         // palm (手掌)
+  35: 'rotate',         // stop (停止)
+  36: 'rotate',         // stop_inverted (停止反转)
+  32: 'rotate',         // four (四指)
+  33: 'rotate',         // three (三指)
+  19: 'rotate',       // point (手指指向)
+  30: 'rotate',       // one (一指) - 也是单指动作
+  
+  // 旋转操作
+  29: 'rotate',         // ok (OK手势)
+  11: 'rotate',         // part_hand_heart (心形手势1)
+  12: 'rotate',         // part_hand_heart2 (心形手势2)
+  22: 'rotate',         // little_finger (小指)
+  
+  
+  // 只有SWIPE相关的手势用于切换展品
+  // 注意：SWIPE手势主要通过前端SwipeDetector检测，这里不直接映射静态手势ID
 }
 
-export class ActionRecognitionService {
-  private handHistories: Map<number, HandHistory> = new Map()
-  private readonly MAX_HISTORY_LENGTH = 30
-  private readonly MIN_FRAMES_FOR_ACTION = 15
-  private readonly ACTION_THRESHOLD = 0.7
+// 手部验证函数：检查检测到的区域是否符合手部特征
+const validateHandDetection = (detection: HandDetection): boolean => {
+  // 检查检测到的区域是否符合手部的大小和形状特征
+  const bbox = detection.bbox;
+  const width = bbox.x2 - bbox.x1;
+  const height = bbox.y2 - bbox.y1;
   
+  // 手部的宽高比通常在0.3-2之间
+  const aspectRatio = width / height;
+  if (aspectRatio < 0.3 || aspectRatio > 2) {
+    return false;
+  }
+  
+  // 手部的大小应该在合理范围内
+  const area = width * height;
+  if (area < 1000 || area > 100000) {
+    return false;
+  }
+  
+  return true;
+}
+
+// 静态手势ID列表（需要严格验证的手势）
+const STATIC_GESTURES = GESTURE_MAPPINGS.STATIC_GESTURES // 包含所有需要验证的手势，包括dislike和four
+
+// 动态手势ID列表（需要实时响应的手势）
+const DYNAMIC_GESTURES = GESTURE_MAPPINGS.DYNAMIC_GESTURES // point, one（用于旋转）
+
+/**
+ * 动作识别服务
+ * 
+ * 注意事项：
+ * 1. 动态动作（如 rotate）需要持续触发，确保手指追踪能够持续
+ * 2. 静态动作（如 zoom_in, zoom_out）需要在冷却时间后再次触发
+ * 3. 稳定性阈值和历史记录长度是经过调优的，不要轻易修改
+ * 4. 动作触发逻辑已经过系统性修复，确保所有动作能够正确触发
+ */
+export class ActionRecognitionService {
   private currentAction: ActionType | null = null
   private actionStartTime = 0
+  private gestureHistory: ActionType[] = [] // 动作历史记录（存储动作类型而不是手势ID）
+  private readonly MAX_HISTORY_LENGTH = ACTION_RECOGNITION_CONFIG.MAX_HISTORY_LENGTH // 最大历史记录数
+  private readonly STABILITY_THRESHOLD = ACTION_RECOGNITION_CONFIG.STABILITY_THRESHOLD // 稳定阈值
   
   updateDetections(detections: HandDetection[]): ActionType | null {
     const currentTime = Date.now()
     
-    // 更新每个手的历史记录
-    detections.forEach(detection => {
-      const handId = this.getHandId(detection)
-      let history = this.handHistories.get(handId)
-      
-      if (!history) {
-        history = {
-          detections: [],
-          lastUpdate: currentTime
-        }
-        this.handHistories.set(handId, history)
-      }
-      
-      history.detections.push(detection)
-      history.lastUpdate = currentTime
-      
-      // 限制历史记录长度
-      if (history.detections.length > this.MAX_HISTORY_LENGTH) {
-        history.detections.shift()
-      }
+    if (detections.length > 0) {
+      console.log('ActionRecognitionService.updateDetections:', detections.length, 'detections')
+    }
+    
+    // 过滤掉不符合手部特征的检测结果
+    console.log('原始检测结果数量:', detections.length, '，检测到的手势ID:', detections.map(d => d.gesture))
+    const validDetections = detections.filter(detection => {
+      const isValid = validateHandDetection(detection)
+      console.log('手势ID:', detection.gesture, '，验证结果:', isValid)
+      return isValid
     })
+    console.log('验证后的检测结果数量:', validDetections.length)
     
-    // 清理过期的手部历史
-    this.cleanupOldHands(currentTime)
-    
-    // 识别动作
-    const action = this.recognizeAction(currentTime)
-    
-    return action
-  }
-  
-  private getHandId(detection: HandDetection): number {
-    // 使用边界框中心点作为手部ID
-    const centerX = (detection.bbox.x1 + detection.bbox.x2) / 2
-    const centerY = (detection.bbox.y1 + detection.bbox.y2) / 2
-    return Math.floor(centerX * 1000 + centerY)
-  }
-  
-  private cleanupOldHands(currentTime: number): void {
-    const maxAge = 2000 // 2秒
-    
-    for (const [handId, history] of this.handHistories) {
-      if (currentTime - history.lastUpdate > maxAge) {
-        this.handHistories.delete(handId)
-      }
-    }
-  }
-  
-  private recognizeAction(currentTime: number): ActionType | null {
-    for (const [handId, history] of this.handHistories) {
-      if (history.detections.length < this.MIN_FRAMES_FOR_ACTION) {
-        continue
+    // 直接根据当前检测到的手势返回操作
+    if (validDetections.length > 0) {
+      const lastDetection = validDetections[validDetections.length - 1]
+      const gestureId = lastDetection.gesture
+      const action = this.mapGestureToAction(gestureId)
+      console.log('处理手势ID:', gestureId, '，映射到动作:', action)
+      
+      if (!action) {
+        console.log('手势ID:', gestureId, '没有映射到任何动作')
+        return null
       }
       
-      const action = this.analyzeGestureSequence(history.detections)
-      
-      if (action && action !== this.currentAction) {
-        this.currentAction = action
-        this.actionStartTime = currentTime
-        return action
+      // 当检测到的动作与当前动作不同时，清除部分历史记录，减少之前动作的影响
+      if (action !== this.currentAction) {
+        // 保留最近的10条历史记录，清除更早的记录
+        if (this.gestureHistory.length > 10) {
+          this.gestureHistory = this.gestureHistory.slice(-10)
+          console.log('动作变化，清除部分历史记录，当前长度:', this.gestureHistory.length)
+        }
       }
+      
+      // 动态动作列表（需要实时响应的动作）
+      const DYNAMIC_ACTIONS = ['rotate'] // 旋转动作需要实时响应
+      
+      // 根据动作类型决定如何处理
+      if (DYNAMIC_ACTIONS.includes(action)) {
+        // 对于动态动作（需要实时响应）
+        this.gestureHistory.push(action) // 存储动作类型
+        console.log('添加动作到历史记录:', action, '，历史记录长度:', this.gestureHistory.length)
+        
+        // 限制历史记录长度（动态动作使用更短的历史记录）
+        if (this.gestureHistory.length > 15) { // 动态动作只需要15轮历史，减少触发时间
+          this.gestureHistory.shift()
+          console.log('历史记录超过最大长度，移除最早的记录，当前长度:', this.gestureHistory.length)
+        }
+        
+        // 计算最常见的动作（动态动作需要较少历史记录和较低的稳定性）
+        const stableAction = this.getStableAction(false)
+        
+        if (stableAction) {
+          if (stableAction !== this.currentAction) {
+            this.currentAction = stableAction
+            this.actionStartTime = currentTime
+            console.log('动态动作确认:', stableAction)
+          }
+          // 对于动态动作，只要有稳定动作就返回，确保持续触发
+          return stableAction
+        }
+        
+        // 对于动态动作，特别是rotate，只要检测到手势就返回，确保持续触发
+        if (action === 'rotate') {
+          // 对于rotate动作，即使历史记录不足，也直接返回
+          console.log('检测到rotate手势，直接返回:', action)
+          return action
+        }
+        
+        // 对于其他动态动作，只有达到稳定性要求才返回，确保手势稳定
+        if (action && this.gestureHistory.length >= 5) {
+          // 即使历史记录不足，也要检查最近的几个动作是否一致
+          const recentHistory = this.gestureHistory.slice(-5)
+          const recentActionCount = recentHistory.filter(a => a === action).length
+          const recentStability = recentActionCount / recentHistory.length
+          
+          if (recentStability >= 0.8) {
+            console.log('动态动作稳定，直接返回:', action, '稳定性:', recentStability.toFixed(2))
+            return action
+          } else {
+            console.log('动态动作不稳定，等待更多数据:', action, '稳定性:', recentStability.toFixed(2))
+          }
+        }
+        
+        return null
+      } else {
+        // 对于静态动作（需要严格验证）
+        this.gestureHistory.push(action) // 存储动作类型
+        console.log('添加动作到历史记录:', action, '，历史记录长度:', this.gestureHistory.length)
+        
+        // 限制历史记录长度
+        if (this.gestureHistory.length > this.MAX_HISTORY_LENGTH) {
+          this.gestureHistory.shift()
+          console.log('历史记录超过最大长度，移除最早的记录，当前长度:', this.gestureHistory.length)
+        }
+        
+        // 计算最常见的动作（静态动作需要更多历史记录和更高的稳定性）
+        const stableAction = this.getStableAction(true)
+        
+        if (stableAction) {
+          if (stableAction !== this.currentAction) {
+            this.currentAction = stableAction
+            this.actionStartTime = currentTime
+            console.log('静态动作确认:', stableAction)
+            return stableAction
+          } else if (currentTime - this.actionStartTime > 3000) {
+            // 如果动作已经确认超过3秒，允许再次触发
+            this.actionStartTime = currentTime
+            console.log('静态动作再次确认:', stableAction)
+            return stableAction
+          }
+        }
+        
+        return null
+      }
+    } else {
+      // 没有检测到手势时清除历史
+      this.gestureHistory = []
     }
     
-    // 重置当前动作
-    if (this.currentAction && currentTime - this.actionStartTime > 500) {
+    // 重置当前动作（仅重置静态动作，动态动作如rotate需要持续触发）
+    const DYNAMIC_ACTIONS = ['rotate'] // 旋转动作需要实时响应
+    if (this.currentAction && !DYNAMIC_ACTIONS.includes(this.currentAction) && currentTime - this.actionStartTime > 3000) {
       this.currentAction = null
     }
     
     return null
   }
   
-  private analyzeGestureSequence(detections: HandDetection[]): ActionType | null {
-    const recentDetections = detections.slice(-this.MIN_FRAMES_FOR_ACTION)
+  // 获取最稳定的动作（多数投票）
+  private getStableAction(isStatic: boolean): ActionType | null {
+    // 静态手势需要更多历史记录，动态手势需要较少历史记录
+    const minHistoryLength = isStatic ? ACTION_RECOGNITION_CONFIG.MIN_HISTORY_LENGTH_STATIC : ACTION_RECOGNITION_CONFIG.MIN_HISTORY_LENGTH_DYNAMIC
     
-    // 检测滑动动作
-    const swipeAction = this.detectSwipe(recentDetections)
-    if (swipeAction) return swipeAction
-    
-    // 检测点击动作
-    const tapAction = this.detectTap(recentDetections)
-    if (tapAction) return tapAction
-    
-    // 检测拖动动作
-    const dragAction = this.detectDrag(recentDetections)
-    if (dragAction) return dragAction
-    
-    // 检测静态手势
-    const staticAction = this.detectStaticGesture(recentDetections)
-    if (staticAction) return staticAction
-    
-    return null
-  }
-  
-  private detectSwipe(detections: HandDetection[]): ActionType | null {
-    const first = detections[0]
-    const last = detections[detections.length - 1]
-    
-    const deltaX = last.bbox.x1 - first.bbox.x1
-    const deltaY = last.bbox.y1 - first.bbox.y1
-    
-    const threshold = 100 // 最小滑动距离
-    
-    if (Math.abs(deltaX) > Math.abs(deltaY)) {
-      // 水平滑动
-      if (deltaX > threshold) {
-        return AT.SWIPE_RIGHT
-      } else if (deltaX < -threshold) {
-        return AT.SWIPE_LEFT
-      }
-    } else {
-      // 垂直滑动
-      if (deltaY > threshold) {
-        return AT.SWIPE_DOWN
-      } else if (deltaY < -threshold) {
-        return AT.SWIPE_UP
-      }
+    if (this.gestureHistory.length < minHistoryLength) {
+      return null // 历史记录不足，等待更多数据
     }
     
-    return null
-  }
-  
-  private detectTap(detections: HandDetection[]): ActionType | null {
-    // 检测连续的点手势
-    const pointCount = detections.filter(d => d.gesture === 19).length
-    
-    if (pointCount >= this.MIN_FRAMES_FOR_ACTION * 0.8) {
-      return AT.TAP
+    // 统计每个动作的出现次数
+    const actionCounts: Record<string, number> = {}
+    for (const action of this.gestureHistory) {
+      actionCounts[action] = (actionCounts[action] || 0) + 1
     }
     
-    return null
-  }
-  
-  private detectDrag(detections: HandDetection[]): ActionType | null {
-    // 检测抓取手势
-    const grabCount = detections.filter(d => d.gesture === 17).length
-    
-    if (grabCount >= this.MIN_FRAMES_FOR_ACTION * 0.6) {
-      return AT.DRAG
-    }
-    
-    return null
-  }
-  
-  private detectStaticGesture(detections: HandDetection[]): ActionType | null {
-    // 检测静态手势
-    const gestureCounts = new Map<number, number>()
-    
-    // 统计每种手势出现的次数
-    detections.forEach(d => {
-      if (d.gesture !== undefined) {
-        gestureCounts.set(d.gesture, (gestureCounts.get(d.gesture) || 0) + 1)
-      }
-    })
-    
-    // 找出出现次数最多的手势
+    // 找出出现次数最多的动作
     let maxCount = 0
-    let mostFrequentGesture: number | null = null
-    
-    gestureCounts.forEach((count, gesture) => {
+    let mostFrequentAction: ActionType | null = null
+    for (const [action, count] of Object.entries(actionCounts)) {
       if (count > maxCount) {
         maxCount = count
-        mostFrequentGesture = gesture
-      }
-    })
-    
-    // 检查最频繁的手势是否占大多数
-    if (mostFrequentGesture !== null && maxCount >= this.MIN_FRAMES_FOR_ACTION * 0.7) {
-      // 根据手势类型返回相应的动作
-      switch (mostFrequentGesture) {
-        case 19: // point (手指指向)
-          return AT.TAP // 用于触发手指追踪
-        case 25: // fist (拳头)
-          return AT.DRAG // 用于锁定/解锁旋转
-        case 31: // palm (张开手)
-          return AT.DROP // 用于重置视图
-        case 27: // like (点赞)
-          return AT.ZOOM_IN // 用于放大
-        case 24: // dislike (拇指向下)
-          return AT.ZOOM_OUT // 用于缩小
-        case 29: // ok (OK手势)
-          return AT.TAP // 用于显示信息
-        default:
-          return null
+        mostFrequentAction = action as ActionType
       }
     }
     
+    // 检查是否达到稳定阈值（静态手势需要更高的稳定性）
+    const requiredStability = isStatic ? ACTION_RECOGNITION_CONFIG.STABILITY_THRESHOLD_STATIC : ACTION_RECOGNITION_CONFIG.STABILITY_THRESHOLD_DYNAMIC
+    const stability = maxCount / this.gestureHistory.length
+    console.log(`${isStatic ? '静态' : '动态'}动作稳定性:`, stability.toFixed(2), '历史长度:', this.gestureHistory.length)
+    
+    if (stability >= requiredStability && mostFrequentAction !== null) {
+      return mostFrequentAction
+    }
+    
     return null
+  }
+  
+  private mapGestureToAction(gestureId: number): ActionType | null {
+    const action = gestureToActionMap[gestureId]
+    return action
   }
   
   reset(): void {
-    this.handHistories.clear()
     this.currentAction = null
     this.actionStartTime = 0
+    this.gestureHistory = []
   }
 }

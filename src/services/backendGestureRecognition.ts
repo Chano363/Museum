@@ -1,4 +1,5 @@
 import type { HandDetection } from '../types/gesture'
+import { BACKEND_CONFIG } from '../constants/gestureConstants'
 
 export class BackendGestureRecognitionService {
   private isInitialized = false
@@ -9,9 +10,11 @@ export class BackendGestureRecognitionService {
   private ctx: CanvasRenderingContext2D | null = null
   
   // 网络传输配置
-  private connectionTimeout = 5000 // 连接超时5秒
+  private connectionTimeout = BACKEND_CONFIG.CONNECTION_TIMEOUT // 连接超时
   private retryCount = 0
-  private maxRetries = 1 // 最大1次重试
+  private maxRetries = BACKEND_CONFIG.MAX_RETRIES // 最大重试次数
+  private lastRequestTime = 0
+  private readonly MIN_REQUEST_INTERVAL = BACKEND_CONFIG.MIN_REQUEST_INTERVAL // 最小请求间隔，实现节流
   
   async initialize(): Promise<void> {
     try {
@@ -33,7 +36,7 @@ export class BackendGestureRecognitionService {
       const base64Image = this.canvas.toDataURL('image/jpeg')
       
       try {
-        const response = await fetch('/api/recognize', {
+        const response = await fetch('http://localhost:5000/api/recognize', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json'
@@ -64,6 +67,13 @@ export class BackendGestureRecognitionService {
       return []
     }
     
+    // 实现请求节流，限制每秒发送的请求数量
+    const currentTime = Date.now()
+    if (currentTime - this.lastRequestTime < this.MIN_REQUEST_INTERVAL) {
+      return []
+    }
+    this.lastRequestTime = currentTime
+    
     // 立即设置为处理中，避免并发处理
     this.isProcessing = true
     
@@ -73,10 +83,34 @@ export class BackendGestureRecognitionService {
         return []
       }
       
-      // 使用完整分辨率，不降低图像质量
-      this.canvas.width = imageData.width
-      this.canvas.height = imageData.height
-      this.ctx.putImageData(imageData, 0, 0)
+      // 降低图像分辨率，减少传输数据量
+      const targetWidth = BACKEND_CONFIG.IMAGE_WIDTH
+      const targetHeight = BACKEND_CONFIG.IMAGE_HEIGHT
+      this.canvas.width = targetWidth
+      this.canvas.height = targetHeight
+      
+      // 创建临时canvas存储原始图像数据
+      const tempCanvas = document.createElement('canvas')
+      tempCanvas.width = imageData.width
+      tempCanvas.height = imageData.height
+      const tempCtx = tempCanvas.getContext('2d')
+      
+      if (tempCtx) {
+        tempCtx.putImageData(imageData, 0, 0)
+        
+        // 缩放绘制图像数据
+        this.ctx.clearRect(0, 0, targetWidth, targetHeight)
+        this.ctx.drawImage(
+          tempCanvas, 
+          0, 0, imageData.width, imageData.height, 
+          0, 0, targetWidth, targetHeight
+        )
+      } else {
+        // 如果创建临时canvas失败，使用原始尺寸
+        this.canvas.width = imageData.width
+        this.canvas.height = imageData.height
+        this.ctx.putImageData(imageData, 0, 0)
+      }
       
       // 使用JPEG格式，质量0.7
       const base64Image = this.canvas.toDataURL('image/jpeg', 0.7)
@@ -88,7 +122,7 @@ export class BackendGestureRecognitionService {
       while (retryCount <= this.maxRetries) {
         try {
           // 使用Promise.race实现超时处理
-          const fetchPromise = fetch('/api/recognize', {
+          const fetchPromise = fetch('http://localhost:5000/api/recognize', {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json'
@@ -137,5 +171,9 @@ export class BackendGestureRecognitionService {
   async destroy(): Promise<void> {
     this.isInitialized = false
     console.log('后端手势识别服务已销毁')
+  }
+  
+  async dispose(): Promise<void> {
+    await this.destroy()
   }
 }

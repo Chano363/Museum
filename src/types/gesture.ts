@@ -67,18 +67,12 @@ export enum GestureType {
 }
 
 export enum ActionType {
-  SWIPE_LEFT = 'swipe_left',
-  SWIPE_RIGHT = 'swipe_right',
-  SWIPE_UP = 'swipe_up',
-  SWIPE_DOWN = 'swipe_down',
-  TAP = 'tap',
-  DOUBLE_TAP = 'double_tap',
-  DRAG = 'drag',
-  DROP = 'drop',
   ZOOM_IN = 'zoom_in',
   ZOOM_OUT = 'zoom_out',
-  FAST_SWIPE_UP = 'fast_swipe_up',
-  FAST_SWIPE_DOWN = 'fast_swipe_down'
+  RESET = 'reset',
+  SHOW_INFO = 'show_info',
+  ROTATE = 'rotate',
+  SWITCH = 'switch'
 }
 
 export const GESTURE_NAMES: Record<number, string> = {

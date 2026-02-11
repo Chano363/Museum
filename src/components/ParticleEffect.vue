@@ -174,28 +174,16 @@ export default {
     
     // 检测旋转状态变化
     detectRotationState() {
-      // 调试日志
-      if (Math.random() < 0.1) { // 每10帧打印一次，避免日志过多
-        console.log('粒子系统接收的旋转状态:', {
-          isRotating: this.isRotating,
-          rotationSpeed: this.rotationSpeed,
-          modelRotation: this.modelRotation,
-          enableTrailMode: this.enableTrailMode
-        })
-      }
-      
       // 检测旋转开始
       if (this.isRotating && !this.isRotationStarting) {
         this.isRotationStarting = true
         this.rotationStartTime = performance.now()
         this.createBurstParticles()
-        console.log('创建迸发粒子，数量:', this.burstParticles.length)
       }
       
       // 检测旋转停止
       if (!this.isRotating && this.isRotationStarting) {
         this.isRotationStarting = false
-        console.log('旋转停止，开始消散粒子')
       }
       
       // 记录最后旋转状态
