@@ -137,24 +137,10 @@ export default {
       const actionMap = {
         // 放大操作
         27: 'zoom_in',      // like (点赞)
-        3: 'zoom_in',       // thumb_index (拇指食指)
-        39: 'zoom_in',      // two_up (二上)
-        18: 'zoom_in',      // grabbing (抓取)
+        39: 'zoom_in',      // two_up (二指向上)
         
         // 缩小操作
         24: 'zoom_out',     // dislike (点踩)
-        20: 'zoom_out',     // call (打电话手势)
-        
-        // 旋转操作
-        38: 'rotate',       // three2 (三指向下)
-        32: 'rotate',       // four (四指)
-        33: 'rotate',       // three (三指)
-        
-        // 旋转操作
-        29: 'rotate',       // ok (OK手势)
-        11: 'rotate',       // part_hand_heart (心形手势1)
-        12: 'rotate',       // part_hand_heart2 (心形手势2)
-        22: 'rotate',       // little_finger (小指)
         
         // 旋转操作
         19: 'rotate',       // point (手指指向)
@@ -162,63 +148,40 @@ export default {
         31: 'rotate',       // palm (手掌)
         35: 'rotate',       // stop (停止)
         36: 'rotate',       // stop_inverted (停止反转)
+        29: 'rotate',       // ok (OK手势)
         
-        // SWIPE手势用于切换展品（使用后端返回的手势ID）
-        0: 'switch',   // SWIPE_RIGHT
-        1: 'switch',   // SWIPE_LEFT
-        2: 'switch',   // SWIPE_UP
-        3: 'switch',   // SWIPE_DOWN
-        10: 'switch',  // SWIPE_RIGHT2
-        11: 'switch',  // SWIPE_LEFT2
-        12: 'switch',  // SWIPE_UP2
-        13: 'switch',  // SWIPE_DOWN2
-        15: 'switch',  // SWIPE_RIGHT3
-        16: 'switch',  // SWIPE_LEFT3
-        17: 'switch',  // SWIPE_UP3
-        18: 'switch'   // SWIPE_DOWN3
+        // 注意：手势ID 0-44是静态手势分类，不是SWIPE事件
+        // 如果需要SWIPE功能，应基于手部轨迹检测实现
       }
-      const action = actionMap[gestureId]
-      // 添加SWIPE手势的调试信息
-      if (action === 'switch') {
-        console.log(`前端SWIPE手势映射: 手势ID=${gestureId}, 映射为动作=switch`)
-      }
-      return action || null
+      return actionMap[gestureId] || null
     }
     
     const stopTracking = (clearHistory = true) => {
       if (isFingerTracking.value) {
         isFingerTracking.value = false
         lastFingerPosition.value = { x: 0, y: 0 }
-        isFirstFingerPosition.value = true // 重置首次检测标志
+        isFirstFingerPosition.value = true
         lastMoveTime.value = 0
-        // 清除手指位置，避免小白点残留
         fingerPosition.value = null
-        // 重置旋转动作触发状态
         isRotationTriggered.value = false
         console.log('GestureControl.stopTracking: 重置旋转动作触发状态')
       }
     }
     
-/**
- * 处理每一帧的图像数据
- * 
- * 注意事项：
- * 1. 动态动作（如 rotate）需要持续触发，确保手指追踪能够持续
- * 2. 静态动作（如 zoom_in, zoom_out）需要在冷却时间后再次触发
- * 3. 手指追踪逻辑已经过系统性修复，确保能够正确处理旋转动作
- * 4. 不要轻易修改动作处理逻辑，否则可能导致动作无法触发
- */
     const onFrame = async (imageData) => {
       if (!isInitialized.value) return
       
       try {
-        const detections = await gestureRecognition.processFrame(imageData)
+        const result = await gestureRecognition.processFrame(imageData)
+        const detections = result.detections
         
-        // 过滤掉不符合手部特征的检测结果
+        if (detections && detections.length > 0) {
+          console.log('[GestureControl] 收到检测:', detections.map(d => `${d.gestureName}(${d.gesture})`).join(', '))
+        }
+        
         const validDetections = detections.filter(detection => {
           const bbox = detection.bbox;
           
-          // 添加置信度检查，过滤掉低置信度的检测结果
           if (bbox.confidence < 0.6) {
             return false;
           }
@@ -226,13 +189,11 @@ export default {
           const width = bbox.x2 - bbox.x1;
           const height = bbox.y2 - bbox.y1;
           
-          // 手部的宽高比通常在0.3-2之间
           const aspectRatio = width / height;
           if (aspectRatio < 0.3 || aspectRatio > 2) {
             return false;
           }
           
-          // 手部的大小应该在合理范围内
           const area = width * height;
           if (area < 1000 || area > 100000) {
             return false;
@@ -241,57 +202,87 @@ export default {
           return true;
         });
         
+        if (validDetections.length > 0) {
+          console.log('[GestureControl] 有效检测:', validDetections.length)
+        }
+        
         cameraViewRef.value?.updateDetections(validDetections)
         const currentTime = Date.now()
+        
+        // 如果旋转动作已触发，继续手指追踪（即使没有检测到手势）
+        if (isRotationTriggered.value && result.fingerPosition) {
+          const { x, y } = result.fingerPosition
+          const mirroredX = 640 - x
+          
+          const mappedPosition = mapCoordinates(mirroredX, y)
+          fingerPosition.value = { x: mappedPosition.x, y: mappedPosition.y }
+          
+          if (result.landmarks && result.landmarks.length > 0) {
+            handLandmarks.value = result.landmarks
+          }
+          
+          isFingerTracking.value = true
+          
+          if (isFirstFingerPosition.value) {
+            lastFingerPosition.value = { x: mirroredX, y }
+            isFirstFingerPosition.value = false
+            console.log('[GestureControl] 发送finger-move (首次):', { deltaX: 0, deltaY: 0, position: { x: mirroredX, y } })
+            emit('finger-move', {
+              deltaX: 0,
+              deltaY: 0,
+              position: { x: mirroredX, y }
+            })
+          } else {
+            const deltaX = mirroredX - lastFingerPosition.value.x
+            const deltaY = y - lastFingerPosition.value.y
+            
+            console.log('[GestureControl] 发送finger-move:', { deltaX, deltaY })
+            emit('finger-move', {
+              deltaX: deltaX,
+              deltaY: deltaY,
+              position: { x: mirroredX, y }
+            })
+            
+            lastFingerPosition.value = { x: mirroredX, y }
+          }
+          
+          lastMoveTime.value = currentTime
+          return
+        }
         
         if (validDetections.length > 0) {
           const hand = validDetections[0]
           const gestureId = hand.gesture
           
-          // 先调用 actionRecognition.updateDetections 进行处理
           const recognizedAction = actionRecognition.updateDetections(validDetections)
           
-          // 处理识别到的动作
           if (recognizedAction) {
-            // 对于动态动作（如 rotate, switch），不受冷却时间和动作是否变化的限制
-            const DYNAMIC_ACTIONS = ['rotate', 'switch', 'switch_next', 'switch_prev']
+            console.log('[GestureControl] 识别动作:', recognizedAction)
+            const DYNAMIC_ACTIONS = ['rotate']
             if (DYNAMIC_ACTIONS.includes(recognizedAction)) {
-              // 对于SWIPE动作（switch, switch_next, switch_prev），每次识别到都触发
-              if (['switch', 'switch_next', 'switch_prev'].includes(recognizedAction)) {
-                currentAction.value = recognizedAction
-                emit('action', recognizedAction)
-                console.log(`SWIPE动作触发: 时间=${new Date().toISOString()}, 动作=${recognizedAction}`)
-              } 
-              // 对于其他动态动作（如rotate），只有动作变化时才触发
-              else if (currentAction.value !== recognizedAction) {
+              if (currentAction.value !== recognizedAction) {
                 currentAction.value = recognizedAction
                 emit('action', recognizedAction)
               }
               
-              // 对于旋转动作，标记已触发并开始手指追踪
               if (recognizedAction === 'rotate') {
-                // 触发完成后标记旋转动作已触发
                 if (!isRotationTriggered.value) {
                   isRotationTriggered.value = true
+                  console.log('[GestureControl] 旋转动作已触发')
                 }
                 
-                // 只有在旋转动作真正触发后才开始手指追踪
                 if (isRotationTriggered.value && !isFingerTracking.value) {
                   isFingerTracking.value = true
-                  // 不重置lastFingerPosition，保留上次位置作为参考
                   lastMoveTime.value = 0
                 }
               }
-              
-              // 不设置 setTimeout，因为动态动作需要持续追踪或快速响应
             } else {
-              // 对于静态动作，使用冷却时间
               if (currentTime - lastActionTime >= ACTION_COOLDOWN) {
                 currentAction.value = recognizedAction
                 emit('action', recognizedAction)
+                console.log('[GestureControl] 触发动作:', recognizedAction)
                 lastActionTime = currentTime
                 
-                // 对于缩放动作，使用更短的重置时间，确保可以快速连续触发
                 const resetTime = ['zoom_in', 'zoom_out'].includes(recognizedAction) ? GESTURE_CONTROL_CONFIG.ZOOM_ACTION_RESET_TIME : GESTURE_CONTROL_CONFIG.DEFAULT_ACTION_RESET_TIME
                 setTimeout(() => {
                   if (currentAction.value === recognizedAction) {
@@ -300,187 +291,69 @@ export default {
                 }, resetTime)
               }
             }
-          } else {
-            // 没有识别到动作，但如果是旋转动作已触发，不停止追踪
-            if (currentAction.value !== 'rotate' || !isRotationTriggered.value) {
-              stopTracking(false) // 不清除历史记录，避免下一次进入时闪动
-              // 清除手指位置和手部关键点
-              fingerPosition.value = null
-              handLandmarks.value = null
-            }
           }
           
-          // 只有在通过投票机制确认了其他动作时，才停止旋转追踪
-          if (recognizedAction && recognizedAction !== 'rotate' && currentAction.value === 'rotate' && isRotationTriggered.value) {
-            // 只有当识别到的动作是静态动作（如zoom_in、zoom_out）或swipe动作时，才停止旋转追踪
-            if (['zoom_in', 'zoom_out'].includes(recognizedAction) || recognizedAction === 'switch') {
-              stopTracking(false) // 不清除历史记录，避免下一次进入时闪动
-              fingerPosition.value = null
-              handLandmarks.value = null
-            }
-          }
-          
-          // 只有在通过投票机制确认了 rotation 动作且旋转动作已触发后，才开始手指追踪
-          if (recognizedAction === 'rotate' || (currentAction.value === 'rotate' && isRotationTriggered.value)) {
-            if (!isFingerTracking.value) {
-              isFingerTracking.value = true
-              // 不重置lastFingerPosition，保留上次位置作为参考
-              lastMoveTime.value = 0
+          // 如果旋转动作已触发，继续手指追踪
+          if (isRotationTriggered.value && result.fingerPosition) {
+            const { x, y } = result.fingerPosition
+            const mirroredX = 640 - x
+            
+            const mappedPosition = mapCoordinates(mirroredX, y)
+            fingerPosition.value = { x: mappedPosition.x, y: mappedPosition.y }
+            
+            if (result.landmarks && result.landmarks.length > 0) {
+              handLandmarks.value = result.landmarks
             }
             
-            try {
-              // 只要旋转动作已触发，就持续处理手指追踪
-              if (isRotationTriggered.value) {
-                // 调用后端hand-tracking API获取精确的手指位置
-                // 这里后端会先使用ONNX模型触发，然后使用MediaPipe进行手指追踪
-                const trackingResult = await gestureRecognition.getHandTracking(imageData)
-                
-                if (trackingResult && trackingResult.success && trackingResult.position) {
-                  // 使用后端返回的精确位置
-                  const { x, y } = trackingResult.position
-                  
-                  // 更新白点位置
-                  const mappedPosition = mapCoordinates(x, y)
-                  fingerPosition.value = { x: mappedPosition.x, y: mappedPosition.y }
-                  
-                  // 获取手部关键点
-                  if (trackingResult.landmarks) {
-                    handLandmarks.value = trackingResult.landmarks
-                  }
-                  
-                  // 确保手指追踪状态为 true
-                  isFingerTracking.value = true
-                  
-                  if (isFirstFingerPosition.value) {
-                    // 第一次检测到手指位置，初始化位置
-                    lastFingerPosition.value = { x, y }
-                    isFirstFingerPosition.value = false
-                    
-                    // 第一次检测到手指位置时也发送事件，确保小白点能够显示
-                    emit('finger-move', {
-                      deltaX: 0,
-                      deltaY: 0,
-                      position: { x, y }
-                    })
-                  } else {
-                    const deltaX = x - lastFingerPosition.value.x
-                    const deltaY = y - lastFingerPosition.value.y
-                    
-                    // 无论移动距离大小，都发送手指移动事件，确保小白点位置能够更新
-                    emit('finger-move', {
-                      deltaX: deltaX,
-                      deltaY: deltaY,
-                      position: { x, y }
-                    })
-                    
-                    lastFingerPosition.value = { x, y }
-                  }
-                } else {
-                  // 降级方案：使用手部边界框中心作为位置
-                  const centerX = (hand.bbox.x1 + hand.bbox.x2) / 2
-                  const centerY = (hand.bbox.y1 + hand.bbox.y2) / 2
-                  
-                  // 更新白点位置
-                  const mappedPosition = mapCoordinates(centerX, centerY)
-                  fingerPosition.value = { x: mappedPosition.x, y: mappedPosition.y }
-                  
-                  // 确保手指追踪状态为 true
-                  isFingerTracking.value = true
-                  
-                  if (isFirstFingerPosition.value) {
-                    // 第一次检测到手指位置，初始化位置
-                    lastFingerPosition.value = { x: centerX, y: centerY }
-                    isFirstFingerPosition.value = false
-                    
-                    // 第一次检测到手指位置时也发送事件，确保小白点能够显示
-                    emit('finger-move', {
-                      deltaX: 0,
-                      deltaY: 0,
-                      position: { x: centerX, y: centerY }
-                    })
-                  } else {
-                    const deltaX = centerX - lastFingerPosition.value.x
-                    const deltaY = centerY - lastFingerPosition.value.y
-                    
-                    // 无论移动距离大小，都发送手指移动事件，确保小白点位置能够更新
-                    emit('finger-move', {
-                      deltaX: deltaX,
-                      deltaY: deltaY,
-                      position: { x: centerX, y: centerY }
-                    })
-                    
-                    lastFingerPosition.value = { x: centerX, y: centerY }
-                  }
-                }
-              } else if (recognizedAction === 'rotate') {
-                // 旋转动作已识别但未触发，继续等待触发
-              } else {
-                // 非 rotation 动作或旋转动作未触发，停止手指追踪
-                isFingerTracking.value = false
-                handLandmarks.value = null
-                fingerPosition.value = null
-              }
-            } catch (error) {
-              console.error('GestureControl.onFrame: 手指追踪失败:', error)
+            isFingerTracking.value = true
+            
+            if (isFirstFingerPosition.value) {
+              lastFingerPosition.value = { x: mirroredX, y }
+              isFirstFingerPosition.value = false
+              console.log('[GestureControl] 发送finger-move (首次):', { deltaX: 0, deltaY: 0, position: { x: mirroredX, y } })
+              emit('finger-move', {
+                deltaX: 0,
+                deltaY: 0,
+                position: { x: mirroredX, y }
+              })
+            } else {
+              const deltaX = mirroredX - lastFingerPosition.value.x
+              const deltaY = y - lastFingerPosition.value.y
               
-              // 只要旋转动作已触发，就持续处理错误
-              if (isRotationTriggered.value) {
-                // 使用手部边界框中心作为备选位置
-                const centerX = (hand.bbox.x1 + hand.bbox.x2) / 2
-                const centerY = (hand.bbox.y1 + hand.bbox.y2) / 2
-                
-                // 更新白点位置
-                const mappedPosition = mapCoordinates(centerX, centerY)
-                fingerPosition.value = { x: mappedPosition.x, y: mappedPosition.y }
-                
-                // 确保手指追踪状态为 true
-                isFingerTracking.value = true
-                
-                if (isFirstFingerPosition.value) {
-                    // 第一次检测到手指位置，初始化位置
-                    lastFingerPosition.value = { x: centerX, y: centerY }
-                    isFirstFingerPosition.value = false
-                  } else {
-                    const deltaX = centerX - lastFingerPosition.value.x
-                    const deltaY = centerY - lastFingerPosition.value.y
-                    
-                    if (Math.abs(deltaX) > 3 || Math.abs(deltaY) > 3) {
-                      lastMoveTime.value = currentTime
-                      
-                      // 正常的手指移动，用于旋转模型
-                      emit('finger-move', {
-                        deltaX: deltaX,
-                        deltaY: deltaY,
-                        position: { x: centerX, y: centerY }
-                      })
-                      
-                      lastFingerPosition.value = { x: centerX, y: centerY }
-                    }
-                  }
-              }
+              console.log('[GestureControl] 发送finger-move:', { deltaX, deltaY })
+              emit('finger-move', {
+                deltaX: deltaX,
+                deltaY: deltaY,
+                position: { x: mirroredX, y }
+              })
+              
+              lastFingerPosition.value = { x: mirroredX, y }
             }
             
-            // 只有在非旋转动作时才应用自动停止延迟
-            if (currentAction.value !== 'rotate' && currentTime - lastMoveTime.value > AUTO_STOP_DELAY) {
-              stopTracking(false) // 不清除历史记录，避免下一次进入时闪动
-            }
-          } else {
-            // 非旋转动作或旋转动作未触发，停止追踪并清除相关状态
-            stopTracking(false) // 不清除历史记录，避免下一次进入时闪动
+            lastMoveTime.value = currentTime
+          }
+          
+          // 超时检查：如果超过2秒没有更新，停止追踪
+          if (isRotationTriggered.value && currentTime - lastMoveTime.value > 2000) {
+            console.log('[GestureControl] 超时停止追踪')
+            stopTracking(false)
             fingerPosition.value = null
             handLandmarks.value = null
           }
-          
-          currentGesture.value = hand
-          setTimeout(() => {
-            if (currentGesture.value === hand) {
-              currentGesture.value = null
-            }
-          }, 2000)
         } else {
-          stopTracking(false) // 不清除历史记录，避免下一次进入时闪动
-          // 确保清除手指位置，避免小白点残留
-          fingerPosition.value = null
+          // 没有有效检测，但旋转动作已触发时，检查超时
+          if (isRotationTriggered.value) {
+            if (currentTime - lastMoveTime.value > 2000) {
+              console.log('[GestureControl] 无检测超时停止追踪')
+              stopTracking(false)
+              fingerPosition.value = null
+              handLandmarks.value = null
+            }
+          } else {
+            stopTracking(false)
+            fingerPosition.value = null
+            handLandmarks.value = null
+          }
         }
       } catch (error) {
         console.error('手势处理失败:', error)

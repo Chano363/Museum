@@ -1,0 +1,1378 @@
+2026-02-12T14:08:35.647Z: [WARN] [Vue warn]: The `compilerOptions` config option is only respected when using a build of Vue.js that includes the runtime compiler (aka "full build"). Since you are using the runtime-only build, `compilerOptions` must be passed to `@vue/compiler-dom` in the build setup instead.
+- For vue-loader: pass it via vue-loader's `compilerOptions` loader option.
+- For vue-cli: see https://cli.vuejs.org/guide/webpack.html#modifying-options-of-a-loader
+- For vite: pass it via @vitejs/plugin-vue options. See https://github.com/vitejs/vite-plugin-vue/tree/main/packages/plugin-vue#example-for-passing-options-to-vuecompiler-sfc
+2026-02-12T14:08:35.655Z: App组件已挂载
+2026-02-12T14:08:35.732Z: App组件初始化完成
+2026-02-12T14:09:31.693Z: === 进入博物馆事件触发 ===
+2026-02-12T14:09:31.695Z: 当前视图已切换到: main
+2026-02-12T14:09:31.831Z: MainView mounted, selectedArtifact: {"id":1,"name":"卣（盛酒器）","dynasty":"商代","description":"商代青铜盛酒器，造型庄重，纹饰精美，是中国古代青铜文明的重要象征。","model":"external","modelPath":"/3Dmodels/卣（盛酒器）/you_wine_vessel_12th-11th_c_bce/scene.gltf","iconPath":"/3Dmodels/卣（盛酒器）/you_wine_vessel_12th-11th_c_bce/textures/Mia_017453_Fangyou_250k_diffuse.jpeg","color":"#cd7f32"}
+2026-02-12T14:09:31.831Z: modelPath: /3Dmodels/卣（盛酒器）/you_wine_vessel_12th-11th_c_bce/scene.gltf
+2026-02-12T14:09:32.338Z: [WARN] THREE.GLTFLoader: Unknown extension "KHR_materials_pbrSpecularGlossiness".
+2026-02-12T14:09:33.886Z: === 切换摄像头事件触发 ===
+2026-02-12T14:09:33.888Z: 摄像头显示状态: true
+2026-02-12T14:09:33.902Z: 开始启动摄像头...
+2026-02-12T14:09:33.902Z: [手势服务] 正在初始化...
+2026-02-12T14:09:33.903Z: [手势服务] 尝试WebSocket连接...
+2026-02-12T14:09:34.284Z: [手势服务] WebSocket已连接, id: PkPh5_jAnDREgU6_AAAB
+2026-02-12T14:09:34.284Z: [手势服务] 初始化完成，模式: WebSocket
+2026-02-12T14:09:35.043Z: 摄像头权限获取成功，流状态: true
+2026-02-12T14:09:35.043Z: 视频流已设置到video元素
+2026-02-12T14:09:35.049Z: 视频加载完成
+2026-02-12T14:09:35.059Z: [手势服务] 发送帧 #1, socket id: PkPh5_jAnDREgU6_AAAB
+2026-02-12T14:09:35.063Z: 视频开始播放
+2026-02-12T14:09:35.117Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:09:35.144Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:09:35.191Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:09:35.241Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:09:35.269Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:09:35.317Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:09:35.379Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:09:35.398Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:09:35.459Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:09:38.321Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:09:38.329Z: [手势服务] 收到事件: result 有数据
+2026-02-12T14:09:38.329Z: [手势服务] 收到结果: 0 个检测, 手势: 
+2026-02-12T14:09:38.375Z: [手势服务] 发送帧 #12, socket id: PkPh5_jAnDREgU6_AAAB
+2026-02-12T14:09:38.376Z: 模型加载成功: /3Dmodels/卣（盛酒器）/you_wine_vessel_12th-11th_c_bce/scene.gltf
+2026-02-12T14:09:38.403Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:09:38.547Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:09:38.603Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:09:38.648Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:09:38.782Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:09:38.785Z: [手势服务] 收到事件: result 有数据
+2026-02-12T14:09:38.786Z: [手势服务] 收到结果: 1 个检测, 手势: three
+2026-02-12T14:09:38.786Z: [GestureControl] 收到检测: three(37)
+2026-02-12T14:09:38.786Z: [GestureControl] 有效检测: 1
+2026-02-12T14:09:38.815Z: [手势服务] 发送帧 #18, socket id: PkPh5_jAnDREgU6_AAAB
+2026-02-12T14:09:38.883Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:09:38.939Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:09:39.009Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:09:39.062Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:09:39.094Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:09:39.144Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:09:39.211Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:09:39.214Z: [手势服务] 收到事件: result 有数据
+2026-02-12T14:09:39.214Z: [手势服务] 收到结果: 1 个检测, 手势: palm
+2026-02-12T14:09:39.214Z: [GestureControl] 收到检测: palm(31)
+2026-02-12T14:09:39.214Z: [GestureControl] 有效检测: 1
+2026-02-12T14:09:39.260Z: [手势服务] 发送帧 #26, socket id: PkPh5_jAnDREgU6_AAAB
+2026-02-12T14:09:39.344Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:09:39.438Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:09:39.469Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:09:39.509Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:09:39.576Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:09:39.669Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:09:39.672Z: [手势服务] 收到事件: result 有数据
+2026-02-12T14:09:39.672Z: [手势服务] 收到结果: 1 个检测, 手势: palm
+2026-02-12T14:09:39.672Z: [GestureControl] 收到检测: palm(31)
+2026-02-12T14:09:39.672Z: [GestureControl] 有效检测: 1
+2026-02-12T14:09:39.714Z: [手势服务] 发送帧 #33, socket id: PkPh5_jAnDREgU6_AAAB
+2026-02-12T14:09:39.743Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:09:39.831Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:09:39.888Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:09:40.007Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:09:40.037Z: [手势服务] 收到事件: result 有数据
+2026-02-12T14:09:40.037Z: [手势服务] 收到结果: 1 个检测, 手势: palm
+2026-02-12T14:09:40.037Z: [GestureControl] 收到检测: palm(31)
+2026-02-12T14:09:40.037Z: [GestureControl] 有效检测: 1
+2026-02-12T14:09:40.116Z: [手势服务] 发送帧 #38, socket id: PkPh5_jAnDREgU6_AAAB
+2026-02-12T14:09:40.145Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:09:40.229Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:09:40.269Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:09:40.336Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:09:40.446Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:09:40.470Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:09:40.475Z: [手势服务] 收到事件: result 有数据
+2026-02-12T14:09:40.476Z: [手势服务] 收到结果: 1 个检测, 手势: palm
+2026-02-12T14:09:40.476Z: [GestureControl] 收到检测: palm(31)
+2026-02-12T14:09:40.476Z: [GestureControl] 有效检测: 1
+2026-02-12T14:09:40.542Z: [手势服务] 发送帧 #45, socket id: PkPh5_jAnDREgU6_AAAB
+2026-02-12T14:09:40.595Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:09:40.743Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:09:40.786Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:09:40.809Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:09:40.881Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:09:40.883Z: [手势服务] 收到事件: result 有数据
+2026-02-12T14:09:40.883Z: [手势服务] 收到结果: 1 个检测, 手势: palm
+2026-02-12T14:09:40.883Z: [GestureControl] 收到检测: palm(31)
+2026-02-12T14:09:40.883Z: [GestureControl] 有效检测: 1
+2026-02-12T14:09:40.883Z: [GestureControl] 识别动作: rotate
+2026-02-12T14:09:40.883Z: === 检测到动作 === rotate
+2026-02-12T14:09:40.883Z: modelViewerRef: [object HTMLElement]
+2026-02-12T14:09:40.883Z: action 类型: string action 值: rotate
+2026-02-12T14:09:40.883Z: 手指移动 - 移动模型
+2026-02-12T14:09:40.884Z: [GestureControl] 进入旋转模式, isRotationTriggered: true
+2026-02-12T14:09:40.884Z: [GestureControl] fingerPosition: {"x":151,"y":76,"z":-0.11871295422315598} landmarks: 21
+2026-02-12T14:09:40.884Z: [GestureControl] 发送finger-move (首次): {"deltaX":0,"deltaY":0,"position":{"x":489,"y":76}}
+2026-02-12T14:09:40.885Z: [MainView] 收到finger-move: {"deltaX":0,"deltaY":0,"position":{"x":489,"y":76}}
+2026-02-12T14:09:40.886Z: [MainView] deltaX: 0 deltaY: 0 position: {"x":489,"y":76}
+2026-02-12T14:09:40.887Z: [MainView] modelViewer: [object HTMLElement] cameraOrbit: 0deg 75deg 0.5m
+2026-02-12T14:09:40.887Z: [MainView] 设置camera-orbit: 0.00deg 75.00deg 0.5m 原: 0deg 75deg 0.5m
+2026-02-12T14:09:40.925Z: [手势服务] 发送帧 #51, socket id: PkPh5_jAnDREgU6_AAAB
+2026-02-12T14:09:41.000Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:09:41.000Z: GestureControl.stopTracking: 重置旋转动作触发状态
+2026-02-12T14:09:41.062Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:09:41.097Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:09:41.156Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:09:41.199Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:09:41.202Z: [手势服务] 收到事件: result 有数据
+2026-02-12T14:09:41.203Z: [手势服务] 收到结果: 1 个检测, 手势: palm
+2026-02-12T14:09:41.203Z: [GestureControl] 收到检测: palm(31)
+2026-02-12T14:09:41.203Z: [GestureControl] 有效检测: 1
+2026-02-12T14:09:41.203Z: [GestureControl] 识别动作: rotate
+2026-02-12T14:09:41.203Z: [GestureControl] 进入旋转模式, isRotationTriggered: true
+2026-02-12T14:09:41.203Z: [GestureControl] fingerPosition: {"x":148,"y":76,"z":-0.1194310188293457} landmarks: 21
+2026-02-12T14:09:41.204Z: [GestureControl] 发送finger-move (首次): {"deltaX":0,"deltaY":0,"position":{"x":492,"y":76}}
+2026-02-12T14:09:41.204Z: [MainView] 收到finger-move: {"deltaX":0,"deltaY":0,"position":{"x":492,"y":76}}
+2026-02-12T14:09:41.204Z: [MainView] deltaX: 0 deltaY: 0 position: {"x":492,"y":76}
+2026-02-12T14:09:41.205Z: [MainView] modelViewer: [object HTMLElement] cameraOrbit: 0.00deg 75.00deg 0.5m
+2026-02-12T14:09:41.205Z: [MainView] 设置camera-orbit: 0.00deg 75.00deg 0.5m 原: 0.00deg 75.00deg 0.5m
+2026-02-12T14:09:41.251Z: [手势服务] 发送帧 #57, socket id: PkPh5_jAnDREgU6_AAAB
+2026-02-12T14:09:41.290Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:09:41.290Z: GestureControl.stopTracking: 重置旋转动作触发状态
+2026-02-12T14:09:41.363Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:09:41.434Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:09:41.489Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:09:41.539Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:09:41.567Z: [手势服务] 收到事件: result 有数据
+2026-02-12T14:09:41.567Z: [手势服务] 收到结果: 1 个检测, 手势: palm
+2026-02-12T14:09:41.568Z: [GestureControl] 收到检测: palm(31)
+2026-02-12T14:09:41.568Z: [GestureControl] 有效检测: 1
+2026-02-12T14:09:41.568Z: [GestureControl] 识别动作: rotate
+2026-02-12T14:09:41.568Z: [GestureControl] 进入旋转模式, isRotationTriggered: true
+2026-02-12T14:09:41.569Z: [GestureControl] fingerPosition: {"x":151,"y":75,"z":-0.12414198368787766} landmarks: 21
+2026-02-12T14:09:41.569Z: [GestureControl] 发送finger-move (首次): {"deltaX":0,"deltaY":0,"position":{"x":489,"y":75}}
+2026-02-12T14:09:41.569Z: [MainView] 收到finger-move: {"deltaX":0,"deltaY":0,"position":{"x":489,"y":75}}
+2026-02-12T14:09:41.569Z: [MainView] deltaX: 0 deltaY: 0 position: {"x":489,"y":75}
+2026-02-12T14:09:41.570Z: [MainView] modelViewer: [object HTMLElement] cameraOrbit: 0.00deg 75.00deg 0.5m
+2026-02-12T14:09:41.570Z: [MainView] 设置camera-orbit: 0.00deg 75.00deg 0.5m 原: 0.00deg 75.00deg 0.5m
+2026-02-12T14:09:41.661Z: [手势服务] 发送帧 #63, socket id: PkPh5_jAnDREgU6_AAAB
+2026-02-12T14:09:41.673Z: GestureControl.stopTracking: 重置旋转动作触发状态
+2026-02-12T14:09:41.798Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:09:41.835Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:09:41.919Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:09:42.019Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:09:42.022Z: [手势服务] 收到事件: result 有数据
+2026-02-12T14:09:42.022Z: [手势服务] 收到结果: 1 个检测, 手势: palm
+2026-02-12T14:09:42.022Z: [GestureControl] 收到检测: palm(31)
+2026-02-12T14:09:42.022Z: [GestureControl] 有效检测: 1
+2026-02-12T14:09:42.023Z: [GestureControl] 识别动作: rotate
+2026-02-12T14:09:42.023Z: [GestureControl] 进入旋转模式, isRotationTriggered: true
+2026-02-12T14:09:42.023Z: [GestureControl] fingerPosition: {"x":173,"y":68,"z":-0.1172293946146965} landmarks: 21
+2026-02-12T14:09:42.024Z: [GestureControl] 发送finger-move (首次): {"deltaX":0,"deltaY":0,"position":{"x":467,"y":68}}
+2026-02-12T14:09:42.024Z: [MainView] 收到finger-move: {"deltaX":0,"deltaY":0,"position":{"x":467,"y":68}}
+2026-02-12T14:09:42.024Z: [MainView] deltaX: 0 deltaY: 0 position: {"x":467,"y":68}
+2026-02-12T14:09:42.025Z: [MainView] modelViewer: [object HTMLElement] cameraOrbit: 0.00deg 75.00deg 0.5m
+2026-02-12T14:09:42.025Z: [MainView] 设置camera-orbit: 0.00deg 75.00deg 0.5m 原: 0.00deg 75.00deg 0.5m
+2026-02-12T14:09:42.070Z: [手势服务] 发送帧 #68, socket id: PkPh5_jAnDREgU6_AAAB
+2026-02-12T14:09:42.086Z: GestureControl.stopTracking: 重置旋转动作触发状态
+2026-02-12T14:09:42.155Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:09:42.272Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:09:42.335Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:09:42.354Z: [手势服务] 收到事件: result 有数据
+2026-02-12T14:09:42.354Z: [手势服务] 收到结果: 1 个检测, 手势: palm
+2026-02-12T14:09:42.354Z: [GestureControl] 收到检测: palm(31)
+2026-02-12T14:09:42.354Z: [GestureControl] 有效检测: 1
+2026-02-12T14:09:42.355Z: [GestureControl] 识别动作: rotate
+2026-02-12T14:09:42.355Z: [GestureControl] 进入旋转模式, isRotationTriggered: true
+2026-02-12T14:09:42.355Z: [GestureControl] fingerPosition: {"x":177,"y":67,"z":-0.11012260615825653} landmarks: 21
+2026-02-12T14:09:42.356Z: [GestureControl] 发送finger-move (首次): {"deltaX":0,"deltaY":0,"position":{"x":463,"y":67}}
+2026-02-12T14:09:42.356Z: [MainView] 收到finger-move: {"deltaX":0,"deltaY":0,"position":{"x":463,"y":67}}
+2026-02-12T14:09:42.356Z: [MainView] deltaX: 0 deltaY: 0 position: {"x":463,"y":67}
+2026-02-12T14:09:42.356Z: [MainView] modelViewer: [object HTMLElement] cameraOrbit: 0.00deg 75.00deg 0.5m
+2026-02-12T14:09:42.356Z: [MainView] 设置camera-orbit: 0.00deg 75.00deg 0.5m 原: 0.00deg 75.00deg 0.5m
+2026-02-12T14:09:42.414Z: [手势服务] 发送帧 #72, socket id: PkPh5_jAnDREgU6_AAAB
+2026-02-12T14:09:42.437Z: GestureControl.stopTracking: 重置旋转动作触发状态
+2026-02-12T14:09:42.504Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:09:42.546Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:09:42.623Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:09:42.678Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:09:42.800Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:09:42.845Z: [手势服务] 收到事件: result 有数据
+2026-02-12T14:09:42.845Z: [手势服务] 收到结果: 1 个检测, 手势: palm
+2026-02-12T14:09:42.845Z: [GestureControl] 收到检测: palm(31)
+2026-02-12T14:09:42.846Z: [GestureControl] 有效检测: 1
+2026-02-12T14:09:42.846Z: [GestureControl] 识别动作: rotate
+2026-02-12T14:09:42.846Z: [GestureControl] 进入旋转模式, isRotationTriggered: true
+2026-02-12T14:09:42.846Z: [GestureControl] fingerPosition: {"x":173,"y":69,"z":-0.11060777306556702} landmarks: 21
+2026-02-12T14:09:42.846Z: [GestureControl] 发送finger-move (首次): {"deltaX":0,"deltaY":0,"position":{"x":467,"y":69}}
+2026-02-12T14:09:42.846Z: [MainView] 收到finger-move: {"deltaX":0,"deltaY":0,"position":{"x":467,"y":69}}
+2026-02-12T14:09:42.846Z: [MainView] deltaX: 0 deltaY: 0 position: {"x":467,"y":69}
+2026-02-12T14:09:42.846Z: [MainView] modelViewer: [object HTMLElement] cameraOrbit: 0.00deg 75.00deg 0.5m
+2026-02-12T14:09:42.846Z: [MainView] 设置camera-orbit: 0.00deg 75.00deg 0.5m 原: 0.00deg 75.00deg 0.5m
+2026-02-12T14:09:42.867Z: [手势服务] 发送帧 #78, socket id: PkPh5_jAnDREgU6_AAAB
+2026-02-12T14:09:42.933Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:09:42.933Z: GestureControl.stopTracking: 重置旋转动作触发状态
+2026-02-12T14:09:43.017Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:09:43.059Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:09:43.078Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:09:43.122Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:09:43.157Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:09:43.187Z: [手势服务] 收到事件: result 有数据
+2026-02-12T14:09:43.187Z: [手势服务] 收到结果: 1 个检测, 手势: palm
+2026-02-12T14:09:43.187Z: [GestureControl] 收到检测: palm(31)
+2026-02-12T14:09:43.187Z: [GestureControl] 有效检测: 1
+2026-02-12T14:09:43.187Z: [GestureControl] 识别动作: rotate
+2026-02-12T14:09:43.187Z: [GestureControl] 进入旋转模式, isRotationTriggered: true
+2026-02-12T14:09:43.187Z: [GestureControl] fingerPosition: {"x":173,"y":69,"z":-0.10762859135866165} landmarks: 21
+2026-02-12T14:09:43.188Z: [GestureControl] 发送finger-move (首次): {"deltaX":0,"deltaY":0,"position":{"x":467,"y":69}}
+2026-02-12T14:09:43.188Z: [MainView] 收到finger-move: {"deltaX":0,"deltaY":0,"position":{"x":467,"y":69}}
+2026-02-12T14:09:43.188Z: [MainView] deltaX: 0 deltaY: 0 position: {"x":467,"y":69}
+2026-02-12T14:09:43.188Z: [MainView] modelViewer: [object HTMLElement] cameraOrbit: 0.00deg 75.00deg 0.5m
+2026-02-12T14:09:43.189Z: [MainView] 设置camera-orbit: 0.00deg 75.00deg 0.5m 原: 0.00deg 75.00deg 0.5m
+2026-02-12T14:09:43.204Z: [手势服务] 发送帧 #85, socket id: PkPh5_jAnDREgU6_AAAB
+2026-02-12T14:09:43.269Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:09:43.269Z: GestureControl.stopTracking: 重置旋转动作触发状态
+2026-02-12T14:09:43.339Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:09:43.386Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:09:43.458Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:09:43.459Z: [手势服务] 收到事件: result 有数据
+2026-02-12T14:09:43.459Z: [手势服务] 收到结果: 1 个检测, 手势: palm
+2026-02-12T14:09:43.459Z: [GestureControl] 收到检测: palm(31)
+2026-02-12T14:09:43.459Z: [GestureControl] 有效检测: 1
+2026-02-12T14:09:43.459Z: [GestureControl] 识别动作: rotate
+2026-02-12T14:09:43.459Z: [GestureControl] 进入旋转模式, isRotationTriggered: true
+2026-02-12T14:09:43.459Z: [GestureControl] fingerPosition: {"x":190,"y":67,"z":-0.11792317032814026} landmarks: 21
+2026-02-12T14:09:43.459Z: [GestureControl] 发送finger-move (首次): {"deltaX":0,"deltaY":0,"position":{"x":450,"y":67}}
+2026-02-12T14:09:43.459Z: [MainView] 收到finger-move: {"deltaX":0,"deltaY":0,"position":{"x":450,"y":67}}
+2026-02-12T14:09:43.460Z: [MainView] deltaX: 0 deltaY: 0 position: {"x":450,"y":67}
+2026-02-12T14:09:43.460Z: [MainView] modelViewer: [object HTMLElement] cameraOrbit: 0.00deg 75.00deg 0.5m
+2026-02-12T14:09:43.460Z: [MainView] 设置camera-orbit: 0.00deg 75.00deg 0.5m 原: 0.00deg 75.00deg 0.5m
+2026-02-12T14:09:43.517Z: [手势服务] 发送帧 #90, socket id: PkPh5_jAnDREgU6_AAAB
+2026-02-12T14:09:43.540Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:09:43.541Z: GestureControl.stopTracking: 重置旋转动作触发状态
+2026-02-12T14:09:43.599Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:09:43.637Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:09:43.679Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:09:43.715Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:09:43.741Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:09:43.755Z: [手势服务] 收到事件: result 有数据
+2026-02-12T14:09:43.755Z: [手势服务] 收到结果: 1 个检测, 手势: palm
+2026-02-12T14:09:43.755Z: [GestureControl] 收到检测: palm(31)
+2026-02-12T14:09:43.755Z: [GestureControl] 有效检测: 1
+2026-02-12T14:09:43.755Z: [GestureControl] 识别动作: rotate
+2026-02-12T14:09:43.755Z: [GestureControl] 进入旋转模式, isRotationTriggered: true
+2026-02-12T14:09:43.755Z: [GestureControl] fingerPosition: {"x":225,"y":60,"z":-0.12095537781715393} landmarks: 21
+2026-02-12T14:09:43.755Z: [GestureControl] 发送finger-move (首次): {"deltaX":0,"deltaY":0,"position":{"x":415,"y":60}}
+2026-02-12T14:09:43.755Z: [MainView] 收到finger-move: {"deltaX":0,"deltaY":0,"position":{"x":415,"y":60}}
+2026-02-12T14:09:43.755Z: [MainView] deltaX: 0 deltaY: 0 position: {"x":415,"y":60}
+2026-02-12T14:09:43.755Z: [MainView] modelViewer: [object HTMLElement] cameraOrbit: 0.00deg 75.00deg 0.5m
+2026-02-12T14:09:43.756Z: [MainView] 设置camera-orbit: 0.00deg 75.00deg 0.5m 原: 0.00deg 75.00deg 0.5m
+2026-02-12T14:09:43.788Z: [手势服务] 发送帧 #97, socket id: PkPh5_jAnDREgU6_AAAB
+2026-02-12T14:09:43.856Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:09:43.856Z: GestureControl.stopTracking: 重置旋转动作触发状态
+2026-02-12T14:09:43.941Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:09:43.991Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:09:43.997Z: [手势服务] 收到事件: result 有数据
+2026-02-12T14:09:43.997Z: [手势服务] 收到结果: 1 个检测, 手势: three2
+2026-02-12T14:09:43.997Z: [GestureControl] 收到检测: three2(38)
+2026-02-12T14:09:43.997Z: [GestureControl] 有效检测: 1
+2026-02-12T14:09:44.052Z: [手势服务] 发送帧 #101, socket id: PkPh5_jAnDREgU6_AAAB
+2026-02-12T14:09:44.083Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:09:44.129Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:09:44.195Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:09:44.217Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:09:44.258Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:09:44.317Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:09:44.384Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:09:44.386Z: [手势服务] 收到事件: result 有数据
+2026-02-12T14:09:44.386Z: [手势服务] 收到结果: 1 个检测, 手势: three2
+2026-02-12T14:09:44.386Z: [GestureControl] 收到检测: three2(38)
+2026-02-12T14:09:44.386Z: [GestureControl] 有效检测: 1
+2026-02-12T14:09:44.418Z: [手势服务] 发送帧 #109, socket id: PkPh5_jAnDREgU6_AAAB
+2026-02-12T14:09:44.462Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:09:44.515Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:09:44.560Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:09:44.600Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:09:44.648Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:09:44.717Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:09:44.776Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:09:44.779Z: [手势服务] 收到事件: result 有数据
+2026-02-12T14:09:44.779Z: [手势服务] 收到结果: 1 个检测, 手势: three2
+2026-02-12T14:09:44.779Z: [GestureControl] 收到检测: three2(38)
+2026-02-12T14:09:44.779Z: [GestureControl] 有效检测: 1
+2026-02-12T14:09:44.803Z: [手势服务] 发送帧 #117, socket id: PkPh5_jAnDREgU6_AAAB
+2026-02-12T14:09:44.859Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:09:44.911Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:09:44.945Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:09:44.985Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:09:45.014Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:09:45.054Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:09:45.071Z: [手势服务] 收到事件: result 有数据
+2026-02-12T14:09:45.071Z: [手势服务] 收到结果: 1 个检测, 手势: three2
+2026-02-12T14:09:45.071Z: [GestureControl] 收到检测: three2(38)
+2026-02-12T14:09:45.071Z: [GestureControl] 有效检测: 1
+2026-02-12T14:09:45.118Z: [手势服务] 发送帧 #124, socket id: PkPh5_jAnDREgU6_AAAB
+2026-02-12T14:09:45.196Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:09:45.252Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:09:45.281Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:09:45.321Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:09:45.359Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:09:45.428Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:09:45.480Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:09:45.481Z: [手势服务] 收到事件: result 有数据
+2026-02-12T14:09:45.481Z: [手势服务] 收到结果: 1 个检测, 手势: three2
+2026-02-12T14:09:45.481Z: [GestureControl] 收到检测: three2(38)
+2026-02-12T14:09:45.481Z: [GestureControl] 有效检测: 1
+2026-02-12T14:09:45.536Z: [手势服务] 发送帧 #132, socket id: PkPh5_jAnDREgU6_AAAB
+2026-02-12T14:09:45.628Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:09:45.692Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:09:45.751Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:09:45.801Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:09:45.896Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:09:45.947Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:09:45.949Z: [手势服务] 收到事件: result 有数据
+2026-02-12T14:09:45.949Z: [手势服务] 收到结果: 1 个检测, 手势: palm
+2026-02-12T14:09:45.949Z: [GestureControl] 收到检测: palm(31)
+2026-02-12T14:09:45.949Z: [GestureControl] 有效检测: 1
+2026-02-12T14:09:45.949Z: [GestureControl] 识别动作: rotate
+2026-02-12T14:09:45.950Z: [GestureControl] 进入旋转模式, isRotationTriggered: true
+2026-02-12T14:09:45.950Z: [GestureControl] fingerPosition: {"x":187,"y":70,"z":-0.12594084441661835} landmarks: 21
+2026-02-12T14:09:45.950Z: [GestureControl] 发送finger-move (首次): {"deltaX":0,"deltaY":0,"position":{"x":453,"y":70}}
+2026-02-12T14:09:45.950Z: [MainView] 收到finger-move: {"deltaX":0,"deltaY":0,"position":{"x":453,"y":70}}
+2026-02-12T14:09:45.950Z: [MainView] deltaX: 0 deltaY: 0 position: {"x":453,"y":70}
+2026-02-12T14:09:45.950Z: [MainView] modelViewer: [object HTMLElement] cameraOrbit: 0.00deg 75.00deg 0.5m
+2026-02-12T14:09:45.951Z: [MainView] 设置camera-orbit: 0.00deg 75.00deg 0.5m 原: 0.00deg 75.00deg 0.5m
+2026-02-12T14:09:45.998Z: [手势服务] 发送帧 #139, socket id: PkPh5_jAnDREgU6_AAAB
+2026-02-12T14:09:46.009Z: GestureControl.stopTracking: 重置旋转动作触发状态
+2026-02-12T14:09:46.118Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:09:46.214Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:09:46.218Z: [手势服务] 收到事件: result 有数据
+2026-02-12T14:09:46.218Z: [手势服务] 收到结果: 1 个检测, 手势: palm
+2026-02-12T14:09:46.218Z: [GestureControl] 收到检测: palm(31)
+2026-02-12T14:09:46.218Z: [GestureControl] 有效检测: 1
+2026-02-12T14:09:46.219Z: [GestureControl] 识别动作: rotate
+2026-02-12T14:09:46.219Z: [GestureControl] 进入旋转模式, isRotationTriggered: true
+2026-02-12T14:09:46.220Z: [GestureControl] fingerPosition: {"x":138,"y":86,"z":-0.12088999897241592} landmarks: 21
+2026-02-12T14:09:46.220Z: [GestureControl] 发送finger-move (首次): {"deltaX":0,"deltaY":0,"position":{"x":502,"y":86}}
+2026-02-12T14:09:46.220Z: [MainView] 收到finger-move: {"deltaX":0,"deltaY":0,"position":{"x":502,"y":86}}
+2026-02-12T14:09:46.220Z: [MainView] deltaX: 0 deltaY: 0 position: {"x":502,"y":86}
+2026-02-12T14:09:46.221Z: [MainView] modelViewer: [object HTMLElement] cameraOrbit: 0.00deg 75.00deg 0.5m
+2026-02-12T14:09:46.221Z: [MainView] 设置camera-orbit: 0.00deg 75.00deg 0.5m 原: 0.00deg 75.00deg 0.5m
+2026-02-12T14:09:46.275Z: [手势服务] 发送帧 #142, socket id: PkPh5_jAnDREgU6_AAAB
+2026-02-12T14:09:46.335Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:09:46.335Z: GestureControl.stopTracking: 重置旋转动作触发状态
+2026-02-12T14:09:46.399Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:09:46.448Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:09:46.482Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:09:46.542Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:09:46.582Z: [手势服务] 收到事件: result 有数据
+2026-02-12T14:09:46.582Z: [手势服务] 收到结果: 1 个检测, 手势: palm
+2026-02-12T14:09:46.582Z: [GestureControl] 收到检测: palm(31)
+2026-02-12T14:09:46.582Z: [GestureControl] 有效检测: 1
+2026-02-12T14:09:46.582Z: [GestureControl] 识别动作: rotate
+2026-02-12T14:09:46.583Z: [GestureControl] 进入旋转模式, isRotationTriggered: true
+2026-02-12T14:09:46.583Z: [GestureControl] fingerPosition: {"x":127,"y":92,"z":-0.12234505265951157} landmarks: 21
+2026-02-12T14:09:46.583Z: [GestureControl] 发送finger-move (首次): {"deltaX":0,"deltaY":0,"position":{"x":513,"y":92}}
+2026-02-12T14:09:46.583Z: [MainView] 收到finger-move: {"deltaX":0,"deltaY":0,"position":{"x":513,"y":92}}
+2026-02-12T14:09:46.583Z: [MainView] deltaX: 0 deltaY: 0 position: {"x":513,"y":92}
+2026-02-12T14:09:46.583Z: [MainView] modelViewer: [object HTMLElement] cameraOrbit: 0.00deg 75.00deg 0.5m
+2026-02-12T14:09:46.583Z: [MainView] 设置camera-orbit: 0.00deg 75.00deg 0.5m 原: 0.00deg 75.00deg 0.5m
+2026-02-12T14:09:46.642Z: [手势服务] 发送帧 #148, socket id: PkPh5_jAnDREgU6_AAAB
+2026-02-12T14:09:46.668Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:09:46.669Z: GestureControl.stopTracking: 重置旋转动作触发状态
+2026-02-12T14:09:46.746Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:09:46.823Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:09:46.915Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:09:46.917Z: [手势服务] 收到事件: result 有数据
+2026-02-12T14:09:46.917Z: [手势服务] 收到结果: 1 个检测, 手势: ok
+2026-02-12T14:09:46.917Z: [GestureControl] 收到检测: ok(29)
+2026-02-12T14:09:46.918Z: [GestureControl] 有效检测: 1
+2026-02-12T14:09:46.918Z: [GestureControl] 识别动作: rotate
+2026-02-12T14:09:46.918Z: [GestureControl] 进入旋转模式, isRotationTriggered: true
+2026-02-12T14:09:46.918Z: [GestureControl] fingerPosition: {"x":124,"y":95,"z":-0.1146029680967331} landmarks: 21
+2026-02-12T14:09:46.918Z: [GestureControl] 发送finger-move (首次): {"deltaX":0,"deltaY":0,"position":{"x":516,"y":95}}
+2026-02-12T14:09:46.918Z: [MainView] 收到finger-move: {"deltaX":0,"deltaY":0,"position":{"x":516,"y":95}}
+2026-02-12T14:09:46.918Z: [MainView] deltaX: 0 deltaY: 0 position: {"x":516,"y":95}
+2026-02-12T14:09:46.919Z: [MainView] modelViewer: [object HTMLElement] cameraOrbit: 0.00deg 75.00deg 0.5m
+2026-02-12T14:09:46.919Z: [MainView] 设置camera-orbit: 0.00deg 75.00deg 0.5m 原: 0.00deg 75.00deg 0.5m
+2026-02-12T14:09:46.948Z: [手势服务] 发送帧 #153, socket id: PkPh5_jAnDREgU6_AAAB
+2026-02-12T14:09:47.013Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:09:47.013Z: GestureControl.stopTracking: 重置旋转动作触发状态
+2026-02-12T14:09:47.087Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:09:47.150Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:09:47.198Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:09:47.223Z: [手势服务] 收到事件: result 有数据
+2026-02-12T14:09:47.223Z: [手势服务] 收到结果: 1 个检测, 手势: call
+2026-02-12T14:09:47.223Z: [GestureControl] 收到检测: call(20)
+2026-02-12T14:09:47.223Z: [GestureControl] 有效检测: 1
+2026-02-12T14:09:47.324Z: [手势服务] 发送帧 #158, socket id: PkPh5_jAnDREgU6_AAAB
+2026-02-12T14:09:47.342Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:09:47.454Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:09:47.517Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:09:47.539Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:09:47.616Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:09:47.674Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:09:47.677Z: [手势服务] 收到事件: result 有数据
+2026-02-12T14:09:47.677Z: [手势服务] 收到结果: 1 个检测, 手势: four
+2026-02-12T14:09:47.677Z: [GestureControl] 收到检测: four(26)
+2026-02-12T14:09:47.677Z: [GestureControl] 有效检测: 1
+2026-02-12T14:09:47.724Z: [手势服务] 发送帧 #165, socket id: PkPh5_jAnDREgU6_AAAB
+2026-02-12T14:09:47.869Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:09:47.927Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:09:47.942Z: [手势服务] 收到事件: result 有数据
+2026-02-12T14:09:47.942Z: [手势服务] 收到结果: 0 个检测, 手势: 
+2026-02-12T14:09:48.030Z: [手势服务] 发送帧 #168, socket id: PkPh5_jAnDREgU6_AAAB
+2026-02-12T14:09:48.064Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:09:48.133Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:09:48.243Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:09:48.245Z: [手势服务] 收到事件: result 有数据
+2026-02-12T14:09:48.245Z: [手势服务] 收到结果: 0 个检测, 手势: 
+2026-02-12T14:09:48.267Z: [手势服务] 发送帧 #172, socket id: PkPh5_jAnDREgU6_AAAB
+2026-02-12T14:09:48.350Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:09:48.406Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:09:48.525Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:09:48.526Z: [手势服务] 收到事件: result 有数据
+2026-02-12T14:09:48.526Z: [手势服务] 收到结果: 0 个检测, 手势: 
+2026-02-12T14:09:48.625Z: [手势服务] 发送帧 #176, socket id: PkPh5_jAnDREgU6_AAAB
+2026-02-12T14:09:48.677Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:09:48.750Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:09:48.800Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:09:48.814Z: [手势服务] 收到事件: result 有数据
+2026-02-12T14:09:48.814Z: [手势服务] 收到结果: 0 个检测, 手势: 
+2026-02-12T14:09:48.907Z: [手势服务] 发送帧 #180, socket id: PkPh5_jAnDREgU6_AAAB
+2026-02-12T14:09:48.931Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:09:49.003Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:09:49.058Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:09:49.161Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:09:49.162Z: [手势服务] 收到事件: result 有数据
+2026-02-12T14:09:49.162Z: [手势服务] 收到结果: 0 个检测, 手势: 
+2026-02-12T14:09:49.210Z: [手势服务] 发送帧 #185, socket id: PkPh5_jAnDREgU6_AAAB
+2026-02-12T14:09:49.261Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:09:49.398Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:09:49.408Z: [手势服务] 收到事件: result 有数据
+2026-02-12T14:09:49.408Z: [手势服务] 收到结果: 0 个检测, 手势: 
+2026-02-12T14:09:49.470Z: [手势服务] 发送帧 #188, socket id: PkPh5_jAnDREgU6_AAAB
+2026-02-12T14:09:49.551Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:09:49.691Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:09:49.728Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:09:49.747Z: [手势服务] 收到事件: result 有数据
+2026-02-12T14:09:49.747Z: [手势服务] 收到结果: 1 个检测, 手势: fist
+2026-02-12T14:09:49.747Z: [GestureControl] 收到检测: fist(25)
+2026-02-12T14:09:49.747Z: [GestureControl] 有效检测: 1
+2026-02-12T14:09:49.857Z: [手势服务] 发送帧 #192, socket id: PkPh5_jAnDREgU6_AAAB
+2026-02-12T14:09:49.958Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:09:50.016Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:09:50.052Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:09:50.054Z: [手势服务] 收到事件: result 有数据
+2026-02-12T14:09:50.055Z: [手势服务] 收到结果: 0 个检测, 手势: 
+2026-02-12T14:09:50.096Z: [手势服务] 发送帧 #196, socket id: PkPh5_jAnDREgU6_AAAB
+2026-02-12T14:09:50.163Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:09:50.257Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:09:50.282Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:09:50.349Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:09:50.400Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:09:50.402Z: [手势服务] 收到事件: result 有数据
+2026-02-12T14:09:50.402Z: [手势服务] 收到结果: 1 个检测, 手势: palm
+2026-02-12T14:09:50.402Z: [GestureControl] 收到检测: palm(31)
+2026-02-12T14:09:50.402Z: [GestureControl] 有效检测: 1
+2026-02-12T14:09:50.402Z: [GestureControl] 识别动作: rotate
+2026-02-12T14:09:50.403Z: [GestureControl] 进入旋转模式, isRotationTriggered: true
+2026-02-12T14:09:50.403Z: [GestureControl] fingerPosition: {"x":136,"y":80,"z":-0.09173697978258133} landmarks: 21
+2026-02-12T14:09:50.403Z: [GestureControl] 发送finger-move (首次): {"deltaX":0,"deltaY":0,"position":{"x":504,"y":80}}
+2026-02-12T14:09:50.403Z: [MainView] 收到finger-move: {"deltaX":0,"deltaY":0,"position":{"x":504,"y":80}}
+2026-02-12T14:09:50.404Z: [MainView] deltaX: 0 deltaY: 0 position: {"x":504,"y":80}
+2026-02-12T14:09:50.404Z: [MainView] modelViewer: [object HTMLElement] cameraOrbit: 0.00deg 75.00deg 0.5m
+2026-02-12T14:09:50.404Z: [MainView] 设置camera-orbit: 0.00deg 75.00deg 0.5m 原: 0.00deg 75.00deg 0.5m
+2026-02-12T14:09:50.418Z: GestureControl.stopTracking: 重置旋转动作触发状态
+2026-02-12T14:09:50.516Z: [手势服务] 发送帧 #202, socket id: PkPh5_jAnDREgU6_AAAB
+2026-02-12T14:09:50.533Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:09:50.614Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:09:50.674Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:09:50.727Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:09:50.774Z: [手势服务] 收到事件: result 有数据
+2026-02-12T14:09:50.774Z: [手势服务] 收到结果: 1 个检测, 手势: palm
+2026-02-12T14:09:50.774Z: [GestureControl] 收到检测: palm(31)
+2026-02-12T14:09:50.774Z: [GestureControl] 有效检测: 1
+2026-02-12T14:09:50.774Z: [GestureControl] 识别动作: rotate
+2026-02-12T14:09:50.774Z: [GestureControl] 进入旋转模式, isRotationTriggered: true
+2026-02-12T14:09:50.774Z: [GestureControl] fingerPosition: {"x":121,"y":91,"z":-0.09586073458194733} landmarks: 21
+2026-02-12T14:09:50.774Z: [GestureControl] 发送finger-move (首次): {"deltaX":0,"deltaY":0,"position":{"x":519,"y":91}}
+2026-02-12T14:09:50.774Z: [MainView] 收到finger-move: {"deltaX":0,"deltaY":0,"position":{"x":519,"y":91}}
+2026-02-12T14:09:50.774Z: [MainView] deltaX: 0 deltaY: 0 position: {"x":519,"y":91}
+2026-02-12T14:09:50.774Z: [MainView] modelViewer: [object HTMLElement] cameraOrbit: 0.00deg 75.00deg 0.5m
+2026-02-12T14:09:50.774Z: [MainView] 设置camera-orbit: 0.00deg 75.00deg 0.5m 原: 0.00deg 75.00deg 0.5m
+2026-02-12T14:09:50.825Z: [手势服务] 发送帧 #207, socket id: PkPh5_jAnDREgU6_AAAB
+2026-02-12T14:09:50.896Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:09:50.896Z: GestureControl.stopTracking: 重置旋转动作触发状态
+2026-02-12T14:09:50.944Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:09:50.976Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:09:51.066Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:09:51.108Z: [手势服务] 收到事件: result 有数据
+2026-02-12T14:09:51.108Z: [手势服务] 收到结果: 1 个检测, 手势: palm
+2026-02-12T14:09:51.108Z: [GestureControl] 收到检测: palm(31)
+2026-02-12T14:09:51.108Z: [GestureControl] 有效检测: 1
+2026-02-12T14:09:51.108Z: [GestureControl] 识别动作: rotate
+2026-02-12T14:09:51.108Z: [GestureControl] 进入旋转模式, isRotationTriggered: true
+2026-02-12T14:09:51.108Z: [GestureControl] fingerPosition: {"x":119,"y":83,"z":-0.10429487377405167} landmarks: 21
+2026-02-12T14:09:51.108Z: [GestureControl] 发送finger-move (首次): {"deltaX":0,"deltaY":0,"position":{"x":521,"y":83}}
+2026-02-12T14:09:51.108Z: [MainView] 收到finger-move: {"deltaX":0,"deltaY":0,"position":{"x":521,"y":83}}
+2026-02-12T14:09:51.108Z: [MainView] deltaX: 0 deltaY: 0 position: {"x":521,"y":83}
+2026-02-12T14:09:51.108Z: [MainView] modelViewer: [object HTMLElement] cameraOrbit: 0.00deg 75.00deg 0.5m
+2026-02-12T14:09:51.108Z: [MainView] 设置camera-orbit: 0.00deg 75.00deg 0.5m 原: 0.00deg 75.00deg 0.5m
+2026-02-12T14:09:51.163Z: [手势服务] 发送帧 #212, socket id: PkPh5_jAnDREgU6_AAAB
+2026-02-12T14:09:51.206Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:09:51.207Z: GestureControl.stopTracking: 重置旋转动作触发状态
+2026-02-12T14:09:51.280Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:09:51.342Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:09:51.398Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:09:51.428Z: [手势服务] 收到事件: result 有数据
+2026-02-12T14:09:51.428Z: [手势服务] 收到结果: 1 个检测, 手势: palm
+2026-02-12T14:09:51.428Z: [GestureControl] 收到检测: palm(31)
+2026-02-12T14:09:51.428Z: [GestureControl] 有效检测: 1
+2026-02-12T14:09:51.428Z: [GestureControl] 识别动作: rotate
+2026-02-12T14:09:51.428Z: [GestureControl] 进入旋转模式, isRotationTriggered: true
+2026-02-12T14:09:51.428Z: [GestureControl] fingerPosition: {"x":127,"y":87,"z":-0.10633417963981628} landmarks: 21
+2026-02-12T14:09:51.429Z: [GestureControl] 发送finger-move (首次): {"deltaX":0,"deltaY":0,"position":{"x":513,"y":87}}
+2026-02-12T14:09:51.429Z: [MainView] 收到finger-move: {"deltaX":0,"deltaY":0,"position":{"x":513,"y":87}}
+2026-02-12T14:09:51.429Z: [MainView] deltaX: 0 deltaY: 0 position: {"x":513,"y":87}
+2026-02-12T14:09:51.429Z: [MainView] modelViewer: [object HTMLElement] cameraOrbit: 0.00deg 75.00deg 0.5m
+2026-02-12T14:09:51.429Z: [MainView] 设置camera-orbit: 0.00deg 75.00deg 0.5m 原: 0.00deg 75.00deg 0.5m
+2026-02-12T14:09:51.496Z: [手势服务] 发送帧 #217, socket id: PkPh5_jAnDREgU6_AAAB
+2026-02-12T14:09:51.536Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:09:51.536Z: GestureControl.stopTracking: 重置旋转动作触发状态
+2026-02-12T14:09:51.609Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:09:51.680Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:09:51.717Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:09:51.782Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:09:51.810Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:09:51.875Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:09:51.877Z: [手势服务] 收到事件: result 有数据
+2026-02-12T14:09:51.877Z: [手势服务] 收到结果: 1 个检测, 手势: palm
+2026-02-12T14:09:51.877Z: [GestureControl] 收到检测: palm(31)
+2026-02-12T14:09:51.877Z: [GestureControl] 有效检测: 1
+2026-02-12T14:09:51.878Z: [GestureControl] 识别动作: rotate
+2026-02-12T14:09:51.878Z: [GestureControl] 进入旋转模式, isRotationTriggered: true
+2026-02-12T14:09:51.878Z: [GestureControl] fingerPosition: {"x":128,"y":92,"z":-0.11328046023845673} landmarks: 21
+2026-02-12T14:09:51.878Z: [GestureControl] 发送finger-move (首次): {"deltaX":0,"deltaY":0,"position":{"x":512,"y":92}}
+2026-02-12T14:09:51.878Z: [MainView] 收到finger-move: {"deltaX":0,"deltaY":0,"position":{"x":512,"y":92}}
+2026-02-12T14:09:51.878Z: [MainView] deltaX: 0 deltaY: 0 position: {"x":512,"y":92}
+2026-02-12T14:09:51.878Z: [MainView] modelViewer: [object HTMLElement] cameraOrbit: 0.00deg 75.00deg 0.5m
+2026-02-12T14:09:51.878Z: [MainView] 设置camera-orbit: 0.00deg 75.00deg 0.5m 原: 0.00deg 75.00deg 0.5m
+2026-02-12T14:09:51.918Z: [手势服务] 发送帧 #225, socket id: PkPh5_jAnDREgU6_AAAB
+2026-02-12T14:09:51.937Z: GestureControl.stopTracking: 重置旋转动作触发状态
+2026-02-12T14:09:52.081Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:09:52.133Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:09:52.183Z: [手势服务] 收到事件: result 有数据
+2026-02-12T14:09:52.183Z: [手势服务] 收到结果: 1 个检测, 手势: palm
+2026-02-12T14:09:52.183Z: [GestureControl] 收到检测: palm(31)
+2026-02-12T14:09:52.183Z: [GestureControl] 有效检测: 1
+2026-02-12T14:09:52.183Z: [GestureControl] 识别动作: rotate
+2026-02-12T14:09:52.183Z: [GestureControl] 进入旋转模式, isRotationTriggered: true
+2026-02-12T14:09:52.183Z: [GestureControl] fingerPosition: {"x":129,"y":88,"z":-0.11892472207546234} landmarks: 21
+2026-02-12T14:09:52.183Z: [GestureControl] 发送finger-move (首次): {"deltaX":0,"deltaY":0,"position":{"x":511,"y":88}}
+2026-02-12T14:09:52.183Z: [MainView] 收到finger-move: {"deltaX":0,"deltaY":0,"position":{"x":511,"y":88}}
+2026-02-12T14:09:52.183Z: [MainView] deltaX: 0 deltaY: 0 position: {"x":511,"y":88}
+2026-02-12T14:09:52.183Z: [MainView] modelViewer: [object HTMLElement] cameraOrbit: 0.00deg 75.00deg 0.5m
+2026-02-12T14:09:52.183Z: [MainView] 设置camera-orbit: 0.00deg 75.00deg 0.5m 原: 0.00deg 75.00deg 0.5m
+2026-02-12T14:09:52.227Z: [手势服务] 发送帧 #228, socket id: PkPh5_jAnDREgU6_AAAB
+2026-02-12T14:09:52.273Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:09:52.273Z: GestureControl.stopTracking: 重置旋转动作触发状态
+2026-02-12T14:09:52.357Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:09:52.409Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:09:52.462Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:09:52.481Z: [手势服务] 收到事件: result 有数据
+2026-02-12T14:09:52.481Z: [手势服务] 收到结果: 1 个检测, 手势: palm
+2026-02-12T14:09:52.481Z: [GestureControl] 收到检测: palm(31)
+2026-02-12T14:09:52.481Z: [GestureControl] 有效检测: 1
+2026-02-12T14:09:52.481Z: [GestureControl] 识别动作: rotate
+2026-02-12T14:09:52.481Z: [GestureControl] 进入旋转模式, isRotationTriggered: true
+2026-02-12T14:09:52.481Z: [GestureControl] fingerPosition: {"x":131,"y":86,"z":-0.13180406391620636} landmarks: 21
+2026-02-12T14:09:52.481Z: [GestureControl] 发送finger-move (首次): {"deltaX":0,"deltaY":0,"position":{"x":509,"y":86}}
+2026-02-12T14:09:52.481Z: [MainView] 收到finger-move: {"deltaX":0,"deltaY":0,"position":{"x":509,"y":86}}
+2026-02-12T14:09:52.481Z: [MainView] deltaX: 0 deltaY: 0 position: {"x":509,"y":86}
+2026-02-12T14:09:52.481Z: [MainView] modelViewer: [object HTMLElement] cameraOrbit: 0.00deg 75.00deg 0.5m
+2026-02-12T14:09:52.481Z: [MainView] 设置camera-orbit: 0.00deg 75.00deg 0.5m 原: 0.00deg 75.00deg 0.5m
+2026-02-12T14:09:52.524Z: [手势服务] 发送帧 #233, socket id: PkPh5_jAnDREgU6_AAAB
+2026-02-12T14:09:52.643Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:09:52.643Z: GestureControl.stopTracking: 重置旋转动作触发状态
+2026-02-12T14:09:52.712Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:09:52.732Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:09:52.809Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:09:52.812Z: [手势服务] 收到事件: result 有数据
+2026-02-12T14:09:52.812Z: [手势服务] 收到结果: 1 个检测, 手势: palm
+2026-02-12T14:09:52.812Z: [GestureControl] 收到检测: palm(31)
+2026-02-12T14:09:52.812Z: [GestureControl] 有效检测: 1
+2026-02-12T14:09:52.812Z: [GestureControl] 识别动作: rotate
+2026-02-12T14:09:52.812Z: [GestureControl] 进入旋转模式, isRotationTriggered: true
+2026-02-12T14:09:52.812Z: [GestureControl] fingerPosition: {"x":132,"y":96,"z":-0.1401241421699524} landmarks: 21
+2026-02-12T14:09:52.813Z: [GestureControl] 发送finger-move (首次): {"deltaX":0,"deltaY":0,"position":{"x":508,"y":96}}
+2026-02-12T14:09:52.813Z: [MainView] 收到finger-move: {"deltaX":0,"deltaY":0,"position":{"x":508,"y":96}}
+2026-02-12T14:09:52.813Z: [MainView] deltaX: 0 deltaY: 0 position: {"x":508,"y":96}
+2026-02-12T14:09:52.813Z: [MainView] modelViewer: [object HTMLElement] cameraOrbit: 0.00deg 75.00deg 0.5m
+2026-02-12T14:09:52.814Z: [MainView] 设置camera-orbit: 0.00deg 75.00deg 0.5m 原: 0.00deg 75.00deg 0.5m
+2026-02-12T14:09:52.859Z: [手势服务] 发送帧 #238, socket id: PkPh5_jAnDREgU6_AAAB
+2026-02-12T14:09:52.870Z: GestureControl.stopTracking: 重置旋转动作触发状态
+2026-02-12T14:09:52.956Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:09:53.007Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:09:53.138Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:09:53.181Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:09:53.206Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:09:53.223Z: [手势服务] 收到事件: result 有数据
+2026-02-12T14:09:53.223Z: [手势服务] 收到结果: 1 个检测, 手势: palm
+2026-02-12T14:09:53.223Z: [GestureControl] 收到检测: palm(31)
+2026-02-12T14:09:53.223Z: [GestureControl] 有效检测: 1
+2026-02-12T14:09:53.223Z: [GestureControl] 识别动作: rotate
+2026-02-12T14:09:53.223Z: [GestureControl] 进入旋转模式, isRotationTriggered: true
+2026-02-12T14:09:53.223Z: [GestureControl] fingerPosition: {"x":137,"y":94,"z":-0.13792529702186584} landmarks: 21
+2026-02-12T14:09:53.224Z: [GestureControl] 发送finger-move (首次): {"deltaX":0,"deltaY":0,"position":{"x":503,"y":94}}
+2026-02-12T14:09:53.224Z: [MainView] 收到finger-move: {"deltaX":0,"deltaY":0,"position":{"x":503,"y":94}}
+2026-02-12T14:09:53.224Z: [MainView] deltaX: 0 deltaY: 0 position: {"x":503,"y":94}
+2026-02-12T14:09:53.224Z: [MainView] modelViewer: [object HTMLElement] cameraOrbit: 0.00deg 75.00deg 0.5m
+2026-02-12T14:09:53.224Z: [MainView] 设置camera-orbit: 0.00deg 75.00deg 0.5m 原: 0.00deg 75.00deg 0.5m
+2026-02-12T14:09:53.314Z: [手势服务] 发送帧 #244, socket id: PkPh5_jAnDREgU6_AAAB
+2026-02-12T14:09:53.340Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:09:53.341Z: GestureControl.stopTracking: 重置旋转动作触发状态
+2026-02-12T14:09:53.454Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:09:53.502Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:09:53.536Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:09:53.606Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:09:53.608Z: [手势服务] 收到事件: result 有数据
+2026-02-12T14:09:53.608Z: [手势服务] 收到结果: 0 个检测, 手势: 
+2026-02-12T14:09:53.661Z: [手势服务] 发送帧 #250, socket id: PkPh5_jAnDREgU6_AAAB
+2026-02-12T14:09:53.707Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:09:53.731Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:09:53.866Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:09:53.911Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:09:53.933Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:09:53.934Z: [手势服务] 收到事件: result 有数据
+2026-02-12T14:09:53.934Z: [手势服务] 收到结果: 0 个检测, 手势: 
+2026-02-12T14:09:54.014Z: [手势服务] 发送帧 #256, socket id: PkPh5_jAnDREgU6_AAAB
+2026-02-12T14:09:54.055Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:09:54.198Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:09:54.255Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:09:54.258Z: [手势服务] 收到事件: result 有数据
+2026-02-12T14:09:54.258Z: [手势服务] 收到结果: 0 个检测, 手势: 
+2026-02-12T14:09:54.356Z: [手势服务] 发送帧 #260, socket id: PkPh5_jAnDREgU6_AAAB
+2026-02-12T14:09:54.453Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:09:54.511Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:09:54.541Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:09:54.543Z: [手势服务] 收到事件: result 有数据
+2026-02-12T14:09:54.543Z: [手势服务] 收到结果: 0 个检测, 手势: 
+2026-02-12T14:09:54.613Z: [手势服务] 发送帧 #264, socket id: PkPh5_jAnDREgU6_AAAB
+2026-02-12T14:09:54.663Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:09:54.798Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:09:54.845Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:09:54.847Z: [手势服务] 收到事件: result 有数据
+2026-02-12T14:09:54.848Z: [手势服务] 收到结果: 0 个检测, 手势: 
+2026-02-12T14:09:54.939Z: [手势服务] 发送帧 #268, socket id: PkPh5_jAnDREgU6_AAAB
+2026-02-12T14:09:55.009Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:09:55.071Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:09:55.128Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:09:55.252Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:09:55.274Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:09:55.406Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:09:55.407Z: [手势服务] 收到事件: result 有数据
+2026-02-12T14:09:55.407Z: [手势服务] 收到结果: 1 个检测, 手势: palm
+2026-02-12T14:09:55.407Z: [GestureControl] 收到检测: palm(31)
+2026-02-12T14:09:55.407Z: [GestureControl] 有效检测: 1
+2026-02-12T14:09:55.407Z: [GestureControl] 识别动作: rotate
+2026-02-12T14:09:55.407Z: [GestureControl] 进入旋转模式, isRotationTriggered: true
+2026-02-12T14:09:55.407Z: [GestureControl] fingerPosition: {"x":133,"y":90,"z":-0.1347987949848175} landmarks: 21
+2026-02-12T14:09:55.407Z: [GestureControl] 发送finger-move (首次): {"deltaX":0,"deltaY":0,"position":{"x":507,"y":90}}
+2026-02-12T14:09:55.407Z: [MainView] 收到finger-move: {"deltaX":0,"deltaY":0,"position":{"x":507,"y":90}}
+2026-02-12T14:09:55.407Z: [MainView] deltaX: 0 deltaY: 0 position: {"x":507,"y":90}
+2026-02-12T14:09:55.408Z: [MainView] modelViewer: [object HTMLElement] cameraOrbit: 0.00deg 75.00deg 0.5m
+2026-02-12T14:09:55.408Z: [MainView] 设置camera-orbit: 0.00deg 75.00deg 0.5m 原: 0.00deg 75.00deg 0.5m
+2026-02-12T14:09:55.454Z: [手势服务] 发送帧 #275, socket id: PkPh5_jAnDREgU6_AAAB
+2026-02-12T14:09:55.510Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:09:55.510Z: GestureControl.stopTracking: 重置旋转动作触发状态
+2026-02-12T14:09:55.545Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:09:55.675Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:09:55.720Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:09:55.734Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:09:55.740Z: [手势服务] 收到事件: result 有数据
+2026-02-12T14:09:55.741Z: [手势服务] 收到结果: 1 个检测, 手势: three3
+2026-02-12T14:09:55.741Z: [GestureControl] 收到检测: three3(21)
+2026-02-12T14:09:55.741Z: [GestureControl] 有效检测: 1
+2026-02-12T14:09:55.828Z: [手势服务] 发送帧 #281, socket id: PkPh5_jAnDREgU6_AAAB
+2026-02-12T14:09:55.859Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:09:55.938Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:09:55.961Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:09:56.083Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:09:56.127Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:09:56.144Z: [手势服务] 收到事件: result 有数据
+2026-02-12T14:09:56.144Z: [手势服务] 收到结果: 1 个检测, 手势: palm
+2026-02-12T14:09:56.144Z: [GestureControl] 收到检测: palm(31)
+2026-02-12T14:09:56.144Z: [GestureControl] 有效检测: 1
+2026-02-12T14:09:56.144Z: [GestureControl] 识别动作: rotate
+2026-02-12T14:09:56.144Z: [GestureControl] 进入旋转模式, isRotationTriggered: true
+2026-02-12T14:09:56.145Z: [GestureControl] fingerPosition: {"x":163,"y":87,"z":-0.155221626162529} landmarks: 21
+2026-02-12T14:09:56.145Z: [GestureControl] 发送finger-move (首次): {"deltaX":0,"deltaY":0,"position":{"x":477,"y":87}}
+2026-02-12T14:09:56.145Z: [MainView] 收到finger-move: {"deltaX":0,"deltaY":0,"position":{"x":477,"y":87}}
+2026-02-12T14:09:56.145Z: [MainView] deltaX: 0 deltaY: 0 position: {"x":477,"y":87}
+2026-02-12T14:09:56.146Z: [MainView] modelViewer: [object HTMLElement] cameraOrbit: 0.00deg 75.00deg 0.5m
+2026-02-12T14:09:56.146Z: [MainView] 设置camera-orbit: 0.00deg 75.00deg 0.5m 原: 0.00deg 75.00deg 0.5m
+2026-02-12T14:09:56.246Z: [手势服务] 发送帧 #287, socket id: PkPh5_jAnDREgU6_AAAB
+2026-02-12T14:09:56.271Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:09:56.271Z: GestureControl.stopTracking: 重置旋转动作触发状态
+2026-02-12T14:09:56.349Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:09:56.404Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:09:56.517Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:09:56.545Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:09:56.624Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:09:56.667Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:09:56.668Z: [手势服务] 收到事件: result 有数据
+2026-02-12T14:09:56.668Z: [手势服务] 收到结果: 1 个检测, 手势: three2
+2026-02-12T14:09:56.668Z: [GestureControl] 收到检测: three2(38)
+2026-02-12T14:09:56.669Z: [GestureControl] 有效检测: 1
+2026-02-12T14:09:56.779Z: [手势服务] 发送帧 #295, socket id: PkPh5_jAnDREgU6_AAAB
+2026-02-12T14:09:56.797Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:09:56.888Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:09:57.007Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:09:57.008Z: [手势服务] 收到事件: result 有数据
+2026-02-12T14:09:57.008Z: [手势服务] 收到结果: 0 个检测, 手势: 
+2026-02-12T14:09:57.052Z: [手势服务] 发送帧 #299, socket id: PkPh5_jAnDREgU6_AAAB
+2026-02-12T14:09:57.074Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:09:57.196Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:09:57.240Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:09:57.261Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:09:57.262Z: [手势服务] 收到事件: result 有数据
+2026-02-12T14:09:57.262Z: [手势服务] 收到结果: 0 个检测, 手势: 
+2026-02-12T14:09:57.338Z: [手势服务] 发送帧 #304, socket id: PkPh5_jAnDREgU6_AAAB
+2026-02-12T14:09:57.470Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:09:57.531Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:09:57.594Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:09:57.627Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:09:57.681Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:09:57.742Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:09:57.762Z: [手势服务] 收到事件: result 有数据
+2026-02-12T14:09:57.762Z: [手势服务] 收到结果: 1 个检测, 手势: palm
+2026-02-12T14:09:57.762Z: [GestureControl] 收到检测: palm(31)
+2026-02-12T14:09:57.762Z: [GestureControl] 有效检测: 1
+2026-02-12T14:09:57.763Z: [GestureControl] 识别动作: rotate
+2026-02-12T14:09:57.763Z: [GestureControl] 进入旋转模式, isRotationTriggered: true
+2026-02-12T14:09:57.763Z: [GestureControl] fingerPosition: {"x":143,"y":87,"z":-0.15482653677463531} landmarks: 21
+2026-02-12T14:09:57.763Z: [GestureControl] 发送finger-move (首次): {"deltaX":0,"deltaY":0,"position":{"x":497,"y":87}}
+2026-02-12T14:09:57.763Z: [MainView] 收到finger-move: {"deltaX":0,"deltaY":0,"position":{"x":497,"y":87}}
+2026-02-12T14:09:57.763Z: [MainView] deltaX: 0 deltaY: 0 position: {"x":497,"y":87}
+2026-02-12T14:09:57.764Z: [MainView] modelViewer: [object HTMLElement] cameraOrbit: 0.00deg 75.00deg 0.5m
+2026-02-12T14:09:57.764Z: [MainView] 设置camera-orbit: 0.00deg 75.00deg 0.5m 原: 0.00deg 75.00deg 0.5m
+2026-02-12T14:09:57.849Z: [手势服务] 发送帧 #311, socket id: PkPh5_jAnDREgU6_AAAB
+2026-02-12T14:09:57.876Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:09:57.876Z: GestureControl.stopTracking: 重置旋转动作触发状态
+2026-02-12T14:09:57.958Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:09:58.022Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:09:58.070Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:09:58.194Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:09:58.214Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:09:58.234Z: [手势服务] 收到事件: result 有数据
+2026-02-12T14:09:58.234Z: [手势服务] 收到结果: 1 个检测, 手势: four
+2026-02-12T14:09:58.234Z: [GestureControl] 收到检测: four(26)
+2026-02-12T14:09:58.234Z: [GestureControl] 有效检测: 1
+2026-02-12T14:09:58.287Z: [手势服务] 发送帧 #318, socket id: PkPh5_jAnDREgU6_AAAB
+2026-02-12T14:09:58.412Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:09:58.473Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:09:58.522Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:09:58.547Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:09:58.600Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:09:58.673Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:09:58.689Z: [手势服务] 收到事件: result 有数据
+2026-02-12T14:09:58.689Z: [手势服务] 收到结果: 1 个检测, 手势: three2
+2026-02-12T14:09:58.689Z: [GestureControl] 收到检测: three2(38)
+2026-02-12T14:09:58.689Z: [GestureControl] 有效检测: 1
+2026-02-12T14:09:58.761Z: [手势服务] 发送帧 #325, socket id: PkPh5_jAnDREgU6_AAAB
+2026-02-12T14:09:58.808Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:09:58.864Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:09:58.928Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:09:58.949Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:09:58.982Z: [手势服务] 收到事件: result 有数据
+2026-02-12T14:09:58.982Z: [手势服务] 收到结果: 1 个检测, 手势: four
+2026-02-12T14:09:58.982Z: [GestureControl] 收到检测: four(26)
+2026-02-12T14:09:58.982Z: [GestureControl] 有效检测: 1
+2026-02-12T14:09:59.016Z: [手势服务] 发送帧 #330, socket id: PkPh5_jAnDREgU6_AAAB
+2026-02-12T14:09:59.080Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:09:59.213Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:09:59.292Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:09:59.354Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:09:59.358Z: [手势服务] 收到事件: result 有数据
+2026-02-12T14:09:59.358Z: [手势服务] 收到结果: 1 个检测, 手势: four
+2026-02-12T14:09:59.358Z: [GestureControl] 收到检测: four(26)
+2026-02-12T14:09:59.358Z: [GestureControl] 有效检测: 1
+2026-02-12T14:09:59.403Z: [手势服务] 发送帧 #335, socket id: PkPh5_jAnDREgU6_AAAB
+2026-02-12T14:09:59.504Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:09:59.558Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:09:59.607Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:09:59.619Z: [手势服务] 收到事件: result 有数据
+2026-02-12T14:09:59.619Z: [手势服务] 收到结果: 0 个检测, 手势: 
+2026-02-12T14:09:59.671Z: [手势服务] 发送帧 #339, socket id: PkPh5_jAnDREgU6_AAAB
+2026-02-12T14:09:59.720Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:09:59.775Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:09:59.797Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:09:59.856Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:09:59.858Z: [手势服务] 收到事件: result 有数据
+2026-02-12T14:09:59.858Z: [手势服务] 收到结果: 1 个检测, 手势: three3
+2026-02-12T14:09:59.858Z: [GestureControl] 收到检测: three3(21)
+2026-02-12T14:09:59.858Z: [GestureControl] 有效检测: 1
+2026-02-12T14:09:59.927Z: [手势服务] 发送帧 #344, socket id: PkPh5_jAnDREgU6_AAAB
+2026-02-12T14:09:59.987Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:10:00.010Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:10:00.071Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:10:00.145Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:10:00.150Z: [手势服务] 收到事件: result 有数据
+2026-02-12T14:10:00.150Z: [手势服务] 收到结果: 0 个检测, 手势: 
+2026-02-12T14:10:00.188Z: [手势服务] 发送帧 #349, socket id: PkPh5_jAnDREgU6_AAAB
+2026-02-12T14:10:00.262Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:10:00.325Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:10:00.347Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:10:00.348Z: [手势服务] 收到事件: result 有数据
+2026-02-12T14:10:00.348Z: [手势服务] 收到结果: 0 个检测, 手势: 
+2026-02-12T14:10:00.402Z: [手势服务] 发送帧 #353, socket id: PkPh5_jAnDREgU6_AAAB
+2026-02-12T14:10:00.470Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:10:00.592Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:10:00.615Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:10:00.618Z: [手势服务] 收到事件: result 有数据
+2026-02-12T14:10:00.618Z: [手势服务] 收到结果: 0 个检测, 手势: 
+2026-02-12T14:10:00.700Z: [手势服务] 发送帧 #357, socket id: PkPh5_jAnDREgU6_AAAB
+2026-02-12T14:10:00.740Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:10:00.839Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:10:00.948Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:10:00.996Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:10:01.008Z: [手势服务] 收到事件: result 有数据
+2026-02-12T14:10:01.008Z: [手势服务] 收到结果: 0 个检测, 手势: 
+2026-02-12T14:10:01.102Z: [手势服务] 发送帧 #362, socket id: PkPh5_jAnDREgU6_AAAB
+2026-02-12T14:10:01.139Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:10:01.218Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:10:01.267Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:10:01.325Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:10:01.328Z: [手势服务] 收到事件: result 有数据
+2026-02-12T14:10:01.328Z: [手势服务] 收到结果: 1 个检测, 手势: four
+2026-02-12T14:10:01.328Z: [GestureControl] 收到检测: four(26)
+2026-02-12T14:10:01.328Z: [GestureControl] 有效检测: 1
+2026-02-12T14:10:01.393Z: [手势服务] 发送帧 #367, socket id: PkPh5_jAnDREgU6_AAAB
+2026-02-12T14:10:01.461Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:10:01.523Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:10:01.544Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:10:01.590Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:10:01.595Z: [手势服务] 收到事件: result 有数据
+2026-02-12T14:10:01.595Z: [手势服务] 收到结果: 1 个检测, 手势: three3
+2026-02-12T14:10:01.595Z: [GestureControl] 收到检测: three3(21)
+2026-02-12T14:10:01.595Z: [GestureControl] 有效检测: 1
+2026-02-12T14:10:01.664Z: [手势服务] 发送帧 #372, socket id: PkPh5_jAnDREgU6_AAAB
+2026-02-12T14:10:01.739Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:10:01.756Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:10:01.792Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:10:01.792Z: [手势服务] 收到事件: result 有数据
+2026-02-12T14:10:01.792Z: [手势服务] 收到结果: 0 个检测, 手势: 
+2026-02-12T14:10:01.853Z: [手势服务] 发送帧 #376, socket id: PkPh5_jAnDREgU6_AAAB
+2026-02-12T14:10:01.945Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:10:01.982Z: [手势服务] 收到事件: result 有数据
+2026-02-12T14:10:01.982Z: [手势服务] 收到结果: 0 个检测, 手势: 
+2026-02-12T14:10:02.006Z: [手势服务] 发送帧 #378, socket id: PkPh5_jAnDREgU6_AAAB
+2026-02-12T14:10:02.055Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:10:02.101Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:10:02.140Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:10:02.142Z: [手势服务] 收到事件: result 有数据
+2026-02-12T14:10:02.142Z: [手势服务] 收到结果: 0 个检测, 手势: 
+2026-02-12T14:10:02.186Z: [手势服务] 发送帧 #382, socket id: PkPh5_jAnDREgU6_AAAB
+2026-02-12T14:10:02.213Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:10:02.264Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:10:02.336Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:10:02.336Z: [手势服务] 收到事件: result 有数据
+2026-02-12T14:10:02.336Z: [手势服务] 收到结果: 0 个检测, 手势: 
+2026-02-12T14:10:02.395Z: [手势服务] 发送帧 #386, socket id: PkPh5_jAnDREgU6_AAAB
+2026-02-12T14:10:02.469Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:10:02.543Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:10:02.567Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:10:02.604Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:10:02.606Z: [手势服务] 收到事件: result 有数据
+2026-02-12T14:10:02.606Z: [手势服务] 收到结果: 0 个检测, 手势: 
+2026-02-12T14:10:02.666Z: [手势服务] 发送帧 #391, socket id: PkPh5_jAnDREgU6_AAAB
+2026-02-12T14:10:02.730Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:10:02.803Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:10:02.838Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:10:02.840Z: [手势服务] 收到事件: result 有数据
+2026-02-12T14:10:02.841Z: [手势服务] 收到结果: 0 个检测, 手势: 
+2026-02-12T14:10:02.870Z: [手势服务] 发送帧 #395, socket id: PkPh5_jAnDREgU6_AAAB
+2026-02-12T14:10:02.941Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:10:03.018Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:10:03.075Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:10:03.127Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:10:03.204Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:10:03.204Z: [手势服务] 收到事件: result 有数据
+2026-02-12T14:10:03.204Z: [手势服务] 收到结果: 1 个检测, 手势: palm
+2026-02-12T14:10:03.205Z: [GestureControl] 收到检测: palm(31)
+2026-02-12T14:10:03.205Z: [GestureControl] 有效检测: 1
+2026-02-12T14:10:03.205Z: [GestureControl] 识别动作: rotate
+2026-02-12T14:10:03.205Z: [GestureControl] 进入旋转模式, isRotationTriggered: true
+2026-02-12T14:10:03.205Z: [GestureControl] fingerPosition: {"x":160,"y":87,"z":-0.16397422552108765} landmarks: 21
+2026-02-12T14:10:03.205Z: [GestureControl] 发送finger-move (首次): {"deltaX":0,"deltaY":0,"position":{"x":480,"y":87}}
+2026-02-12T14:10:03.205Z: [MainView] 收到finger-move: {"deltaX":0,"deltaY":0,"position":{"x":480,"y":87}}
+2026-02-12T14:10:03.205Z: [MainView] deltaX: 0 deltaY: 0 position: {"x":480,"y":87}
+2026-02-12T14:10:03.205Z: [MainView] modelViewer: [object HTMLElement] cameraOrbit: 0.00deg 75.00deg 0.5m
+2026-02-12T14:10:03.205Z: [MainView] 设置camera-orbit: 0.00deg 75.00deg 0.5m 原: 0.00deg 75.00deg 0.5m
+2026-02-12T14:10:03.293Z: [手势服务] 发送帧 #401, socket id: PkPh5_jAnDREgU6_AAAB
+2026-02-12T14:10:03.342Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:10:03.342Z: GestureControl.stopTracking: 重置旋转动作触发状态
+2026-02-12T14:10:03.498Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:10:03.549Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:10:03.662Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:10:03.662Z: [手势服务] 收到事件: result 有数据
+2026-02-12T14:10:03.663Z: [手势服务] 收到结果: 1 个检测, 手势: palm
+2026-02-12T14:10:03.663Z: [GestureControl] 收到检测: palm(31)
+2026-02-12T14:10:03.663Z: [GestureControl] 有效检测: 1
+2026-02-12T14:10:03.663Z: [GestureControl] 识别动作: rotate
+2026-02-12T14:10:03.663Z: [GestureControl] 进入旋转模式, isRotationTriggered: true
+2026-02-12T14:10:03.663Z: [GestureControl] fingerPosition: {"x":160,"y":88,"z":-0.16763275861740112} landmarks: 21
+2026-02-12T14:10:03.663Z: [GestureControl] 发送finger-move (首次): {"deltaX":0,"deltaY":0,"position":{"x":480,"y":88}}
+2026-02-12T14:10:03.663Z: [MainView] 收到finger-move: {"deltaX":0,"deltaY":0,"position":{"x":480,"y":88}}
+2026-02-12T14:10:03.663Z: [MainView] deltaX: 0 deltaY: 0 position: {"x":480,"y":88}
+2026-02-12T14:10:03.663Z: [MainView] modelViewer: [object HTMLElement] cameraOrbit: 0.00deg 75.00deg 0.5m
+2026-02-12T14:10:03.663Z: [MainView] 设置camera-orbit: 0.00deg 75.00deg 0.5m 原: 0.00deg 75.00deg 0.5m
+2026-02-12T14:10:03.674Z: GestureControl.stopTracking: 重置旋转动作触发状态
+2026-02-12T14:10:03.759Z: [手势服务] 发送帧 #406, socket id: PkPh5_jAnDREgU6_AAAB
+2026-02-12T14:10:03.797Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:10:03.862Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:10:03.926Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:10:03.979Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:10:04.004Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:10:04.017Z: [手势服务] 收到事件: result 有数据
+2026-02-12T14:10:04.017Z: [手势服务] 收到结果: 1 个检测, 手势: palm
+2026-02-12T14:10:04.017Z: [GestureControl] 收到检测: palm(31)
+2026-02-12T14:10:04.018Z: [GestureControl] 有效检测: 1
+2026-02-12T14:10:04.018Z: [GestureControl] 识别动作: rotate
+2026-02-12T14:10:04.020Z: [GestureControl] 进入旋转模式, isRotationTriggered: true
+2026-02-12T14:10:04.021Z: [GestureControl] fingerPosition: {"x":159,"y":88,"z":-0.16412721574306488} landmarks: 21
+2026-02-12T14:10:04.021Z: [GestureControl] 发送finger-move (首次): {"deltaX":0,"deltaY":0,"position":{"x":481,"y":88}}
+2026-02-12T14:10:04.022Z: [MainView] 收到finger-move: {"deltaX":0,"deltaY":0,"position":{"x":481,"y":88}}
+2026-02-12T14:10:04.022Z: [MainView] deltaX: 0 deltaY: 0 position: {"x":481,"y":88}
+2026-02-12T14:10:04.022Z: [MainView] modelViewer: [object HTMLElement] cameraOrbit: 0.00deg 75.00deg 0.5m
+2026-02-12T14:10:04.022Z: [MainView] 设置camera-orbit: 0.00deg 75.00deg 0.5m 原: 0.00deg 75.00deg 0.5m
+2026-02-12T14:10:04.067Z: [手势服务] 发送帧 #412, socket id: PkPh5_jAnDREgU6_AAAB
+2026-02-12T14:10:04.086Z: GestureControl.stopTracking: 重置旋转动作触发状态
+2026-02-12T14:10:04.167Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:10:04.285Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:10:04.327Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:10:04.338Z: [手势服务] 收到事件: result 有数据
+2026-02-12T14:10:04.338Z: [手势服务] 收到结果: 1 个检测, 手势: part_hand_heart
+2026-02-12T14:10:04.338Z: [GestureControl] 收到检测: part_hand_heart(11)
+2026-02-12T14:10:04.338Z: [GestureControl] 有效检测: 1
+2026-02-12T14:10:04.420Z: [手势服务] 发送帧 #416, socket id: PkPh5_jAnDREgU6_AAAB
+2026-02-12T14:10:04.468Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:10:04.625Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:10:04.627Z: [手势服务] 收到事件: result 有数据
+2026-02-12T14:10:04.627Z: [手势服务] 收到结果: 0 个检测, 手势: 
+2026-02-12T14:10:04.668Z: [手势服务] 发送帧 #419, socket id: PkPh5_jAnDREgU6_AAAB
+2026-02-12T14:10:04.855Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:10:04.878Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:10:04.879Z: [手势服务] 收到事件: result 有数据
+2026-02-12T14:10:04.879Z: [手势服务] 收到结果: 0 个检测, 手势: 
+2026-02-12T14:10:04.970Z: [手势服务] 发送帧 #422, socket id: PkPh5_jAnDREgU6_AAAB
+2026-02-12T14:10:05.007Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:10:05.149Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:10:05.150Z: [手势服务] 收到事件: result 有数据
+2026-02-12T14:10:05.150Z: [手势服务] 收到结果: 0 个检测, 手势: 
+2026-02-12T14:10:05.251Z: [手势服务] 发送帧 #425, socket id: PkPh5_jAnDREgU6_AAAB
+2026-02-12T14:10:05.273Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:10:05.347Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:10:05.455Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:10:05.490Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:10:05.547Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:10:05.655Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:10:05.656Z: [手势服务] 收到事件: result 有数据
+2026-02-12T14:10:05.656Z: [手势服务] 收到结果: 1 个检测, 手势: peace
+2026-02-12T14:10:05.656Z: [GestureControl] 收到检测: peace(32)
+2026-02-12T14:10:05.656Z: [GestureControl] 有效检测: 1
+2026-02-12T14:10:05.677Z: [手势服务] 发送帧 #432, socket id: PkPh5_jAnDREgU6_AAAB
+2026-02-12T14:10:05.811Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:10:05.859Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:10:05.860Z: [手势服务] 收到事件: result 有数据
+2026-02-12T14:10:05.860Z: [手势服务] 收到结果: 0 个检测, 手势: 
+2026-02-12T14:10:05.879Z: [手势服务] 发送帧 #435, socket id: PkPh5_jAnDREgU6_AAAB
+2026-02-12T14:10:05.967Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:10:06.119Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:10:06.121Z: [手势服务] 收到事件: result 有数据
+2026-02-12T14:10:06.121Z: [手势服务] 收到结果: 1 个检测, 手势: three2
+2026-02-12T14:10:06.121Z: [GestureControl] 收到检测: three2(38)
+2026-02-12T14:10:06.121Z: [GestureControl] 有效检测: 1
+2026-02-12T14:10:06.144Z: [手势服务] 发送帧 #438, socket id: PkPh5_jAnDREgU6_AAAB
+2026-02-12T14:10:06.219Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:10:06.296Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:10:06.343Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:10:06.430Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:10:06.431Z: [手势服务] 收到事件: result 有数据
+2026-02-12T14:10:06.431Z: [手势服务] 收到结果: 1 个检测, 手势: palm
+2026-02-12T14:10:06.431Z: [GestureControl] 收到检测: palm(31)
+2026-02-12T14:10:06.431Z: [GestureControl] 有效检测: 1
+2026-02-12T14:10:06.431Z: [GestureControl] 识别动作: rotate
+2026-02-12T14:10:06.432Z: [GestureControl] 进入旋转模式, isRotationTriggered: true
+2026-02-12T14:10:06.432Z: [GestureControl] fingerPosition: {"x":139,"y":95,"z":-0.15092281997203827} landmarks: 21
+2026-02-12T14:10:06.432Z: [GestureControl] 发送finger-move (首次): {"deltaX":0,"deltaY":0,"position":{"x":501,"y":95}}
+2026-02-12T14:10:06.432Z: [MainView] 收到finger-move: {"deltaX":0,"deltaY":0,"position":{"x":501,"y":95}}
+2026-02-12T14:10:06.432Z: [MainView] deltaX: 0 deltaY: 0 position: {"x":501,"y":95}
+2026-02-12T14:10:06.432Z: [MainView] modelViewer: [object HTMLElement] cameraOrbit: 0.00deg 75.00deg 0.5m
+2026-02-12T14:10:06.432Z: [MainView] 设置camera-orbit: 0.00deg 75.00deg 0.5m 原: 0.00deg 75.00deg 0.5m
+2026-02-12T14:10:06.503Z: [手势服务] 发送帧 #443, socket id: PkPh5_jAnDREgU6_AAAB
+2026-02-12T14:10:06.544Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:10:06.545Z: GestureControl.stopTracking: 重置旋转动作触发状态
+2026-02-12T14:10:06.607Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:10:06.662Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:10:06.749Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:10:06.749Z: [手势服务] 收到事件: result 有数据
+2026-02-12T14:10:06.749Z: [手势服务] 收到结果: 1 个检测, 手势: part_hand_heart
+2026-02-12T14:10:06.749Z: [GestureControl] 收到检测: part_hand_heart(11)
+2026-02-12T14:10:06.749Z: [GestureControl] 有效检测: 1
+2026-02-12T14:10:06.799Z: [手势服务] 发送帧 #448, socket id: PkPh5_jAnDREgU6_AAAB
+2026-02-12T14:10:06.904Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:10:06.955Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:10:07.052Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:10:07.092Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:10:07.096Z: [手势服务] 收到事件: result 有数据
+2026-02-12T14:10:07.097Z: [手势服务] 收到结果: 1 个检测, 手势: part_hand_heart
+2026-02-12T14:10:07.097Z: [GestureControl] 收到检测: part_hand_heart(11)
+2026-02-12T14:10:07.097Z: [GestureControl] 有效检测: 1
+2026-02-12T14:10:07.137Z: [手势服务] 发送帧 #453, socket id: PkPh5_jAnDREgU6_AAAB
+2026-02-12T14:10:07.269Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:10:07.334Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:10:07.449Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:10:07.451Z: [手势服务] 收到事件: result 有数据
+2026-02-12T14:10:07.451Z: [手势服务] 收到结果: 1 个检测, 手势: palm
+2026-02-12T14:10:07.451Z: [GestureControl] 收到检测: palm(31)
+2026-02-12T14:10:07.451Z: [GestureControl] 有效检测: 1
+2026-02-12T14:10:07.451Z: [GestureControl] 识别动作: rotate
+2026-02-12T14:10:07.452Z: [GestureControl] 进入旋转模式, isRotationTriggered: true
+2026-02-12T14:10:07.452Z: [GestureControl] fingerPosition: {"x":117,"y":102,"z":-0.14554598927497864} landmarks: 21
+2026-02-12T14:10:07.452Z: [GestureControl] 发送finger-move (首次): {"deltaX":0,"deltaY":0,"position":{"x":523,"y":102}}
+2026-02-12T14:10:07.452Z: [MainView] 收到finger-move: {"deltaX":0,"deltaY":0,"position":{"x":523,"y":102}}
+2026-02-12T14:10:07.452Z: [MainView] deltaX: 0 deltaY: 0 position: {"x":523,"y":102}
+2026-02-12T14:10:07.453Z: [MainView] modelViewer: [object HTMLElement] cameraOrbit: 0.00deg 75.00deg 0.5m
+2026-02-12T14:10:07.453Z: [MainView] 设置camera-orbit: 0.00deg 75.00deg 0.5m 原: 0.00deg 75.00deg 0.5m
+2026-02-12T14:10:07.472Z: [手势服务] 发送帧 #457, socket id: PkPh5_jAnDREgU6_AAAB
+2026-02-12T14:10:07.556Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:10:07.556Z: GestureControl.stopTracking: 重置旋转动作触发状态
+2026-02-12T14:10:07.628Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:10:07.672Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:10:07.758Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:10:07.848Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:10:07.851Z: [手势服务] 收到事件: result 有数据
+2026-02-12T14:10:07.851Z: [手势服务] 收到结果: 1 个检测, 手势: palm
+2026-02-12T14:10:07.851Z: [GestureControl] 收到检测: palm(31)
+2026-02-12T14:10:07.851Z: [GestureControl] 有效检测: 1
+2026-02-12T14:10:07.851Z: [GestureControl] 识别动作: rotate
+2026-02-12T14:10:07.851Z: [GestureControl] 进入旋转模式, isRotationTriggered: true
+2026-02-12T14:10:07.851Z: [GestureControl] fingerPosition: {"x":159,"y":91,"z":-0.15482200682163239} landmarks: 21
+2026-02-12T14:10:07.851Z: [GestureControl] 发送finger-move (首次): {"deltaX":0,"deltaY":0,"position":{"x":481,"y":91}}
+2026-02-12T14:10:07.851Z: [MainView] 收到finger-move: {"deltaX":0,"deltaY":0,"position":{"x":481,"y":91}}
+2026-02-12T14:10:07.851Z: [MainView] deltaX: 0 deltaY: 0 position: {"x":481,"y":91}
+2026-02-12T14:10:07.851Z: [MainView] modelViewer: [object HTMLElement] cameraOrbit: 0.00deg 75.00deg 0.5m
+2026-02-12T14:10:07.851Z: [MainView] 设置camera-orbit: 0.00deg 75.00deg 0.5m 原: 0.00deg 75.00deg 0.5m
+2026-02-12T14:10:07.869Z: [手势服务] 发送帧 #463, socket id: PkPh5_jAnDREgU6_AAAB
+2026-02-12T14:10:08.001Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:10:08.001Z: GestureControl.stopTracking: 重置旋转动作触发状态
+2026-02-12T14:10:08.077Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:10:08.191Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:10:08.194Z: [手势服务] 收到事件: result 有数据
+2026-02-12T14:10:08.194Z: [手势服务] 收到结果: 1 个检测, 手势: palm
+2026-02-12T14:10:08.194Z: [GestureControl] 收到检测: palm(31)
+2026-02-12T14:10:08.194Z: [GestureControl] 有效检测: 1
+2026-02-12T14:10:08.194Z: [GestureControl] 识别动作: rotate
+2026-02-12T14:10:08.194Z: [GestureControl] 进入旋转模式, isRotationTriggered: true
+2026-02-12T14:10:08.194Z: [GestureControl] fingerPosition: {"x":187,"y":96,"z":-0.1722077876329422} landmarks: 21
+2026-02-12T14:10:08.195Z: [GestureControl] 发送finger-move (首次): {"deltaX":0,"deltaY":0,"position":{"x":453,"y":96}}
+2026-02-12T14:10:08.195Z: [MainView] 收到finger-move: {"deltaX":0,"deltaY":0,"position":{"x":453,"y":96}}
+2026-02-12T14:10:08.195Z: [MainView] deltaX: 0 deltaY: 0 position: {"x":453,"y":96}
+2026-02-12T14:10:08.195Z: [MainView] modelViewer: [object HTMLElement] cameraOrbit: 0.00deg 75.00deg 0.5m
+2026-02-12T14:10:08.195Z: [MainView] 设置camera-orbit: 0.00deg 75.00deg 0.5m 原: 0.00deg 75.00deg 0.5m
+2026-02-12T14:10:08.215Z: [手势服务] 发送帧 #467, socket id: PkPh5_jAnDREgU6_AAAB
+2026-02-12T14:10:08.332Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:10:08.333Z: GestureControl.stopTracking: 重置旋转动作触发状态
+2026-02-12T14:10:08.395Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:10:08.459Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:10:08.525Z: [手势服务] 收到事件: result 有数据
+2026-02-12T14:10:08.525Z: [手势服务] 收到结果: 1 个检测, 手势: palm
+2026-02-12T14:10:08.525Z: [GestureControl] 收到检测: palm(31)
+2026-02-12T14:10:08.525Z: [GestureControl] 有效检测: 1
+2026-02-12T14:10:08.525Z: [GestureControl] 识别动作: rotate
+2026-02-12T14:10:08.525Z: [GestureControl] 进入旋转模式, isRotationTriggered: true
+2026-02-12T14:10:08.525Z: [GestureControl] fingerPosition: {"x":201,"y":101,"z":-0.16146498918533325} landmarks: 21
+2026-02-12T14:10:08.526Z: [GestureControl] 发送finger-move (首次): {"deltaX":0,"deltaY":0,"position":{"x":439,"y":101}}
+2026-02-12T14:10:08.526Z: [MainView] 收到finger-move: {"deltaX":0,"deltaY":0,"position":{"x":439,"y":101}}
+2026-02-12T14:10:08.526Z: [MainView] deltaX: 0 deltaY: 0 position: {"x":439,"y":101}
+2026-02-12T14:10:08.526Z: [MainView] modelViewer: [object HTMLElement] cameraOrbit: 0.00deg 75.00deg 0.5m
+2026-02-12T14:10:08.526Z: [MainView] 设置camera-orbit: 0.00deg 75.00deg 0.5m 原: 0.00deg 75.00deg 0.5m
+2026-02-12T14:10:08.551Z: [手势服务] 发送帧 #471, socket id: PkPh5_jAnDREgU6_AAAB
+2026-02-12T14:10:08.652Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:10:08.652Z: GestureControl.stopTracking: 重置旋转动作触发状态
+2026-02-12T14:10:08.697Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:10:08.751Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:10:08.798Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:10:08.828Z: [手势服务] 收到事件: result 有数据
+2026-02-12T14:10:08.828Z: [手势服务] 收到结果: 1 个检测, 手势: four
+2026-02-12T14:10:08.828Z: [GestureControl] 收到检测: four(26)
+2026-02-12T14:10:08.828Z: [GestureControl] 有效检测: 1
+2026-02-12T14:10:08.895Z: [手势服务] 发送帧 #476, socket id: PkPh5_jAnDREgU6_AAAB
+2026-02-12T14:10:08.933Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:10:08.970Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:10:09.074Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:10:09.118Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:10:09.140Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:10:09.154Z: [手势服务] 收到事件: result 有数据
+2026-02-12T14:10:09.154Z: [手势服务] 收到结果: 1 个检测, 手势: four
+2026-02-12T14:10:09.154Z: [GestureControl] 收到检测: four(26)
+2026-02-12T14:10:09.154Z: [GestureControl] 有效检测: 1
+2026-02-12T14:10:09.223Z: [手势服务] 发送帧 #482, socket id: PkPh5_jAnDREgU6_AAAB
+2026-02-12T14:10:09.274Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:10:09.413Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:10:09.466Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:10:09.518Z: [手势服务] 收到事件: result 有数据
+2026-02-12T14:10:09.518Z: [手势服务] 收到结果: 1 个检测, 手势: four
+2026-02-12T14:10:09.518Z: [GestureControl] 收到检测: four(26)
+2026-02-12T14:10:09.518Z: [GestureControl] 有效检测: 1
+2026-02-12T14:10:09.562Z: [手势服务] 发送帧 #486, socket id: PkPh5_jAnDREgU6_AAAB
+2026-02-12T14:10:09.678Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:10:09.736Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:10:09.776Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:10:09.798Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:10:09.856Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:10:09.857Z: [手势服务] 收到事件: result 有数据
+2026-02-12T14:10:09.857Z: [手势服务] 收到结果: 1 个检测, 手势: four
+2026-02-12T14:10:09.857Z: [GestureControl] 收到检测: four(26)
+2026-02-12T14:10:09.857Z: [GestureControl] 有效检测: 1
+2026-02-12T14:10:09.878Z: [手势服务] 发送帧 #492, socket id: PkPh5_jAnDREgU6_AAAB
+2026-02-12T14:10:10.007Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:10:10.071Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:10:10.158Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:10:10.203Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:10:10.204Z: [手势服务] 收到事件: result 有数据
+2026-02-12T14:10:10.204Z: [手势服务] 收到结果: 1 个检测, 手势: four
+2026-02-12T14:10:10.204Z: [GestureControl] 收到检测: four(26)
+2026-02-12T14:10:10.205Z: [GestureControl] 有效检测: 1
+2026-02-12T14:10:10.317Z: [手势服务] 发送帧 #497, socket id: PkPh5_jAnDREgU6_AAAB
+2026-02-12T14:10:10.341Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:10:10.442Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:10:10.470Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:10:10.547Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:10:10.595Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:10:10.682Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:10:10.684Z: [手势服务] 收到事件: result 有数据
+2026-02-12T14:10:10.684Z: [手势服务] 收到结果: 1 个检测, 手势: four
+2026-02-12T14:10:10.684Z: [GestureControl] 收到检测: four(26)
+2026-02-12T14:10:10.684Z: [GestureControl] 有效检测: 1
+2026-02-12T14:10:10.750Z: [手势服务] 发送帧 #504, socket id: PkPh5_jAnDREgU6_AAAB
+2026-02-12T14:10:10.796Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:10:10.929Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:10:10.992Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:10:10.996Z: [手势服务] 收到事件: result 有数据
+2026-02-12T14:10:10.996Z: [手势服务] 收到结果: 1 个检测, 手势: part_hand_heart
+2026-02-12T14:10:10.996Z: [GestureControl] 收到检测: part_hand_heart(11)
+2026-02-12T14:10:10.996Z: [GestureControl] 有效检测: 1
+2026-02-12T14:10:11.021Z: [手势服务] 发送帧 #508, socket id: PkPh5_jAnDREgU6_AAAB
+2026-02-12T14:10:11.119Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:10:11.156Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:10:11.236Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:10:11.272Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:10:11.336Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:10:11.337Z: [手势服务] 收到事件: result 有数据
+2026-02-12T14:10:11.337Z: [手势服务] 收到结果: 1 个检测, 手势: four
+2026-02-12T14:10:11.337Z: [GestureControl] 收到检测: four(26)
+2026-02-12T14:10:11.337Z: [GestureControl] 有效检测: 1
+2026-02-12T14:10:11.456Z: [手势服务] 发送帧 #514, socket id: PkPh5_jAnDREgU6_AAAB
+2026-02-12T14:10:11.479Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:10:11.559Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:10:11.641Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:10:11.683Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:10:11.731Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:10:11.732Z: [手势服务] 收到事件: result 有数据
+2026-02-12T14:10:11.732Z: [手势服务] 收到结果: 1 个检测, 手势: palm
+2026-02-12T14:10:11.732Z: [GestureControl] 收到检测: palm(31)
+2026-02-12T14:10:11.732Z: [GestureControl] 有效检测: 1
+2026-02-12T14:10:11.732Z: [GestureControl] 识别动作: rotate
+2026-02-12T14:10:11.732Z: [GestureControl] 进入旋转模式, isRotationTriggered: true
+2026-02-12T14:10:11.732Z: [GestureControl] fingerPosition: {"x":130,"y":94,"z":-0.13437789678573608} landmarks: 21
+2026-02-12T14:10:11.732Z: [GestureControl] 发送finger-move (首次): {"deltaX":0,"deltaY":0,"position":{"x":510,"y":94}}
+2026-02-12T14:10:11.733Z: [MainView] 收到finger-move: {"deltaX":0,"deltaY":0,"position":{"x":510,"y":94}}
+2026-02-12T14:10:11.733Z: [MainView] deltaX: 0 deltaY: 0 position: {"x":510,"y":94}
+2026-02-12T14:10:11.733Z: [MainView] modelViewer: [object HTMLElement] cameraOrbit: 0.00deg 75.00deg 0.5m
+2026-02-12T14:10:11.733Z: [MainView] 设置camera-orbit: 0.00deg 75.00deg 0.5m 原: 0.00deg 75.00deg 0.5m
+2026-02-12T14:10:11.749Z: GestureControl.stopTracking: 重置旋转动作触发状态
+2026-02-12T14:10:11.851Z: [手势服务] 发送帧 #520, socket id: PkPh5_jAnDREgU6_AAAB
+2026-02-12T14:10:11.879Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:10:11.954Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:10:12.057Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:10:12.124Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:10:12.125Z: [手势服务] 收到事件: result 有数据
+2026-02-12T14:10:12.126Z: [手势服务] 收到结果: 1 个检测, 手势: three3
+2026-02-12T14:10:12.126Z: [GestureControl] 收到检测: three3(21)
+2026-02-12T14:10:12.126Z: [GestureControl] 有效检测: 1
+2026-02-12T14:10:12.147Z: [手势服务] 发送帧 #525, socket id: PkPh5_jAnDREgU6_AAAB
+2026-02-12T14:10:12.227Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:10:12.287Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:10:12.333Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:10:12.378Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:10:12.399Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:10:12.415Z: [手势服务] 收到事件: result 有数据
+2026-02-12T14:10:12.415Z: [手势服务] 收到结果: 1 个检测, 手势: three2
+2026-02-12T14:10:12.415Z: [GestureControl] 收到检测: three2(38)
+2026-02-12T14:10:12.415Z: [GestureControl] 有效检测: 1
+2026-02-12T14:10:12.470Z: [手势服务] 发送帧 #531, socket id: PkPh5_jAnDREgU6_AAAB
+2026-02-12T14:10:12.594Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:10:12.636Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:10:12.686Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:10:12.734Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:10:12.815Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:10:12.846Z: [手势服务] 收到事件: result 有数据
+2026-02-12T14:10:12.846Z: [手势服务] 收到结果: 1 个检测, 手势: part_hand_heart
+2026-02-12T14:10:12.846Z: [GestureControl] 收到检测: part_hand_heart(11)
+2026-02-12T14:10:12.846Z: [GestureControl] 有效检测: 1
+2026-02-12T14:10:12.879Z: [手势服务] 发送帧 #537, socket id: PkPh5_jAnDREgU6_AAAB
+2026-02-12T14:10:12.969Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:10:13.025Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:10:13.085Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:10:13.126Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:10:13.224Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:10:13.285Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:10:13.286Z: [手势服务] 收到事件: result 有数据
+2026-02-12T14:10:13.286Z: [手势服务] 收到结果: 1 个检测, 手势: palm
+2026-02-12T14:10:13.286Z: [GestureControl] 收到检测: palm(31)
+2026-02-12T14:10:13.286Z: [GestureControl] 有效检测: 1
+2026-02-12T14:10:13.287Z: [GestureControl] 识别动作: rotate
+2026-02-12T14:10:13.287Z: [GestureControl] 进入旋转模式, isRotationTriggered: true
+2026-02-12T14:10:13.287Z: [GestureControl] fingerPosition: {"x":154,"y":99,"z":-0.14903539419174194} landmarks: 21
+2026-02-12T14:10:13.287Z: [GestureControl] 发送finger-move (首次): {"deltaX":0,"deltaY":0,"position":{"x":486,"y":99}}
+2026-02-12T14:10:13.287Z: [MainView] 收到finger-move: {"deltaX":0,"deltaY":0,"position":{"x":486,"y":99}}
+2026-02-12T14:10:13.287Z: [MainView] deltaX: 0 deltaY: 0 position: {"x":486,"y":99}
+2026-02-12T14:10:13.287Z: [MainView] modelViewer: [object HTMLElement] cameraOrbit: 0.00deg 75.00deg 0.5m
+2026-02-12T14:10:13.287Z: [MainView] 设置camera-orbit: 0.00deg 75.00deg 0.5m 原: 0.00deg 75.00deg 0.5m
+2026-02-12T14:10:13.334Z: [手势服务] 发送帧 #544, socket id: PkPh5_jAnDREgU6_AAAB
+2026-02-12T14:10:13.351Z: GestureControl.stopTracking: 重置旋转动作触发状态
+2026-02-12T14:10:13.479Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:10:13.528Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:10:13.547Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:10:13.618Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:10:13.620Z: [手势服务] 收到事件: result 有数据
+2026-02-12T14:10:13.620Z: [手势服务] 收到结果: 1 个检测, 手势: peace_inverted
+2026-02-12T14:10:13.620Z: [GestureControl] 收到检测: peace_inverted(33)
+2026-02-12T14:10:13.620Z: [GestureControl] 有效检测: 1
+2026-02-12T14:10:13.670Z: [手势服务] 发送帧 #549, socket id: PkPh5_jAnDREgU6_AAAB
+2026-02-12T14:10:13.830Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:10:13.873Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:10:13.953Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:10:14.024Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:10:14.025Z: [手势服务] 收到事件: result 有数据
+2026-02-12T14:10:14.025Z: [手势服务] 收到结果: 1 个检测, 手势: palm
+2026-02-12T14:10:14.026Z: [GestureControl] 收到检测: palm(31)
+2026-02-12T14:10:14.026Z: [GestureControl] 有效检测: 1
+2026-02-12T14:10:14.027Z: [GestureControl] 识别动作: rotate
+2026-02-12T14:10:14.027Z: [GestureControl] 进入旋转模式, isRotationTriggered: true
+2026-02-12T14:10:14.027Z: [GestureControl] fingerPosition: {"x":191,"y":93,"z":-0.16970759630203247} landmarks: 21
+2026-02-12T14:10:14.028Z: [GestureControl] 发送finger-move (首次): {"deltaX":0,"deltaY":0,"position":{"x":449,"y":93}}
+2026-02-12T14:10:14.028Z: [MainView] 收到finger-move: {"deltaX":0,"deltaY":0,"position":{"x":449,"y":93}}
+2026-02-12T14:10:14.028Z: [MainView] deltaX: 0 deltaY: 0 position: {"x":449,"y":93}
+2026-02-12T14:10:14.028Z: [MainView] modelViewer: [object HTMLElement] cameraOrbit: 0.00deg 75.00deg 0.5m
+2026-02-12T14:10:14.028Z: [MainView] 设置camera-orbit: 0.00deg 75.00deg 0.5m 原: 0.00deg 75.00deg 0.5m
+2026-02-12T14:10:14.070Z: [手势服务] 发送帧 #554, socket id: PkPh5_jAnDREgU6_AAAB
+2026-02-12T14:10:14.084Z: GestureControl.stopTracking: 重置旋转动作触发状态
+2026-02-12T14:10:14.203Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:10:14.237Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:10:14.300Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:10:14.343Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:10:14.408Z: [手势服务] 收到事件: result 有数据
+2026-02-12T14:10:14.408Z: [手势服务] 收到结果: 1 个检测, 手势: four
+2026-02-12T14:10:14.409Z: [GestureControl] 收到检测: four(26)
+2026-02-12T14:10:14.409Z: [GestureControl] 有效检测: 1
+2026-02-12T14:10:14.426Z: [手势服务] 发送帧 #559, socket id: PkPh5_jAnDREgU6_AAAB
+2026-02-12T14:10:14.517Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:10:14.553Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:10:14.636Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:10:14.669Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:10:14.725Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:10:14.726Z: [手势服务] 收到事件: result 有数据
+2026-02-12T14:10:14.726Z: [手势服务] 收到结果: 1 个检测, 手势: palm
+2026-02-12T14:10:14.726Z: [GestureControl] 收到检测: palm(31)
+2026-02-12T14:10:14.726Z: [GestureControl] 有效检测: 1
+2026-02-12T14:10:14.726Z: [GestureControl] 识别动作: rotate
+2026-02-12T14:10:14.726Z: [GestureControl] 进入旋转模式, isRotationTriggered: true
+2026-02-12T14:10:14.727Z: [GestureControl] fingerPosition: {"x":142,"y":94,"z":-0.13676941394805908} landmarks: 21
+2026-02-12T14:10:14.727Z: [GestureControl] 发送finger-move (首次): {"deltaX":0,"deltaY":0,"position":{"x":498,"y":94}}
+2026-02-12T14:10:14.727Z: [MainView] 收到finger-move: {"deltaX":0,"deltaY":0,"position":{"x":498,"y":94}}
+2026-02-12T14:10:14.727Z: [MainView] deltaX: 0 deltaY: 0 position: {"x":498,"y":94}
+2026-02-12T14:10:14.727Z: [MainView] modelViewer: [object HTMLElement] cameraOrbit: 0.00deg 75.00deg 0.5m
+2026-02-12T14:10:14.727Z: [MainView] 设置camera-orbit: 0.00deg 75.00deg 0.5m 原: 0.00deg 75.00deg 0.5m
+2026-02-12T14:10:14.740Z: GestureControl.stopTracking: 重置旋转动作触发状态
+2026-02-12T14:10:14.816Z: [手势服务] 发送帧 #565, socket id: PkPh5_jAnDREgU6_AAAB
+2026-02-12T14:10:14.874Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:10:15.000Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:10:15.064Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:10:15.086Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:10:15.189Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:10:15.192Z: [手势服务] 收到事件: result 有数据
+2026-02-12T14:10:15.192Z: [手势服务] 收到结果: 1 个检测, 手势: palm
+2026-02-12T14:10:15.192Z: [GestureControl] 收到检测: palm(31)
+2026-02-12T14:10:15.192Z: [GestureControl] 有效检测: 1
+2026-02-12T14:10:15.192Z: [GestureControl] 识别动作: rotate
+2026-02-12T14:10:15.192Z: [GestureControl] 进入旋转模式, isRotationTriggered: true
+2026-02-12T14:10:15.192Z: [GestureControl] fingerPosition: {"x":119,"y":98,"z":-0.13937965035438538} landmarks: 21
+2026-02-12T14:10:15.192Z: [GestureControl] 发送finger-move (首次): {"deltaX":0,"deltaY":0,"position":{"x":521,"y":98}}
+2026-02-12T14:10:15.193Z: [MainView] 收到finger-move: {"deltaX":0,"deltaY":0,"position":{"x":521,"y":98}}
+2026-02-12T14:10:15.193Z: [MainView] deltaX: 0 deltaY: 0 position: {"x":521,"y":98}
+2026-02-12T14:10:15.193Z: [MainView] modelViewer: [object HTMLElement] cameraOrbit: 0.00deg 75.00deg 0.5m
+2026-02-12T14:10:15.194Z: [MainView] 设置camera-orbit: 0.00deg 75.00deg 0.5m 原: 0.00deg 75.00deg 0.5m
+2026-02-12T14:10:15.220Z: [手势服务] 发送帧 #571, socket id: PkPh5_jAnDREgU6_AAAB
+2026-02-12T14:10:15.282Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:10:15.282Z: GestureControl.stopTracking: 重置旋转动作触发状态
+2026-02-12T14:10:15.351Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:10:15.468Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:10:15.469Z: [手势服务] 收到事件: result 有数据
+2026-02-12T14:10:15.469Z: [手势服务] 收到结果: 1 个检测, 手势: palm
+2026-02-12T14:10:15.469Z: [GestureControl] 收到检测: palm(31)
+2026-02-12T14:10:15.469Z: [GestureControl] 有效检测: 1
+2026-02-12T14:10:15.469Z: [GestureControl] 识别动作: rotate
+2026-02-12T14:10:15.470Z: [GestureControl] 进入旋转模式, isRotationTriggered: true
+2026-02-12T14:10:15.470Z: [GestureControl] fingerPosition: {"x":117,"y":101,"z":-0.1390424221754074} landmarks: 21
+2026-02-12T14:10:15.470Z: [GestureControl] 发送finger-move (首次): {"deltaX":0,"deltaY":0,"position":{"x":523,"y":101}}
+2026-02-12T14:10:15.470Z: [MainView] 收到finger-move: {"deltaX":0,"deltaY":0,"position":{"x":523,"y":101}}
+2026-02-12T14:10:15.470Z: [MainView] deltaX: 0 deltaY: 0 position: {"x":523,"y":101}
+2026-02-12T14:10:15.470Z: [MainView] modelViewer: [object HTMLElement] cameraOrbit: 0.00deg 75.00deg 0.5m
+2026-02-12T14:10:15.470Z: [MainView] 设置camera-orbit: 0.00deg 75.00deg 0.5m 原: 0.00deg 75.00deg 0.5m
+2026-02-12T14:10:15.483Z: GestureControl.stopTracking: 重置旋转动作触发状态
+2026-02-12T14:10:15.588Z: [手势服务] 发送帧 #575, socket id: PkPh5_jAnDREgU6_AAAB
+2026-02-12T14:10:15.612Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:10:15.712Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:10:15.757Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:10:15.808Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:10:15.850Z: [手势服务] 收到事件: result 有数据
+2026-02-12T14:10:15.850Z: [手势服务] 收到结果: 1 个检测, 手势: dislike
+2026-02-12T14:10:15.850Z: [GestureControl] 收到检测: dislike(24)
+2026-02-12T14:10:15.850Z: [GestureControl] 有效检测: 1
+2026-02-12T14:10:15.850Z: [GestureControl] 识别动作: rotate
+2026-02-12T14:10:15.850Z: [GestureControl] 进入旋转模式, isRotationTriggered: true
+2026-02-12T14:10:15.851Z: [GestureControl] fingerPosition: null landmarks: 0
+2026-02-12T14:10:15.851Z: [GestureControl] 无fingerPosition，使用bbox中心
+2026-02-12T14:10:15.851Z: [MainView] 收到finger-move: {"deltaX":0,"deltaY":0,"position":{"x":476,"y":222}}
+2026-02-12T14:10:15.851Z: [MainView] deltaX: 0 deltaY: 0 position: {"x":476,"y":222}
+2026-02-12T14:10:15.851Z: [MainView] modelViewer: [object HTMLElement] cameraOrbit: 0.00deg 75.00deg 0.5m
+2026-02-12T14:10:15.851Z: [MainView] 设置camera-orbit: 0.00deg 75.00deg 0.5m 原: 0.00deg 75.00deg 0.5m
+2026-02-12T14:10:15.891Z: [手势服务] 发送帧 #580, socket id: PkPh5_jAnDREgU6_AAAB
+2026-02-12T14:10:16.014Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:10:16.015Z: GestureControl.stopTracking: 重置旋转动作触发状态
+2026-02-12T14:10:16.070Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:10:16.071Z: [手势服务] 收到事件: result 有数据
+2026-02-12T14:10:16.071Z: [手势服务] 收到结果: 0 个检测, 手势: 
+2026-02-12T14:10:16.156Z: [手势服务] 发送帧 #583, socket id: PkPh5_jAnDREgU6_AAAB
+2026-02-12T14:10:16.253Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:10:16.280Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:10:16.393Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:10:16.469Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:10:16.472Z: [手势服务] 收到事件: result 有数据
+2026-02-12T14:10:16.472Z: [手势服务] 收到结果: 0 个检测, 手势: 
+2026-02-12T14:10:16.501Z: [手势服务] 发送帧 #588, socket id: PkPh5_jAnDREgU6_AAAB
+2026-02-12T14:10:16.566Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:10:16.604Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:10:16.691Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:10:16.739Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:10:16.740Z: [手势服务] 收到事件: result 有数据
+2026-02-12T14:10:16.740Z: [手势服务] 收到结果: 0 个检测, 手势: 
+2026-02-12T14:10:16.849Z: [手势服务] 发送帧 #593, socket id: PkPh5_jAnDREgU6_AAAB
+2026-02-12T14:10:16.871Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:10:16.946Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:10:17.083Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:10:17.084Z: [手势服务] 收到事件: result 有数据
+2026-02-12T14:10:17.084Z: [手势服务] 收到结果: 0 个检测, 手势: 
+2026-02-12T14:10:17.131Z: [手势服务] 发送帧 #597, socket id: PkPh5_jAnDREgU6_AAAB
+2026-02-12T14:10:17.236Z: [WARN] [手势服务] 上一个请求未完成，跳过
+2026-02-12T14:10:17.238Z: === 切换摄像头事件触发 ===
+2026-02-12T14:10:17.238Z: 摄像头显示状态: false
+2026-02-12T14:10:17.243Z: [手势服务] WebSocket断开: io client disconnect
+2026-02-12T14:10:17.243Z: [手势服务] 已释放
+2026-02-12T14:10:17.742Z: 开始导出控制台日志

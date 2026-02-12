@@ -1,51 +1,39 @@
 import type { HandDetection } from '../types/gesture'
 import { GESTURE_MAPPINGS, ACTION_RECOGNITION_CONFIG, type ActionType } from '../constants/gestureConstants'
 
-// 灵活的手势映射表：允许多个手势ID映射到同一个操作
-// 这样可以提高操作成功率，因为模型可能识别到相似的手势
+// 手势映射表：将手势ID映射到操作
+// 注意：手势ID 0-44是静态手势分类，不是动态SWIPE事件
+// SWIPE应该基于手部轨迹检测，而不是静态手势分类
 const gestureToActionMap: Record<number, ActionType> = {
   // 放大操作
   27: 'zoom_in',      // like (点赞)
-  3: 'zoom_in',       // thumb_index (拇指食指) - 也是拇指向上动作
-  39: 'zoom_in',       // two_up (二上) - 向上动作
-  18: 'zoom_in',      // grabbing (抓取) - 增加更多手势映射
+  39: 'zoom_in',      // two_up (二指向上)
   
   // 缩小操作
-  24: 'zoom_out',      // dislike (点踩)
-  20: 'zoom_out',      // call (打电话手势) - 增加更多手势映射
-  
-  // 移动模型操作
-  38: 'rotate',       // three2 (三指向下)
+  24: 'zoom_out',     // dislike (点踩)
   
   // 旋转操作
-  31: 'rotate',         // palm (手掌)
-  35: 'rotate',         // stop (停止)
-  36: 'rotate',         // stop_inverted (停止反转)
-  32: 'rotate',         // four (四指)
-  33: 'rotate',         // three (三指)
   19: 'rotate',       // point (手指指向)
-  30: 'rotate',       // one (一指) - 也是单指动作
+  30: 'rotate',       // one (一指)
+  31: 'rotate',       // palm (手掌)
+  35: 'rotate',       // stop (停止)
+  36: 'rotate',       // stop_inverted (停止反转)
+  29: 'rotate',       // ok (OK手势)
   
-  // 旋转操作
-  29: 'rotate',         // ok (OK手势)
-  11: 'rotate',         // part_hand_heart (心形手势1)
-  12: 'rotate',         // part_hand_heart2 (心形手势2)
-  22: 'rotate',         // little_finger (小指)
-  
-  
-  // SWIPE相关的手势用于切换展品
-  0: 'switch_next',   // SWIPE_RIGHT
-  1: 'switch_prev',   // SWIPE_LEFT
-  2: 'switch',        // SWIPE_UP
-  3: 'switch',        // SWIPE_DOWN
-  10: 'switch_next',  // SWIPE_RIGHT2
-  11: 'switch_prev',  // SWIPE_LEFT2
-  12: 'switch',       // SWIPE_UP2
-  13: 'switch',       // SWIPE_DOWN2
-  15: 'switch_next',  // SWIPE_RIGHT3
-  16: 'switch_prev',  // SWIPE_LEFT3
-  17: 'switch',       // SWIPE_UP3
-  18: 'switch'        // SWIPE_DOWN3
+  // 注意：以下手势ID是静态手势，不应映射为SWIPE
+  // 0: hand_down (手向下)
+  // 1: hand_right (手向右)
+  // 2: hand_left (手向左)
+  // 3: thumb_index (拇指食指)
+  // 10: half_down
+  // 11: part_hand_heart
+  // 12: part_hand_heart2
+  // 13: fist_inverted
+  // 15: two_right
+  // 16: two_down
+  // 17: grabbing
+  // 18: grip
+  // 如果需要SWIPE功能，应基于手部轨迹检测实现，而不是静态手势分类
 }
 
 // 手部验证函数：检查检测到的区域是否符合手部特征

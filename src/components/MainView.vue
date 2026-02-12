@@ -235,8 +235,10 @@ export default {
     
     // 处理手指移动事件
     onFingerMove(data) {
+      console.log('[MainView] 收到finger-move:', data)
       const now = performance.now()
       if (now - this.lastFingerMoveTime < this.FINGER_MOVE_INTERVAL) {
+        console.log('[MainView] 节流跳过')
         return // 处理节流，限制处理频率
       }
       this.lastFingerMoveTime = now
@@ -248,17 +250,19 @@ export default {
       }
       
       const { deltaX, deltaY, position } = data
+      console.log('[MainView] deltaX:', deltaX, 'deltaY:', deltaY, 'position:', position)
       
-      const sensitivity = 0.3 // 调整灵敏度，避免过度反应
+      const sensitivity = 1.5 // 提高灵敏度，确保模型能够明显响应
       
       const modelViewer = this.$refs.modelViewerRef
+      console.log('[MainView] modelViewer:', modelViewer, 'cameraOrbit:', modelViewer?.cameraOrbit)
       
       if (!modelViewer) {
+        console.error('[MainView] modelViewer未找到')
         return
       }
       
       try {
-        // 直接更新相机轨道，不使用平滑过渡，确保模型能够立即响应
         let currentOrbit = ['0deg', '75deg', '0.5m']
         
         if (modelViewer.cameraOrbit) {
@@ -272,25 +276,20 @@ export default {
         const elevation = parseFloat(currentOrbit[1]) || 75
         const distance = currentOrbit[2] || '0.5m'
         
-        // 计算新位置 - 注意：deltaY 应该影响 elevation，deltaX 影响 azimuth
-        // 反转 deltaY 以符合直觉：向上移动手指时模型应该向上旋转
-        const newAzimuth = azimuth + deltaX * sensitivity
-        // 限制deltaY的范围，避免跳转到极端视角
-        const clampedDeltaY = Math.max(-10, Math.min(10, deltaY))
-        const newElevation = Math.max(10, Math.min(85, elevation - clampedDeltaY * sensitivity))
+        // 反转方向：手指向右移动时，模型向左旋转（更直观）
+        const newAzimuth = azimuth - deltaX * sensitivity
+        // 向上移动手指时，deltaY为负，elevation增加，模型向上旋转
+        const clampedDeltaY = Math.max(-20, Math.min(20, deltaY))
+        const newElevation = Math.max(10, Math.min(85, elevation + clampedDeltaY * sensitivity))
         
-        // 使用setAttribute设置相机轨道，确保正确更新
         const newOrbit = `${newAzimuth.toFixed(2)}deg ${newElevation.toFixed(2)}deg ${distance}`
+        console.log('[MainView] 设置camera-orbit:', newOrbit, '原:', modelViewer.cameraOrbit)
         modelViewer.setAttribute('camera-orbit', newOrbit)
         
-        // 计算并更新3D模型上的小白点位置
         if (position) {
-          // 将摄像头坐标映射到3D模型容器的百分比位置
-          // 假设摄像头坐标范围是 0-640 (x), 0-480 (y)
           const modelX = (position.x / 640) * 100
           const modelY = (position.y / 480) * 100
           
-          // 确保坐标在合理范围内
           const clampedX = Math.max(0, Math.min(100, modelX))
           const clampedY = Math.max(0, Math.min(100, modelY))
           
@@ -299,13 +298,10 @@ export default {
             y: clampedY
           }
         } else if (deltaX !== undefined && deltaY !== undefined) {
-          // 如果没有position数据，使用deltaX和deltaY估算位置
-          // 基于当前位置或中心位置进行估算
           const currentX = this.modelFingerPosition?.x || 50
           const currentY = this.modelFingerPosition?.y || 50
           
-          // 基于delta值调整位置
-          const dotSensitivity = 2 // 调整白点移动灵敏度
+          const dotSensitivity = 0.5
           const newX = Math.max(0, Math.min(100, currentX + deltaX * dotSensitivity))
           const newY = Math.max(0, Math.min(100, currentY + deltaY * dotSensitivity))
           
