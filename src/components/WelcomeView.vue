@@ -4,10 +4,6 @@
     <div class="welcome-content">
       <h1 class="app-title">探古</h1>
       <p class="app-subtitle">文物3D交互展示系统</p>
-      <div class="welcome-description">
-        <p>通过手势交互，探索文物的历史与美学</p>
-        <p>感受传统文化的魅力与智慧</p>
-      </div>
       <button class="enter-btn" @click="$emit('enter')">
         进入博物馆
       </button>
@@ -47,7 +43,7 @@ export default {
   align-items: center;
   position: relative;
   overflow: hidden;
-  background-color: var(--background-color);
+  background-color: #000000;
 }
 
 .welcome-bg {
@@ -56,20 +52,8 @@ export default {
   left: 0;
   right: 0;
   bottom: 0;
-  background: linear-gradient(135deg, var(--background-color) 0%, #333 100%);
+  background-color: #000000;
   z-index: 1;
-}
-
-.welcome-bg::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100"><rect width="100" height="100" fill="none" stroke="%23C49210" stroke-width="0.5" stroke-opacity="0.3"/></svg>');
-  opacity: 0.3;
-  z-index: 2;
 }
 
 .welcome-content {
@@ -82,75 +66,56 @@ export default {
   display: flex;
   flex-direction: column;
   align-items: center;
+  justify-content: center;
+  height: 100%;
 }
 
 .app-title {
-  font-size: 5rem;
-  font-weight: bold;
-  color: var(--text-color);
-  margin-bottom: 1rem;
-  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
-  font-family: var(--font-family);
+  font-size: 7rem;
+  font-weight: normal;
+  color: #C49210;
+  margin-bottom: 1.5rem;
+  font-family: 'HanChan', var(--font-family);
 }
 
 .app-subtitle {
-  font-size: 1.5rem;
-  color: var(--text-color);
-  margin-bottom: 2rem;
-  font-weight: 500;
-  font-family: var(--font-family);
-}
-
-.welcome-description {
-  margin-bottom: 3rem;
-  line-height: 1.6;
-  color: var(--text-color);
-  font-family: var(--font-family);
-}
-
-.welcome-description p {
-  margin: 0.5rem 0;
-  font-size: 1.1rem;
+  font-size: 2rem;
+  color: #FFFFFF;
+  margin-bottom: 5rem;
+  font-weight: normal;
+  font-family: 'ChillHuoKai', var(--font-family);
 }
 
 .enter-btn {
-  width: 220px;
-  height: 65px;
-  font-size: 1.3rem;
-  font-weight: bold;
-  color: var(--background-color);
-  background-color: #8b0000; /* 朱砂红 */
+  font-size: 2rem;
+  font-weight: normal;
+  color: #FFFFFF;
+  background-color: transparent;
   border: none;
-  border-radius: 35px;
   cursor: pointer;
   transition: all 0.3s ease;
-  margin-bottom: 1.5rem;
-  box-shadow: 0 4px 12px rgba(139, 0, 0, 0.2);
-  font-family: var(--font-family);
+  margin-bottom: 2.5rem;
+  font-family: 'ChillHuoKai', var(--font-family);
+  padding: 0;
 }
 
 .enter-btn:hover {
   transform: scale(1.05);
-  box-shadow: 0 6px 16px rgba(139, 0, 0, 0.3);
 }
 
 .gesture-btn {
-  width: 160px;
-  height: 45px;
-  font-size: 1.1rem;
-  color: var(--text-color);
+  font-size: 1.5rem;
+  color: #C49210;
   background-color: transparent;
-  border: 2px solid var(--text-color);
-  border-radius: 25px;
+  border: none;
   cursor: pointer;
   transition: all 0.3s ease;
-  font-family: var(--font-family);
+  font-family: 'ChillHuoKai', var(--font-family);
+  padding: 0;
 }
 
 .gesture-btn:hover {
-  background-color: rgba(196, 146, 16, 0.1);
-  transform: translateY(-2px);
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  transform: scale(1.05);
 }
 
 @keyframes fadeIn {
@@ -167,26 +132,38 @@ export default {
 /* 响应式设计 */
 @media (max-width: 768px) {
   .app-title {
+    font-size: 5rem;
+  }
+  
+  .app-subtitle {
+    font-size: 1.5rem;
+    margin-bottom: 4rem;
+  }
+  
+  .enter-btn {
+    font-size: 1.5rem;
+  }
+  
+  .gesture-btn {
+    font-size: 1.2rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .app-title {
     font-size: 3.5rem;
   }
   
   .app-subtitle {
     font-size: 1.2rem;
-  }
-  
-  .welcome-description p {
-    font-size: 1rem;
+    margin-bottom: 3rem;
   }
   
   .enter-btn {
-    width: 180px;
-    height: 55px;
-    font-size: 1.1rem;
+    font-size: 1.3rem;
   }
   
   .gesture-btn {
-    width: 140px;
-    height: 40px;
     font-size: 1rem;
   }
 }

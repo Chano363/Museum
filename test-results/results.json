@@ -1,0 +1,192 @@
+{
+  "config": {
+    "configFile": "D:\\Code\\Museum\\playwright.config.js",
+    "rootDir": "D:/Code/Museum/tests/playwright",
+    "forbidOnly": false,
+    "fullyParallel": false,
+    "globalSetup": null,
+    "globalTeardown": null,
+    "globalTimeout": 0,
+    "grep": {},
+    "grepInvert": null,
+    "maxFailures": 0,
+    "metadata": {
+      "actualWorkers": 1
+    },
+    "preserveOutput": "always",
+    "projects": [
+      {
+        "outputDir": "D:/Code/Museum/test-results",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "actualWorkers": 1
+        },
+        "id": "",
+        "name": "",
+        "testDir": "D:/Code/Museum/tests/playwright",
+        "testIgnore": [],
+        "testMatch": [
+          "**/*.@(spec|test).?(c|m)[jt]s?(x)"
+        ],
+        "timeout": 30000
+      }
+    ],
+    "quiet": false,
+    "reporter": [
+      [
+        "html",
+        null
+      ],
+      [
+        "json",
+        {
+          "outputFile": "test-results/results.json"
+        }
+      ]
+    ],
+    "reportSlowTests": {
+      "max": 5,
+      "threshold": 300000
+    },
+    "runAgents": "none",
+    "shard": null,
+    "tags": [],
+    "updateSnapshots": "missing",
+    "updateSourceMethod": "patch",
+    "version": "1.58.2",
+    "workers": 6,
+    "webServer": {
+      "command": "npm run dev",
+      "url": "http://localhost:3002",
+      "reuseExistingServer": true
+    }
+  },
+  "suites": [
+    {
+      "title": "welcome-page.test.js",
+      "file": "welcome-page.test.js",
+      "column": 0,
+      "line": 0,
+      "specs": [
+        {
+          "title": "欢迎页面测试",
+          "ok": false,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "",
+              "projectName": "",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "failed",
+                  "duration": 16038,
+                  "error": {
+                    "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mpage\u001b[39m\u001b[2m).\u001b[22mtoHaveTitle\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m)\u001b[22m failed\n\nExpected pattern: \u001b[32m/博物馆/\u001b[39m\nReceived string:  \u001b[31m\"探古 - 文物3D交互展示\"\u001b[39m\nTimeout: 5000ms\n\nCall log:\n\u001b[2m  - Expect \"toHaveTitle\" with timeout 5000ms\u001b[22m\n\u001b[2m    9 × unexpected value \"探古 - 文物3D交互展示\"\u001b[22m\n",
+                    "stack": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mpage\u001b[39m\u001b[2m).\u001b[22mtoHaveTitle\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m)\u001b[22m failed\n\nExpected pattern: \u001b[32m/博物馆/\u001b[39m\nReceived string:  \u001b[31m\"探古 - 文物3D交互展示\"\u001b[39m\nTimeout: 5000ms\n\nCall log:\n\u001b[2m  - Expect \"toHaveTitle\" with timeout 5000ms\u001b[22m\n\u001b[2m    9 × unexpected value \"探古 - 文物3D交互展示\"\u001b[22m\n\n    at D:\\Code\\Museum\\tests\\playwright\\welcome-page.test.js:8:22",
+                    "location": {
+                      "file": "D:\\Code\\Museum\\tests\\playwright\\welcome-page.test.js",
+                      "column": 22,
+                      "line": 8
+                    },
+                    "snippet": "\u001b[0m \u001b[90m  6 |\u001b[39m\n \u001b[90m  7 |\u001b[39m   \u001b[90m// 验证页面标题\u001b[39m\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m  8 |\u001b[39m   \u001b[36mawait\u001b[39m expect(page)\u001b[33m.\u001b[39mtoHaveTitle(\u001b[35m/博物馆/\u001b[39m)\u001b[33m;\u001b[39m\n \u001b[90m    |\u001b[39m                      \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m  9 |\u001b[39m\n \u001b[90m 10 |\u001b[39m   \u001b[90m// 验证欢迎页面元素\u001b[39m\n \u001b[90m 11 |\u001b[39m   \u001b[36mconst\u001b[39m welcomeView \u001b[33m=\u001b[39m page\u001b[33m.\u001b[39mlocator(\u001b[32m'.welcome-view'\u001b[39m)\u001b[33m;\u001b[39m\u001b[0m"
+                  },
+                  "errors": [
+                    {
+                      "location": {
+                        "file": "D:\\Code\\Museum\\tests\\playwright\\welcome-page.test.js",
+                        "column": 22,
+                        "line": 8
+                      },
+                      "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mpage\u001b[39m\u001b[2m).\u001b[22mtoHaveTitle\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m)\u001b[22m failed\n\nExpected pattern: \u001b[32m/博物馆/\u001b[39m\nReceived string:  \u001b[31m\"探古 - 文物3D交互展示\"\u001b[39m\nTimeout: 5000ms\n\nCall log:\n\u001b[2m  - Expect \"toHaveTitle\" with timeout 5000ms\u001b[22m\n\u001b[2m    9 × unexpected value \"探古 - 文物3D交互展示\"\u001b[22m\n\n\n\u001b[0m \u001b[90m  6 |\u001b[39m\n \u001b[90m  7 |\u001b[39m   \u001b[90m// 验证页面标题\u001b[39m\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m  8 |\u001b[39m   \u001b[36mawait\u001b[39m expect(page)\u001b[33m.\u001b[39mtoHaveTitle(\u001b[35m/博物馆/\u001b[39m)\u001b[33m;\u001b[39m\n \u001b[90m    |\u001b[39m                      \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m  9 |\u001b[39m\n \u001b[90m 10 |\u001b[39m   \u001b[90m// 验证欢迎页面元素\u001b[39m\n \u001b[90m 11 |\u001b[39m   \u001b[36mconst\u001b[39m welcomeView \u001b[33m=\u001b[39m page\u001b[33m.\u001b[39mlocator(\u001b[32m'.welcome-view'\u001b[39m)\u001b[33m;\u001b[39m\u001b[0m\n\u001b[2m    at D:\\Code\\Museum\\tests\\playwright\\welcome-page.test.js:8:22\u001b[22m"
+                    }
+                  ],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-02-12T15:41:35.725Z",
+                  "annotations": [],
+                  "attachments": [
+                    {
+                      "name": "screenshot",
+                      "contentType": "image/png",
+                      "path": "D:\\Code\\Museum\\test-results\\welcome-page-欢迎页面测试\\test-failed-1.png"
+                    },
+                    {
+                      "name": "video",
+                      "contentType": "video/webm",
+                      "path": "D:\\Code\\Museum\\test-results\\welcome-page-欢迎页面测试\\video.webm"
+                    },
+                    {
+                      "name": "error-context",
+                      "contentType": "text/markdown",
+                      "path": "D:\\Code\\Museum\\test-results\\welcome-page-欢迎页面测试\\error-context.md"
+                    }
+                  ],
+                  "errorLocation": {
+                    "file": "D:\\Code\\Museum\\tests\\playwright\\welcome-page.test.js",
+                    "column": 22,
+                    "line": 8
+                  }
+                }
+              ],
+              "status": "unexpected"
+            }
+          ],
+          "id": "f341445d1b203d351ae2-aafccd55e19adc168a9f",
+          "file": "welcome-page.test.js",
+          "line": 3,
+          "column": 1
+        },
+        {
+          "title": "欢迎页面响应式测试",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "",
+              "projectName": "",
+              "results": [
+                {
+                  "workerIndex": 1,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 10476,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-02-12T15:41:57.898Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "f341445d1b203d351ae2-f47a18daa5118796fecc",
+          "file": "welcome-page.test.js",
+          "line": 47,
+          "column": 1
+        }
+      ]
+    }
+  ],
+  "errors": [],
+  "stats": {
+    "startTime": "2026-02-12T15:41:31.687Z",
+    "duration": 37696.211,
+    "expected": 1,
+    "skipped": 0,
+    "unexpected": 1,
+    "flaky": 0
+  }
+}

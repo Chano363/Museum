@@ -30,6 +30,7 @@
   },
   "devDependencies": {
     "@babel/preset-env": "^7.29.0",
+    "@playwright/test": "^1.58.2",
     "@types/jest": "^29.5.14",
     "@vitejs/plugin-vue": "^5.2.1",
     "@vue/test-utils": "^2.4.6",
