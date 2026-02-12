@@ -17,6 +17,7 @@
         :selectedArtifact="selectedArtifact"
         @showInfo="showArtifactInfo"
         @nextModel="nextModel"
+        @prevModel="prevModel"
         @displayGestureHint="displayGestureHint"
       />
       
@@ -204,6 +205,17 @@ export default {
       console.log('=== 切换模型事件触发 ===')
       // 切换到下一个模型
       this.selectedArtifactIndex = (this.selectedArtifactIndex + 1) % this.artifacts.length
+      this.showGestureHint = true
+      this.currentGestureHint = '模型切换成功'
+      setTimeout(() => {
+        this.showGestureHint = false
+      }, 800)
+      console.log('模型已切换到索引:', this.selectedArtifactIndex)
+    },
+    prevModel() {
+      console.log('=== 切换模型事件触发 ===')
+      // 切换到上一个模型
+      this.selectedArtifactIndex = (this.selectedArtifactIndex - 1 + this.artifacts.length) % this.artifacts.length
       this.showGestureHint = true
       this.currentGestureHint = '模型切换成功'
       setTimeout(() => {

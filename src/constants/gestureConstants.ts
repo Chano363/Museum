@@ -1,13 +1,5 @@
 // 手势识别相关常量管理
 
-// MediaPipe 配置
-export const MEDIAPIPE_CONFIG = {
-  MAX_HISTORY: 8,
-  SMOOTHING_FACTOR: 0.9,
-  MIN_DETECTION_CONFIDENCE: 0.5,
-  MIN_TRACKING_CONFIDENCE: 0.5
-}
-
 // 动作识别配置
 export const ACTION_RECOGNITION_CONFIG = {
   MAX_HISTORY_LENGTH: 50,
@@ -60,4 +52,4 @@ export const GESTURE_MAPPINGS = {
 }
 
 // 动作类型
-export type ActionType = 'zoom_in' | 'zoom_out' | 'rotate' | 'switch' | 'reset' | 'show_info'
+export type ActionType = 'zoom_in' | 'zoom_out' | 'rotate' | 'switch' | 'switch_next' | 'switch_prev' | 'reset' | 'show_info'

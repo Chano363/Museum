@@ -1,5 +1,5 @@
 import * as ort from 'onnxruntime-web'
-import type { BoundingBox, HandDetection, GestureEvent } from '../types/gesture'
+import type { BoundingBox, HandDetection } from '../types/gesture'
 import { GESTURE_NAMES } from '../types/gesture'
 
 export class GestureRecognitionService {

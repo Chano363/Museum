@@ -87,7 +87,9 @@ export default {
       videoHeight: 480,
       isLoading: false,
       isFingerTracking: false,
-      modelFingerPosition: null
+      modelFingerPosition: null,
+      lastFingerMoveTime: 0,
+      FINGER_MOVE_INTERVAL: 16 // 约60fps
     }
   },
   computed: {
@@ -204,8 +206,14 @@ export default {
           this.$emit('displayGestureHint', '缩小模型')
           break
         case 'switch': // 拳头 - 切换展品
-          console.log('执行切换展品')
+        case 'switch_next': // SWIPE_RIGHT - 下一件展品
+          console.log('执行切换展品 - 下一件')
           this.$emit('nextModel')
+          this.$emit('displayGestureHint', '切换展品')
+          break
+        case 'switch_prev': // SWIPE_LEFT - 上一件展品
+          console.log('执行切换展品 - 上一件')
+          this.$emit('prevModel')
           this.$emit('displayGestureHint', '切换展品')
           break
         case 'show_info': // OK手势 - 显示信息
@@ -220,33 +228,61 @@ export default {
         default:
           break
       }
-    },onGestureDetected(gesture) {
+    },
+    onGestureDetected(gesture) {
       console.log('检测到手势:', gesture)
     },
     
     // 处理手指移动事件
     onFingerMove(data) {
-      console.log('MainView.onFingerMove: 接收到手指移动事件:', data)
+      const now = performance.now()
+      if (now - this.lastFingerMoveTime < this.FINGER_MOVE_INTERVAL) {
+        return // 处理节流，限制处理频率
+      }
+      this.lastFingerMoveTime = now
+      
       if (!data) {
-        console.log('MainView.onFingerMove: 无效的手指移动事件数据')
         this.isFingerTracking = false
         this.modelFingerPosition = null
         return
       }
       
       const { deltaX, deltaY, position } = data
-      console.log('MainView.onFingerMove: 手指移动距离:', { deltaX, deltaY })
-      console.log('MainView.onFingerMove: 手指位置:', position)
+      
+      const sensitivity = 0.3 // 调整灵敏度，避免过度反应
       
       const modelViewer = this.$refs.modelViewerRef
-      console.log('MainView.onFingerMove: modelViewerRef:', modelViewer)
       
       if (!modelViewer) {
-        console.log('MainView.onFingerMove: modelViewerRef 未获取到')
         return
       }
       
       try {
+        // 直接更新相机轨道，不使用平滑过渡，确保模型能够立即响应
+        let currentOrbit = ['0deg', '75deg', '0.5m']
+        
+        if (modelViewer.cameraOrbit) {
+          const orbitParts = modelViewer.cameraOrbit.split(' ')
+          if (orbitParts.length >= 3) {
+            currentOrbit = orbitParts
+          }
+        }
+        
+        const azimuth = parseFloat(currentOrbit[0]) || 0
+        const elevation = parseFloat(currentOrbit[1]) || 75
+        const distance = currentOrbit[2] || '0.5m'
+        
+        // 计算新位置 - 注意：deltaY 应该影响 elevation，deltaX 影响 azimuth
+        // 反转 deltaY 以符合直觉：向上移动手指时模型应该向上旋转
+        const newAzimuth = azimuth + deltaX * sensitivity
+        // 限制deltaY的范围，避免跳转到极端视角
+        const clampedDeltaY = Math.max(-10, Math.min(10, deltaY))
+        const newElevation = Math.max(10, Math.min(85, elevation - clampedDeltaY * sensitivity))
+        
+        // 使用setAttribute设置相机轨道，确保正确更新
+        const newOrbit = `${newAzimuth.toFixed(2)}deg ${newElevation.toFixed(2)}deg ${distance}`
+        modelViewer.setAttribute('camera-orbit', newOrbit)
+        
         // 计算并更新3D模型上的小白点位置
         if (position) {
           // 将摄像头坐标映射到3D模型容器的百分比位置
@@ -262,19 +298,6 @@ export default {
             x: clampedX,
             y: clampedY
           }
-          console.log('MainView.onFingerMove: 更新3D模型上的小白点位置:', this.modelFingerPosition)
-          
-          // 获取model-viewer元素的位置和尺寸
-          const rect = modelViewer.getBoundingClientRect()
-          console.log('MainView.onFingerMove: model-viewer元素位置和尺寸:', rect)
-          
-          // 将百分比位置转换为像素位置
-          const clientX = rect.left + (clampedX / 100) * rect.width
-          const clientY = rect.top + (clampedY / 100) * rect.height
-          console.log('MainView.onFingerMove: 转换后的鼠标位置:', { clientX, clientY })
-          
-          // 模拟鼠标事件
-          this.simulateMouseDrag(modelViewer, clientX, clientY, deltaX, deltaY)
         } else if (deltaX !== undefined && deltaY !== undefined) {
           // 如果没有position数据，使用deltaX和deltaY估算位置
           // 基于当前位置或中心位置进行估算
@@ -282,77 +305,18 @@ export default {
           const currentY = this.modelFingerPosition?.y || 50
           
           // 基于delta值调整位置
-          const sensitivity = 2 // 调整白点移动灵敏度
-          const newX = Math.max(0, Math.min(100, currentX + deltaX * sensitivity))
-          const newY = Math.max(0, Math.min(100, currentY + deltaY * sensitivity))
+          const dotSensitivity = 2 // 调整白点移动灵敏度
+          const newX = Math.max(0, Math.min(100, currentX + deltaX * dotSensitivity))
+          const newY = Math.max(0, Math.min(100, currentY + deltaY * dotSensitivity))
           
           this.modelFingerPosition = {
             x: newX,
             y: newY
           }
-          console.log('MainView.onFingerMove: 使用delta估算小白点位置:', this.modelFingerPosition)
-          
-          // 获取model-viewer元素的位置和尺寸
-          const rect = modelViewer.getBoundingClientRect()
-          
-          // 将百分比位置转换为像素位置
-          const clientX = rect.left + (newX / 100) * rect.width
-          const clientY = rect.top + (newY / 100) * rect.height
-          
-          // 模拟鼠标事件
-          this.simulateMouseDrag(modelViewer, clientX, clientY, deltaX, deltaY)
         }
       } catch (error) {
         console.error('控制模型失败:', error)
       }
-    },
-    
-    // 模拟鼠标拖拽事件
-    simulateMouseDrag(element, clientX, clientY, deltaX, deltaY) {
-      console.log('MainView.simulateMouseDrag: 模拟鼠标拖拽事件')
-      
-      // 计算移动后的位置
-      const moveX = clientX + deltaX * 2 // 增加灵敏度
-      const moveY = clientY + deltaY * 2
-      
-      console.log('MainView.simulateMouseDrag: 鼠标按下位置:', { clientX, clientY })
-      console.log('MainView.simulateMouseDrag: 鼠标移动位置:', { moveX, moveY })
-      
-      // 模拟鼠标按下事件
-      const mousedownEvent = new MouseEvent('mousedown', {
-        bubbles: true,
-        cancelable: true,
-        clientX: clientX,
-        clientY: clientY,
-        buttons: 1, // 左键
-        button: 0 // 左键
-      })
-      element.dispatchEvent(mousedownEvent)
-      console.log('MainView.simulateMouseDrag: 已发送 mousedown 事件')
-      
-      // 模拟鼠标移动事件
-      const mousemoveEvent = new MouseEvent('mousemove', {
-        bubbles: true,
-        cancelable: true,
-        clientX: moveX,
-        clientY: moveY,
-        buttons: 1, // 左键
-        button: 0 // 左键
-      })
-      element.dispatchEvent(mousemoveEvent)
-      console.log('MainView.simulateMouseDrag: 已发送 mousemove 事件')
-      
-      // 模拟鼠标释放事件
-      const mouseupEvent = new MouseEvent('mouseup', {
-        bubbles: true,
-        cancelable: true,
-        clientX: moveX,
-        clientY: moveY,
-        buttons: 0,
-        button: 0
-      })
-      element.dispatchEvent(mouseupEvent)
-      console.log('MainView.simulateMouseDrag: 已发送 mouseup 事件')
     },
     
     toggleCamera() {

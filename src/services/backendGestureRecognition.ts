@@ -168,9 +168,201 @@ export class BackendGestureRecognitionService {
     return this.isInitialized
   }
   
-  async destroy(): Promise<void> {
-    this.isInitialized = false
-    console.log('后端手势识别服务已销毁')
+  async processFrame(imageData: ImageData): Promise<HandDetection[]> {
+    // 检查是否正在处理其他帧
+    if (this.isProcessing) {
+      return []
+    }
+    
+    // 实现请求节流，限制每秒发送的请求数量
+    const currentTime = Date.now()
+    if (currentTime - this.lastRequestTime < this.MIN_REQUEST_INTERVAL) {
+      return []
+    }
+    this.lastRequestTime = currentTime
+    
+    // 立即设置为处理中，避免并发处理
+    this.isProcessing = true
+    
+    try {
+      // 前端图像处理
+      if (!this.canvas || !this.ctx) {
+        return []
+      }
+      
+      // 降低图像分辨率，减少传输数据量
+      const targetWidth = BACKEND_CONFIG.IMAGE_WIDTH
+      const targetHeight = BACKEND_CONFIG.IMAGE_HEIGHT
+      this.canvas.width = targetWidth
+      this.canvas.height = targetHeight
+      
+      // 创建临时canvas存储原始图像数据
+      const tempCanvas = document.createElement('canvas')
+      tempCanvas.width = imageData.width
+      tempCanvas.height = imageData.height
+      const tempCtx = tempCanvas.getContext('2d')
+      
+      if (tempCtx) {
+        tempCtx.putImageData(imageData, 0, 0)
+        
+        // 缩放绘制图像数据
+        this.ctx.clearRect(0, 0, targetWidth, targetHeight)
+        this.ctx.drawImage(
+          tempCanvas, 
+          0, 0, imageData.width, imageData.height, 
+          0, 0, targetWidth, targetHeight
+        )
+      } else {
+        // 如果创建临时canvas失败，使用原始尺寸
+        this.canvas.width = imageData.width
+        this.canvas.height = imageData.height
+        this.ctx.putImageData(imageData, 0, 0)
+      }
+      
+      // 使用JPEG格式，质量0.7
+      const base64Image = this.canvas.toDataURL('image/jpeg', 0.7)
+      
+      // 发送到后端（带超时和重试）
+      let response
+      let retryCount = 0
+      
+      while (retryCount <= this.maxRetries) {
+        try {
+          // 使用Promise.race实现超时处理
+          const fetchPromise = fetch('http://localhost:5000/api/recognize', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ image: base64Image })
+          })
+          
+          const timeoutPromise = new Promise((_, reject) => 
+            setTimeout(() => reject(new Error('请求超时')), this.connectionTimeout)
+          )
+          
+          response = await Promise.race([fetchPromise, timeoutPromise])
+          
+          if (!response.ok) {
+            throw new Error(`后端服务错误: ${response.status}`)
+          }
+          break
+        } catch (error) {
+          retryCount++
+          if (retryCount > this.maxRetries) {
+            return []
+          }
+          await new Promise(resolve => setTimeout(resolve, 500))
+        }
+      }
+      
+      const data = await response.json()
+      const detections: HandDetection[] = data.detections || []
+      
+      return detections
+    } catch (error) {
+      return []
+    } finally {
+      this.isProcessing = false
+    }
+  }
+  
+  async getHandTracking(imageData: ImageData): Promise<any> {
+    // 检查是否正在处理其他帧
+    if (this.isProcessing) {
+      return null
+    }
+    
+    // 立即设置为处理中，避免并发处理
+    this.isProcessing = true
+    
+    try {
+      // 前端图像处理
+      if (!this.canvas || !this.ctx) {
+        return null
+      }
+      
+      // 降低图像分辨率，减少传输数据量
+      const targetWidth = BACKEND_CONFIG.IMAGE_WIDTH
+      const targetHeight = BACKEND_CONFIG.IMAGE_HEIGHT
+      this.canvas.width = targetWidth
+      this.canvas.height = targetHeight
+      
+      // 创建临时canvas存储原始图像数据
+      const tempCanvas = document.createElement('canvas')
+      tempCanvas.width = imageData.width
+      tempCanvas.height = imageData.height
+      const tempCtx = tempCanvas.getContext('2d')
+      
+      if (tempCtx) {
+        tempCtx.putImageData(imageData, 0, 0)
+        
+        // 缩放绘制图像数据
+        this.ctx.clearRect(0, 0, targetWidth, targetHeight)
+        this.ctx.drawImage(
+          tempCanvas, 
+          0, 0, imageData.width, imageData.height, 
+          0, 0, targetWidth, targetHeight
+        )
+      } else {
+        // 如果创建临时canvas失败，使用原始尺寸
+        this.canvas.width = imageData.width
+        this.canvas.height = imageData.height
+        this.ctx.putImageData(imageData, 0, 0)
+      }
+      
+      // 使用JPEG格式，质量0.7
+      const base64Image = this.canvas.toDataURL('image/jpeg', 0.7)
+      
+      // 发送到后端（带超时和重试）
+      let response
+      let retryCount = 0
+      
+      while (retryCount <= this.maxRetries) {
+        try {
+          // 使用Promise.race实现超时处理
+          const fetchPromise = fetch('http://localhost:5000/api/hand-tracking', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ image: base64Image })
+          })
+          
+          const timeoutPromise = new Promise((_, reject) => 
+            setTimeout(() => reject(new Error('请求超时')), this.connectionTimeout)
+          )
+          
+          response = await Promise.race([fetchPromise, timeoutPromise])
+          
+          if (!response.ok) {
+            throw new Error(`后端服务错误: ${response.status}`)
+          }
+          break
+        } catch (error) {
+          retryCount++
+          if (retryCount > this.maxRetries) {
+            return null
+          }
+          await new Promise(resolve => setTimeout(resolve, 500))
+        }
+      }
+      
+      const data = await response.json()
+      return data
+    } catch (error) {
+      return null
+    } finally {
+      this.isProcessing = false
+    }
+  }
+  
+  getFPS(): number {
+    return 0
+  }
+  
+  isReady(): boolean {
+    return this.isInitialized
   }
   
   async dispose(): Promise<void> {

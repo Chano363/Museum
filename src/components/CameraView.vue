@@ -1,17 +1,15 @@
 <template>
   <div class="camera-view">
+    <!-- 摄像头视频元素 - 直接显示画面 -->
     <video
       ref="videoRef"
       autoplay
       playsinline
       muted
-      @loadedmetadata="onVideoLoaded"
+      class="video-display"
     ></video>
-    <canvas
-      ref="canvasRef"
-      :width="canvasWidth"
-      :height="canvasHeight"
-    ></canvas>
+    
+    <!-- 调试覆盖层 - 仅在开发模式下显示 -->
     <div v-if="showOverlay" class="overlay">
       <div class="detection-info">
         <div class="info-item">
@@ -22,11 +20,22 @@
           <span class="label">检测数:</span>
           <span class="value">{{ detections.length }}</span>
         </div>
+        <div class="info-item">
+          <span class="label">摄像头状态:</span>
+          <span class="value">{{ isCameraReady ? '就绪' : '加载中' }}</span>
+        </div>
       </div>
-      <div v-for="(detection, index) in detections" :key="index" class="detection-box" :style="getBoxStyle(detection.bbox)">
+      <div 
+        v-for="(detection, index) in detections" 
+        :key="index" 
+        class="detection-box" 
+        :style="getBoxStyle(detection.bbox)"
+      >
         <div class="gesture-label">{{ detection.gestureName }}</div>
       </div>
     </div>
+    
+    <!-- 加载状态 -->
     <div v-if="!isCameraReady" class="loading">
       <div class="loading-spinner"></div>
       <p>正在初始化摄像头...</p>
@@ -34,287 +43,229 @@
   </div>
 </template>
 
-<script>
-import { ref, onMounted, onUnmounted, onBeforeUnmount, computed } from 'vue'
+<script setup>
+import { ref, onMounted, onUnmounted } from 'vue'
 
-export default {
-  name: 'CameraView',
-  props: {
-    width: {
-      type: Number,
-      default: 640
-    },
-    height: {
-      type: Number,
-      default: 480
-    },
-    showOverlay: {
-      type: Boolean,
-      default: true
-    },
-    handLandmarks: {
-      type: Object,
-      default: null
-    }
+// 组件属性
+const props = defineProps({
+  width: {
+    type: Number,
+    default: 640
   },
-  emits: ['frame', 'detections'],
-  setup(props, { emit }) {
-    const videoRef = ref(null)
-    const canvasRef = ref(null)
-    const isCameraReady = ref(false)
-    const fps = ref(0)
-    const detections = ref([])
-
-    const canvasWidth = computed(() => props.width)
-    const canvasHeight = computed(() => props.height)
-
-    let stream = null
-    let animationFrameId = null
-    let frameCount = 0
-    let lastFpsUpdate = 0
-
-    const onVideoLoaded = () => {
-      isCameraReady.value = true
-      startProcessing()
-    }
-
-    const startCamera = async () => {
-      try {
-        // 请求摄像头权限
-        stream = await navigator.mediaDevices.getUserMedia({
-          video: {
-            width: { ideal: props.width },
-            height: { ideal: props.height },
-            facingMode: 'user'
-          }
-        })
-        
-        if (videoRef.value) {
-          videoRef.value.srcObject = stream
-        }
-      } catch (error) {
-        console.error('摄像头启动失败:', error)
-        if (error.name === 'NotAllowedError') {
-          alert('无法访问摄像头，请在浏览器设置中允许摄像头权限')
-        } else if (error.name === 'NotFoundError') {
-          alert('未找到摄像头设备')
-        } else {
-          alert('摄像头启动失败，请检查设备连接')
-        }
-      }
-    }
-
-    const startProcessing = () => {
-    const processFrame = () => {
-      if (!videoRef.value || !canvasRef.value) return
-      
-      // 获取 canvas context 并设置 willReadFrequently 属性以优化性能
-      const ctx = canvasRef.value.getContext('2d', { willReadFrequently: true })
-      
-      // 水平翻转canvas，以纠正视频的翻转效果
-      ctx.save()
-      ctx.translate(canvasWidth.value, 0)
-      ctx.scale(-1, 1)
-      
-      // 绘制视频帧
-      ctx.drawImage(videoRef.value, 0, 0, canvasWidth.value, canvasHeight.value)
-      
-      // 绘制手部关键点
-      if (props.handLandmarks && props.handLandmarks.landmarks && props.handLandmarks.landmarks.length > 0) {
-        console.log('CameraView.processFrame: 绘制手部关键点:', props.handLandmarks)
-        drawHandLandmarks(ctx, props.handLandmarks)
-      }
-      
-      ctx.restore()
-      
-      const imageData = ctx.getImageData(0, 0, canvasWidth.value, canvasHeight.value)
-      
-      // 发送帧数据，确保每一帧都被处理
-      emit('frame', imageData)
-      
-      // 更新FPS
-      frameCount++
-      const currentTime = performance.now()
-      if (currentTime - lastFpsUpdate >= 1000) {
-        fps.value = frameCount
-        frameCount = 0
-        lastFpsUpdate = currentTime
-      }
-      
-      animationFrameId = requestAnimationFrame(processFrame)
-    }
-    
-    processFrame()
+  height: {
+    type: Number,
+    default: 480
+  },
+  showOverlay: {
+    type: Boolean,
+    default: false
+  },
+  handLandmarks: {
+    type: Object,
+    default: null
   }
+})
 
-    const updateDetections = (newDetections) => {
-      detections.value = newDetections
-      emit('detections', newDetections)
-    }
+// 组件事件
+const emit = defineEmits(['frame', 'detections'])
 
-    const getBoxStyle = (bbox) => {
-      return {
-        left: `${bbox.x1}px`,
-        top: `${bbox.y1}px`,
-        width: `${bbox.x2 - bbox.x1}px`,
-        height: `${bbox.y2 - bbox.y1}px`
-      }
+// 响应式引用
+const videoRef = ref(null)
+const isCameraReady = ref(false)
+const fps = ref(0)
+const detections = ref([])
+
+// 内部状态
+let stream = null
+let animationFrameId = null
+let frameCount = 0
+let lastFpsUpdate = 0
+let lastProcessTime = 0
+const PROCESS_INTERVAL = 40 // 约25fps
+
+// 视频加载完成处理
+const onVideoLoaded = () => {
+  console.log('视频加载完成')
+  isCameraReady.value = true
+  startProcessing()
+}
+
+// 启动摄像头
+const startCamera = async () => {
+  try {
+    console.log('开始启动摄像头...')
+    
+    // 检查浏览器是否支持媒体设备
+    if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+      throw new Error('浏览器不支持摄像头访问')
     }
     
-    const drawHandLandmarks = (ctx, handLandmarks) => {
-    console.log('CameraView.drawHandLandmarks: 开始绘制手部关键点:', handLandmarks)
-    if (!handLandmarks || !handLandmarks.landmarks) {
-      console.log('CameraView.drawHandLandmarks: 无效的手部关键点数据')
-      return
-    }
-    
-    const landmarks = handLandmarks.landmarks
-    console.log('CameraView.drawHandLandmarks: 关键点数量:', landmarks.length)
-    
-    if (landmarks.length < 21) {
-      console.log('CameraView.drawHandLandmarks: 关键点数量不足')
-      return
-    }
-    
-    // 获取canvas的实际显示大小
-    const canvasElement = canvasRef.value
-    if (!canvasElement) {
-      console.log('CameraView.drawHandLandmarks: canvas元素不存在')
-      return
-    }
-    
-    const displayWidth = canvasElement.offsetWidth
-    const displayHeight = canvasElement.offsetHeight
-    
-    console.log('CameraView.drawHandLandmarks: canvas显示大小:', { displayWidth, displayHeight })
-    
-    // 坐标映射函数：将原始640x480坐标转换为实际显示坐标
-    const mapCoordinates = (x, y) => {
-      // 注意：摄像头画面是水平翻转的，需要调整x坐标
-      // 同时，确保坐标在有效范围内
-      const clampedX = Math.max(0, Math.min(640, x))
-      const clampedY = Math.max(0, Math.min(480, y))
-      
-      // 水平翻转x坐标
-      const flippedX = 640 - clampedX
-      
-      // 映射到实际显示尺寸
-      const mappedX = (flippedX / 640) * displayWidth
-      const mappedY = (clampedY / 480) * displayHeight
-      
-      console.log(`CameraView.mapCoordinates: 原始坐标 (${x}, ${y}) -> 限制后 (${clampedX}, ${clampedY}) -> 翻转后 (${flippedX}, ${clampedY}) -> 映射后 (${mappedX}, ${mappedY})`)
-      
-      return { x: mappedX, y: mappedY }
-    }
-    
-    // 定义手指的连接关系
-    const connections = [
-      // 手腕到手指根部
-      [0, 1], [1, 2], [2, 3], [3, 4], // 拇指
-      [0, 5], [5, 6], [6, 7], [7, 8], // 食指
-      [0, 9], [9, 10], [10, 11], [11, 12], // 中指
-      [0, 13], [13, 14], [14, 15], [15, 16], // 无名指
-      [0, 17], [17, 18], [18, 19], [19, 20]  // 小指
-    ]
-    
-    // 绘制连接线
-    ctx.strokeStyle = '#FF0000'
-    ctx.lineWidth = 3
-    console.log('CameraView.drawHandLandmarks: 开始绘制骨骼连接线')
-    
-    connections.forEach(([start, end]) => {
-      const startPoint = landmarks[start]
-      const endPoint = landmarks[end]
-      
-      if (startPoint && endPoint) {
-        console.log(`CameraView.drawHandLandmarks: 绘制连接 ${start} -> ${end}: 起点 ${JSON.stringify(startPoint)}, 终点 ${JSON.stringify(endPoint)}`)
-        const mappedStart = mapCoordinates(startPoint.x, startPoint.y)
-        const mappedEnd = mapCoordinates(endPoint.x, endPoint.y)
-        console.log(`CameraView.drawHandLandmarks: 映射后起点 ${JSON.stringify(mappedStart)}, 映射后终点 ${JSON.stringify(mappedEnd)}`)
-        
-        ctx.beginPath()
-        ctx.moveTo(mappedStart.x, mappedStart.y)
-        ctx.lineTo(mappedEnd.x, mappedEnd.y)
-        ctx.stroke()
-        console.log(`CameraView.drawHandLandmarks: 连接线 ${start} -> ${end} 绘制完成`)
-      } else {
-        console.log(`CameraView.drawHandLandmarks: 连接 ${start} -> ${end} 点数据无效`)
+    // 请求摄像头权限
+    stream = await navigator.mediaDevices.getUserMedia({
+      video: {
+        width: { ideal: props.width },
+        height: { ideal: props.height },
+        facingMode: 'user'
       }
     })
     
-    // 绘制关键点
-    ctx.lineWidth = 2
-    console.log('CameraView.drawHandLandmarks: 开始绘制关键点')
+    console.log('摄像头权限获取成功，流状态:', stream.active)
     
-    landmarks.forEach((landmark, index) => {
-      if (landmark) {
-        console.log(`CameraView.drawHandLandmarks: 绘制关键点 ${index}: ${JSON.stringify(landmark)}`)
-        const mappedPoint = mapCoordinates(landmark.x, landmark.y)
-        console.log(`CameraView.drawHandLandmarks: 映射后关键点 ${index}: ${JSON.stringify(mappedPoint)}`)
-        
-        // 绘制外圈 - 增大尺寸
-        ctx.beginPath()
-        ctx.arc(mappedPoint.x, mappedPoint.y, 10, 0, Math.PI * 2)
-        ctx.fillStyle = '#FFFFFF'
-        ctx.fill()
-        ctx.strokeStyle = '#FF0000'
-        ctx.stroke()
-        
-        // 绘制内圈 - 增大尺寸
-        ctx.beginPath()
-        ctx.arc(mappedPoint.x, mappedPoint.y, 6, 0, Math.PI * 2)
-        ctx.fillStyle = '#FF0000'
-        ctx.fill()
-        
-        console.log(`CameraView.drawHandLandmarks: 关键点 ${index} 绘制完成`)
-      } else {
-        console.log(`CameraView.drawHandLandmarks: 关键点 ${index} 数据无效`)
+    if (videoRef.value) {
+      // 确保视频元素正确设置
+      videoRef.value.srcObject = stream
+      videoRef.value.onloadedmetadata = onVideoLoaded
+      videoRef.value.onplay = () => {
+        console.log('视频开始播放')
       }
-    })
-    
-    console.log('CameraView.drawHandLandmarks: 手部关键点绘制完成')
-  }
-
-    const stopCamera = () => {
-      if (animationFrameId) {
-        cancelAnimationFrame(animationFrameId)
+      videoRef.value.onerror = (e) => {
+        console.error('视频元素错误:', e)
       }
       
-      if (stream) {
-        stream.getTracks().forEach(track => track.stop())
-        stream = null
-      }
+      console.log('视频流已设置到video元素')
+    } else {
+      console.error('videoRef未找到')
     }
-
-    onMounted(() => {
-      startCamera()
-    })
-
-    // 在组件卸载前关闭摄像头
-    onBeforeUnmount(() => {
-      stopCamera()
-    })
-
-    onUnmounted(() => {
-      stopCamera()
-    })
-
-    return {
-      videoRef,
-      canvasRef,
-      isCameraReady,
-      fps,
-      detections,
-      canvasWidth,
-      canvasHeight,
-      onVideoLoaded,
-      updateDetections,
-      stopCamera,
-      getBoxStyle,
-      drawHandLandmarks
+    
+  } catch (error) {
+    console.error('摄像头启动失败:', error)
+    if (error.name === 'NotAllowedError') {
+      alert('无法访问摄像头，请在浏览器设置中允许摄像头权限')
+    } else if (error.name === 'NotFoundError') {
+      alert('未找到摄像头设备')
+    } else {
+      alert('摄像头启动失败，请检查设备连接')
     }
+    
+    // 即使失败也要设置isCameraReady为true，避免一直显示加载状态
+    isCameraReady.value = true
   }
 }
+
+// 开始处理视频帧
+const startProcessing = () => {
+  processFrame()
+}
+
+// 处理每一帧
+const processFrame = () => {
+  if (!videoRef.value) {
+    animationFrameId = requestAnimationFrame(processFrame)
+    return
+  }
+  
+  // 检查视频是否已加载
+  if (videoRef.value.readyState < 2) {
+    animationFrameId = requestAnimationFrame(processFrame)
+    return
+  }
+  
+  // 获取当前时间
+  const currentTime = performance.now()
+  
+  // 帧处理节流
+  if (currentTime - lastProcessTime < PROCESS_INTERVAL) {
+    animationFrameId = requestAnimationFrame(processFrame)
+    return
+  }
+  
+  lastProcessTime = currentTime
+  
+  try {
+    // 生成用于处理的图像数据
+    const imageData = captureVideoFrame()
+    
+    // 发送帧数据
+    emit('frame', imageData)
+    
+    // 更新FPS
+    updateFps(currentTime)
+    
+  } catch (error) {
+    console.error('帧处理失败:', error)
+  }
+  
+  // 继续下一帧
+  animationFrameId = requestAnimationFrame(processFrame)
+}
+
+// 捕获视频帧作为图像数据
+const captureVideoFrame = () => {
+  // 创建临时canvas来捕获视频帧
+  const canvas = document.createElement('canvas')
+  canvas.width = props.width / 2
+  canvas.height = props.height / 2
+  
+  const ctx = canvas.getContext('2d')
+  if (!ctx) {
+    throw new Error('无法创建canvas上下文')
+  }
+  
+  // 绘制视频帧到canvas
+  ctx.drawImage(videoRef.value, 0, 0, canvas.width, canvas.height)
+  
+  // 获取图像数据
+  return ctx.getImageData(0, 0, canvas.width, canvas.height)
+}
+
+// 更新FPS计数
+const updateFps = (currentTime) => {
+  frameCount++
+  if (currentTime - lastFpsUpdate >= 1000) {
+    fps.value = frameCount
+    frameCount = 0
+    lastFpsUpdate = currentTime
+  }
+}
+
+// 更新检测结果
+const updateDetections = (newDetections) => {
+  detections.value = newDetections
+  emit('detections', newDetections)
+}
+
+// 获取检测框样式
+const getBoxStyle = (bbox) => {
+  return {
+    left: `${bbox.x1}px`,
+    top: `${bbox.y1}px`,
+    width: `${bbox.x2 - bbox.x1}px`,
+    height: `${bbox.y2 - bbox.y1}px`
+  }
+}
+
+// 停止摄像头
+const stopCamera = () => {
+  // 取消动画帧
+  if (animationFrameId) {
+    cancelAnimationFrame(animationFrameId)
+    animationFrameId = null
+  }
+  
+  // 停止视频流
+  if (stream) {
+    stream.getTracks().forEach(track => track.stop())
+    stream = null
+  }
+  
+  // 重置状态
+  isCameraReady.value = false
+}
+
+// 生命周期钩子
+onMounted(() => {
+  startCamera()
+})
+
+onUnmounted(() => {
+  stopCamera()
+})
+
+// 暴露方法给父组件
+defineExpose({
+  updateDetections,
+  stopCamera
+})
 </script>
 
 <style scoped>
@@ -322,30 +273,24 @@ export default {
   position: relative;
   width: 100%;
   height: 100%;
+  overflow: hidden;
   font-family: var(--font-family);
+  background-color: #000;
 }
 
-video {
+/* 视频显示 - 直接显示摄像头画面 */
+.video-display {
   position: absolute;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
   object-fit: cover;
-  transform: scaleX(-1);
+  transform: scaleX(-1); /* 水平翻转，获得镜像效果 */
+  z-index: 1;
 }
 
-canvas {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  /* 显示 canvas 以展示手部关键点 */
-  z-index: 10;
-  pointer-events: none;
-}
-
+/* 调试覆盖层 */
 .overlay {
   position: absolute;
   top: 0;
@@ -353,8 +298,10 @@ canvas {
   width: 100%;
   height: 100%;
   pointer-events: none;
+  z-index: 10;
 }
 
+/* 检测信息 */
 .detection-info {
   position: absolute;
   top: 10px;
@@ -364,6 +311,7 @@ canvas {
   padding: 10px;
   border-radius: 4px;
   font-size: 14px;
+  z-index: 11;
 }
 
 .info-item {
@@ -383,11 +331,13 @@ canvas {
   color: var(--text-color);
 }
 
+/* 检测框 */
 .detection-box {
   position: absolute;
   border: 2px solid var(--text-color);
   background: rgba(196, 146, 16, 0.1);
   border-radius: 4px;
+  z-index: 11;
 }
 
 .gesture-label {
@@ -402,6 +352,7 @@ canvas {
   white-space: nowrap;
 }
 
+/* 加载状态 */
 .loading {
   position: absolute;
   top: 50%;
@@ -409,6 +360,7 @@ canvas {
   transform: translate(-50%, -50%);
   text-align: center;
   color: #fff;
+  z-index: 20;
 }
 
 .loading-spinner {
@@ -427,5 +379,6 @@ canvas {
 
 .loading p {
   font-size: 16px;
+  margin: 0;
 }
 </style>

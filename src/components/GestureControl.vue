@@ -50,10 +50,8 @@
 <script>
 import { ref, onMounted, onUnmounted } from 'vue'
 import { BackendGestureRecognitionService } from '../services/backendGestureRecognition'
-import { MediaPipeHandTrackingService } from '../services/mediaPipeHandTracking'
 import { ActionRecognitionService } from '../services/actionRecognition'
-import { SwipeDetector } from '../utils/swipeDetector'
-import { GestureEvent } from '../utils/gestureEnums'
+
 import { GESTURE_CONTROL_CONFIG } from '../constants/gestureConstants'
 import CameraView from './CameraView.vue'
 
@@ -93,13 +91,10 @@ export default {
     const isFirstFingerPosition = ref(true) // 标记是否是第一次检测到手指位置
     const lastMoveTime = ref(0)
     const AUTO_STOP_DELAY = GESTURE_CONTROL_CONFIG.AUTO_STOP_DELAY
-    const mediaPipeInitialized = ref(false)
     const isRotationTriggered = ref(false) // 标记旋转动作是否真正被触发
     
     const gestureRecognition = new BackendGestureRecognitionService()
-    const handTracking = new MediaPipeHandTrackingService()
     const actionRecognition = new ActionRecognitionService()
-    const swipeDetector = new SwipeDetector()
     
     // 动作冷却
     let lastActionTime = 0
@@ -107,24 +102,7 @@ export default {
     
     let animationFrameId = null
     
-    const initializeMediaPipe = async () => {
-      if (mediaPipeInitialized.value) return
-      
-      try {
-        initStatus.value = '正在初始化MediaPipe...'
-        initProgress.value = 30
-        
-        await handTracking.initialize()
-        
-        initStatus.value = 'MediaPipe初始化成功'
-        initProgress.value = 100
-        mediaPipeInitialized.value = true
-      } catch (error) {
-        console.error('MediaPipe服务初始化失败:', error)
-        isInitializing.value = false
-        mediaPipeInitialized.value = false
-      }
-    }
+
     
     const isRotateGesture = (gestureId) => {
       return gestureId === 19 || gestureId === 30 || gestureId === 31 || gestureId === 35 || gestureId === 36 || gestureId === 38 || gestureId === 32 || gestureId === 33 || gestureId === 29 || gestureId === 11 || gestureId === 12 || gestureId === 22
@@ -185,21 +163,26 @@ export default {
         35: 'rotate',       // stop (停止)
         36: 'rotate',       // stop_inverted (停止反转)
         
-        // 只有SWIPE手势用于切换展品（使用GestureEvent枚举）
-        [GestureEvent.SWIPE_RIGHT]: 'switch',
-        [GestureEvent.SWIPE_LEFT]: 'switch',
-        [GestureEvent.SWIPE_UP]: 'switch',
-        [GestureEvent.SWIPE_DOWN]: 'switch',
-        [GestureEvent.SWIPE_RIGHT2]: 'switch',
-        [GestureEvent.SWIPE_LEFT2]: 'switch',
-        [GestureEvent.SWIPE_UP2]: 'switch',
-        [GestureEvent.SWIPE_DOWN2]: 'switch',
-        [GestureEvent.SWIPE_RIGHT3]: 'switch',
-        [GestureEvent.SWIPE_LEFT3]: 'switch',
-        [GestureEvent.SWIPE_UP3]: 'switch',
-        [GestureEvent.SWIPE_DOWN3]: 'switch'
+        // SWIPE手势用于切换展品（使用后端返回的手势ID）
+        0: 'switch',   // SWIPE_RIGHT
+        1: 'switch',   // SWIPE_LEFT
+        2: 'switch',   // SWIPE_UP
+        3: 'switch',   // SWIPE_DOWN
+        10: 'switch',  // SWIPE_RIGHT2
+        11: 'switch',  // SWIPE_LEFT2
+        12: 'switch',  // SWIPE_UP2
+        13: 'switch',  // SWIPE_DOWN2
+        15: 'switch',  // SWIPE_RIGHT3
+        16: 'switch',  // SWIPE_LEFT3
+        17: 'switch',  // SWIPE_UP3
+        18: 'switch'   // SWIPE_DOWN3
       }
-      return actionMap[gestureId] || null
+      const action = actionMap[gestureId]
+      // 添加SWIPE手势的调试信息
+      if (action === 'switch') {
+        console.log(`前端SWIPE手势映射: 手势ID=${gestureId}, 映射为动作=switch`)
+      }
+      return action || null
     }
     
     const stopTracking = (clearHistory = true) => {
@@ -208,13 +191,8 @@ export default {
         lastFingerPosition.value = { x: 0, y: 0 }
         isFirstFingerPosition.value = true // 重置首次检测标志
         lastMoveTime.value = 0
-        if (clearHistory) {
-          handTracking.clearHistory()
-        }
         // 清除手指位置，避免小白点残留
         fingerPosition.value = null
-        // 重置SWIPE检测
-        swipeDetector.reset()
         // 重置旋转动作触发状态
         isRotationTriggered.value = false
         console.log('GestureControl.stopTracking: 重置旋转动作触发状态')
@@ -239,6 +217,12 @@ export default {
         // 过滤掉不符合手部特征的检测结果
         const validDetections = detections.filter(detection => {
           const bbox = detection.bbox;
+          
+          // 添加置信度检查，过滤掉低置信度的检测结果
+          if (bbox.confidence < 0.6) {
+            return false;
+          }
+          
           const width = bbox.x2 - bbox.x1;
           const height = bbox.y2 - bbox.y1;
           
@@ -269,33 +253,39 @@ export default {
           
           // 处理识别到的动作
           if (recognizedAction) {
-            // 对于动态动作（如 rotate），不受冷却时间和动作是否变化的限制
-            if (recognizedAction === 'rotate') {
-              // 持续更新 currentAction.value，确保持续触发
-              if (currentAction.value !== recognizedAction) {
+            // 对于动态动作（如 rotate, switch），不受冷却时间和动作是否变化的限制
+            const DYNAMIC_ACTIONS = ['rotate', 'switch', 'switch_next', 'switch_prev']
+            if (DYNAMIC_ACTIONS.includes(recognizedAction)) {
+              // 对于SWIPE动作（switch, switch_next, switch_prev），每次识别到都触发
+              if (['switch', 'switch_next', 'switch_prev'].includes(recognizedAction)) {
+                currentAction.value = recognizedAction
+                emit('action', recognizedAction)
+                console.log(`SWIPE动作触发: 时间=${new Date().toISOString()}, 动作=${recognizedAction}`)
+              } 
+              // 对于其他动态动作（如rotate），只有动作变化时才触发
+              else if (currentAction.value !== recognizedAction) {
                 currentAction.value = recognizedAction
                 emit('action', recognizedAction)
               }
               
-              // 触发完成后标记旋转动作已触发
-              if (!isRotationTriggered.value) {
-                isRotationTriggered.value = true
-              }
-              
-              // 只有在旋转动作真正触发后才开始手指追踪
-              if (isRotationTriggered.value && !isFingerTracking.value) {
-                isFingerTracking.value = true
-                // 不重置lastFingerPosition，保留上次位置作为参考
-                lastMoveTime.value = 0
+              // 对于旋转动作，标记已触发并开始手指追踪
+              if (recognizedAction === 'rotate') {
+                // 触发完成后标记旋转动作已触发
+                if (!isRotationTriggered.value) {
+                  isRotationTriggered.value = true
+                }
                 
-                if (!mediaPipeInitialized.value) {
-                  await initializeMediaPipe()
+                // 只有在旋转动作真正触发后才开始手指追踪
+                if (isRotationTriggered.value && !isFingerTracking.value) {
+                  isFingerTracking.value = true
+                  // 不重置lastFingerPosition，保留上次位置作为参考
+                  lastMoveTime.value = 0
                 }
               }
               
-              // 不设置 setTimeout，因为 rotate 动作需要持续追踪
+              // 不设置 setTimeout，因为动态动作需要持续追踪或快速响应
             } else {
-              // 对于静态动作，使用更短的冷却时间，确保可以连续触发
+              // 对于静态动作，使用冷却时间
               if (currentTime - lastActionTime >= ACTION_COOLDOWN) {
                 currentAction.value = recognizedAction
                 emit('action', recognizedAction)
@@ -336,82 +326,57 @@ export default {
               isFingerTracking.value = true
               // 不重置lastFingerPosition，保留上次位置作为参考
               lastMoveTime.value = 0
-              
-              if (!mediaPipeInitialized.value) {
-                await initializeMediaPipe()
-              }
             }
             
             try {
               // 只要旋转动作已触发，就持续处理手指追踪
               if (isRotationTriggered.value) {
-                // 确保 MediaPipe 已初始化
-                if (!mediaPipeInitialized.value) {
-                  await initializeMediaPipe()
-                }
+                // 调用后端hand-tracking API获取精确的手指位置
+                // 这里后端会先使用ONNX模型触发，然后使用MediaPipe进行手指追踪
+                const trackingResult = await gestureRecognition.getHandTracking(imageData)
                 
-                // 处理手指追踪
-                const detectedPosition = await handTracking.processFrame(imageData)
-                
-                if (detectedPosition) {
-                  // 更新手指位置用于显示白点
-                  const mappedPosition = mapCoordinates(detectedPosition.x, detectedPosition.y)
+                if (trackingResult && trackingResult.success && trackingResult.position) {
+                  // 使用后端返回的精确位置
+                  const { x, y } = trackingResult.position
+                  
+                  // 更新白点位置
+                  const mappedPosition = mapCoordinates(x, y)
                   fingerPosition.value = { x: mappedPosition.x, y: mappedPosition.y }
-                  currentFingerPosition.value = { x: detectedPosition.x, y: detectedPosition.y }
                   
                   // 获取手部关键点
-                  handLandmarks.value = handTracking.getLatestLandmarks()
+                  if (trackingResult.landmarks) {
+                    handLandmarks.value = trackingResult.landmarks
+                  }
                   
                   // 确保手指追踪状态为 true
                   isFingerTracking.value = true
                   
-                  // 发送手指移动事件，确保 3D 模型能够旋转
-                  const deltaX = detectedPosition.x - lastFingerPosition.value.x
-                  const deltaY = detectedPosition.y - lastFingerPosition.value.y
-                  
                   if (isFirstFingerPosition.value) {
                     // 第一次检测到手指位置，初始化位置
-                    lastFingerPosition.value = { x: detectedPosition.x, y: detectedPosition.y }
+                    lastFingerPosition.value = { x, y }
                     isFirstFingerPosition.value = false
                     
                     // 第一次检测到手指位置时也发送事件，确保小白点能够显示
                     emit('finger-move', {
                       deltaX: 0,
                       deltaY: 0,
-                      position: { x: detectedPosition.x, y: detectedPosition.y }
+                      position: { x, y }
                     })
                   } else {
+                    const deltaX = x - lastFingerPosition.value.x
+                    const deltaY = y - lastFingerPosition.value.y
+                    
                     // 无论移动距离大小，都发送手指移动事件，确保小白点位置能够更新
                     emit('finger-move', {
                       deltaX: deltaX,
                       deltaY: deltaY,
-                      position: { x: detectedPosition.x, y: detectedPosition.y }
+                      position: { x, y }
                     })
                     
-                    // 检测SWIPE手势（使用SwipeDetector）
-                    const swipeEvent = swipeDetector.detectSwipe({ x: detectedPosition.x, y: detectedPosition.y }, deltaX, deltaY)
-                    if (swipeEvent) {
-                      // 处理SWIPE手势用于切换展品
-                      if (currentTime - lastActionTime >= ACTION_COOLDOWN) {
-                        const action = getActionFromGesture(swipeEvent)
-                        if (action && action !== currentAction.value) {
-                          currentAction.value = action
-                          emit('action', action)
-                          lastActionTime = currentTime
-                          
-                          setTimeout(() => {
-                            if (currentAction.value === action) {
-                              currentAction.value = null
-                            }
-                          }, 3000)
-                        }
-                      }
-                    }
-                    
-                    lastFingerPosition.value = { x: detectedPosition.x, y: detectedPosition.y }
+                    lastFingerPosition.value = { x, y }
                   }
                 } else {
-                  // 使用手部边界框中心作为备选位置
+                  // 降级方案：使用手部边界框中心作为位置
                   const centerX = (hand.bbox.x1 + hand.bbox.x2) / 2
                   const centerY = (hand.bbox.y1 + hand.bbox.y2) / 2
                   
@@ -444,26 +409,6 @@ export default {
                       position: { x: centerX, y: centerY }
                     })
                     
-                    // 检测SWIPE手势（使用SwipeDetector）
-                    const swipeEvent = swipeDetector.detectSwipe({ x: centerX, y: centerY }, deltaX, deltaY)
-                    if (swipeEvent) {
-                      // 处理SWIPE手势用于切换展品
-                      if (currentTime - lastActionTime >= ACTION_COOLDOWN) {
-                        const action = getActionFromGesture(swipeEvent)
-                        if (action && action !== currentAction.value) {
-                          currentAction.value = action
-                          emit('action', action)
-                          lastActionTime = currentTime
-                          
-                          setTimeout(() => {
-                            if (currentAction.value === action) {
-                              currentAction.value = null
-                            }
-                          }, 3000)
-                        }
-                      }
-                    }
-                    
                     lastFingerPosition.value = { x: centerX, y: centerY }
                   }
                 }
@@ -492,46 +437,26 @@ export default {
                 isFingerTracking.value = true
                 
                 if (isFirstFingerPosition.value) {
-                  // 第一次检测到手指位置，初始化位置
-                  lastFingerPosition.value = { x: centerX, y: centerY }
-                  isFirstFingerPosition.value = false
-                } else {
-                  const deltaX = centerX - lastFingerPosition.value.x
-                  const deltaY = centerY - lastFingerPosition.value.y
-                  
-                  if (Math.abs(deltaX) > 3 || Math.abs(deltaY) > 3) {
-                    lastMoveTime.value = currentTime
+                    // 第一次检测到手指位置，初始化位置
+                    lastFingerPosition.value = { x: centerX, y: centerY }
+                    isFirstFingerPosition.value = false
+                  } else {
+                    const deltaX = centerX - lastFingerPosition.value.x
+                    const deltaY = centerY - lastFingerPosition.value.y
                     
-                    // 检测SWIPE手势（使用SwipeDetector）
-                    const swipeEvent = swipeDetector.detectSwipe({ x: centerX, y: centerY }, deltaX, deltaY)
-                    if (swipeEvent) {
-                      // 处理SWIPE手势用于切换展品
-                      if (currentTime - lastActionTime >= ACTION_COOLDOWN) {
-                        const action = getActionFromGesture(swipeEvent)
-                        if (action && action !== currentAction.value) {
-                          currentAction.value = action
-                          emit('action', action)
-                          lastActionTime = currentTime
-                          
-                          setTimeout(() => {
-                            if (currentAction.value === action) {
-                              currentAction.value = null
-                            }
-                          }, 3000)
-                        }
-                      }
-                    } else {
+                    if (Math.abs(deltaX) > 3 || Math.abs(deltaY) > 3) {
+                      lastMoveTime.value = currentTime
+                      
                       // 正常的手指移动，用于旋转模型
                       emit('finger-move', {
                         deltaX: deltaX,
                         deltaY: deltaY,
                         position: { x: centerX, y: centerY }
                       })
+                      
+                      lastFingerPosition.value = { x: centerX, y: centerY }
                     }
-                    
-                    lastFingerPosition.value = { x: centerX, y: centerY }
                   }
-                }
               }
             }
             
@@ -553,8 +478,6 @@ export default {
             }
           }, 2000)
         } else {
-          // 重置SWIPE检测器
-          swipeDetector.reset()
           stopTracking(false) // 不清除历史记录，避免下一次进入时闪动
           // 确保清除手指位置，避免小白点残留
           fingerPosition.value = null
@@ -569,28 +492,32 @@ export default {
     }
     
     const getActionIcon = (action) => {
-      const iconMap = {
-        'switch': '👈👉',
-        'reset': '🖐️',
-        'zoom_in': '👍',
-        'zoom_out': '👎',
-        'show_info': '👌',
-        'rotate': '☝️'
-      }
-      return iconMap[action] || '✋'
+    const iconMap = {
+      'switch': '👈👉',
+      'switch_next': '👉',
+      'switch_prev': '👈',
+      'reset': '🖐️',
+      'zoom_in': '👍',
+      'zoom_out': '👎',
+      'show_info': '👌',
+      'rotate': '☝️'
     }
+    return iconMap[action] || '✋'
+  }
 
-    const getActionText = (action) => {
-      const textMap = {
-        'switch': '滑动',
-        'reset': '手掌',
-        'zoom_in': '点赞',
-        'zoom_out': '点踩',
-        'show_info': 'OK手势',
-        'rotate': '手指指向'
-      }
-      return textMap[action] || '未知动作'
+  const getActionText = (action) => {
+    const textMap = {
+      'switch': '滑动',
+      'switch_next': '向右滑动',
+      'switch_prev': '向左滑动',
+      'reset': '手掌',
+      'zoom_in': '点赞',
+      'zoom_out': '点踩',
+      'show_info': 'OK手势',
+      'rotate': '手指指向'
     }
+    return textMap[action] || '未知动作'
+  }
 
     const getGestureIcon = (gestureId) => {
       const iconMap = {
@@ -651,7 +578,6 @@ export default {
         cancelAnimationFrame(animationFrameId)
       }
       gestureRecognition.dispose()
-      handTracking.dispose()
     })
     
     return {

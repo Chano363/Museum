@@ -33,8 +33,19 @@ const gestureToActionMap: Record<number, ActionType> = {
   22: 'rotate',         // little_finger (小指)
   
   
-  // 只有SWIPE相关的手势用于切换展品
-  // 注意：SWIPE手势主要通过前端SwipeDetector检测，这里不直接映射静态手势ID
+  // SWIPE相关的手势用于切换展品
+  0: 'switch_next',   // SWIPE_RIGHT
+  1: 'switch_prev',   // SWIPE_LEFT
+  2: 'switch',        // SWIPE_UP
+  3: 'switch',        // SWIPE_DOWN
+  10: 'switch_next',  // SWIPE_RIGHT2
+  11: 'switch_prev',  // SWIPE_LEFT2
+  12: 'switch',       // SWIPE_UP2
+  13: 'switch',       // SWIPE_DOWN2
+  15: 'switch_next',  // SWIPE_RIGHT3
+  16: 'switch_prev',  // SWIPE_LEFT3
+  17: 'switch',       // SWIPE_UP3
+  18: 'switch'        // SWIPE_DOWN3
 }
 
 // 手部验证函数：检查检测到的区域是否符合手部特征
@@ -84,28 +95,16 @@ export class ActionRecognitionService {
   updateDetections(detections: HandDetection[]): ActionType | null {
     const currentTime = Date.now()
     
-    if (detections.length > 0) {
-      console.log('ActionRecognitionService.updateDetections:', detections.length, 'detections')
-    }
-    
     // 过滤掉不符合手部特征的检测结果
-    console.log('原始检测结果数量:', detections.length, '，检测到的手势ID:', detections.map(d => d.gesture))
-    const validDetections = detections.filter(detection => {
-      const isValid = validateHandDetection(detection)
-      console.log('手势ID:', detection.gesture, '，验证结果:', isValid)
-      return isValid
-    })
-    console.log('验证后的检测结果数量:', validDetections.length)
+    const validDetections = detections.filter(detection => validateHandDetection(detection))
     
     // 直接根据当前检测到的手势返回操作
     if (validDetections.length > 0) {
       const lastDetection = validDetections[validDetections.length - 1]
       const gestureId = lastDetection.gesture
       const action = this.mapGestureToAction(gestureId)
-      console.log('处理手势ID:', gestureId, '，映射到动作:', action)
       
       if (!action) {
-        console.log('手势ID:', gestureId, '没有映射到任何动作')
         return null
       }
       
@@ -114,23 +113,28 @@ export class ActionRecognitionService {
         // 保留最近的10条历史记录，清除更早的记录
         if (this.gestureHistory.length > 10) {
           this.gestureHistory = this.gestureHistory.slice(-10)
-          console.log('动作变化，清除部分历史记录，当前长度:', this.gestureHistory.length)
         }
       }
       
       // 动态动作列表（需要实时响应的动作）
-      const DYNAMIC_ACTIONS = ['rotate'] // 旋转动作需要实时响应
+      const DYNAMIC_ACTIONS = ['rotate', 'switch', 'switch_next', 'switch_prev'] // 旋转和切换动作需要实时响应
       
       // 根据动作类型决定如何处理
       if (DYNAMIC_ACTIONS.includes(action)) {
-        // 对于动态动作（需要实时响应）
+        // 对于动态动作（需要实时响应），直接返回，不需要投票机制
+        if (['switch', 'switch_next', 'switch_prev'].includes(action)) {
+          // SWIPE动作直接返回，确保立即触发
+          this.currentAction = action
+          this.actionStartTime = currentTime
+          return action
+        }
+        
+        // 对于旋转动作，仍然使用投票机制确保稳定性
         this.gestureHistory.push(action) // 存储动作类型
-        console.log('添加动作到历史记录:', action, '，历史记录长度:', this.gestureHistory.length)
         
         // 限制历史记录长度（动态动作使用更短的历史记录）
         if (this.gestureHistory.length > 15) { // 动态动作只需要15轮历史，减少触发时间
           this.gestureHistory.shift()
-          console.log('历史记录超过最大长度，移除最早的记录，当前长度:', this.gestureHistory.length)
         }
         
         // 计算最常见的动作（动态动作需要较少历史记录和较低的稳定性）
@@ -140,44 +144,19 @@ export class ActionRecognitionService {
           if (stableAction !== this.currentAction) {
             this.currentAction = stableAction
             this.actionStartTime = currentTime
-            console.log('动态动作确认:', stableAction)
           }
           // 对于动态动作，只要有稳定动作就返回，确保持续触发
           return stableAction
-        }
-        
-        // 对于动态动作，特别是rotate，只要检测到手势就返回，确保持续触发
-        if (action === 'rotate') {
-          // 对于rotate动作，即使历史记录不足，也直接返回
-          console.log('检测到rotate手势，直接返回:', action)
-          return action
-        }
-        
-        // 对于其他动态动作，只有达到稳定性要求才返回，确保手势稳定
-        if (action && this.gestureHistory.length >= 5) {
-          // 即使历史记录不足，也要检查最近的几个动作是否一致
-          const recentHistory = this.gestureHistory.slice(-5)
-          const recentActionCount = recentHistory.filter(a => a === action).length
-          const recentStability = recentActionCount / recentHistory.length
-          
-          if (recentStability >= 0.8) {
-            console.log('动态动作稳定，直接返回:', action, '稳定性:', recentStability.toFixed(2))
-            return action
-          } else {
-            console.log('动态动作不稳定，等待更多数据:', action, '稳定性:', recentStability.toFixed(2))
-          }
         }
         
         return null
       } else {
         // 对于静态动作（需要严格验证）
         this.gestureHistory.push(action) // 存储动作类型
-        console.log('添加动作到历史记录:', action, '，历史记录长度:', this.gestureHistory.length)
         
         // 限制历史记录长度
         if (this.gestureHistory.length > this.MAX_HISTORY_LENGTH) {
           this.gestureHistory.shift()
-          console.log('历史记录超过最大长度，移除最早的记录，当前长度:', this.gestureHistory.length)
         }
         
         // 计算最常见的动作（静态动作需要更多历史记录和更高的稳定性）
@@ -187,12 +166,10 @@ export class ActionRecognitionService {
           if (stableAction !== this.currentAction) {
             this.currentAction = stableAction
             this.actionStartTime = currentTime
-            console.log('静态动作确认:', stableAction)
             return stableAction
           } else if (currentTime - this.actionStartTime > 3000) {
             // 如果动作已经确认超过3秒，允许再次触发
             this.actionStartTime = currentTime
-            console.log('静态动作再次确认:', stableAction)
             return stableAction
           }
         }
@@ -204,8 +181,8 @@ export class ActionRecognitionService {
       this.gestureHistory = []
     }
     
-    // 重置当前动作（仅重置静态动作，动态动作如rotate需要持续触发）
-    const DYNAMIC_ACTIONS = ['rotate'] // 旋转动作需要实时响应
+    // 重置当前动作（仅重置静态动作，动态动作如rotate和switch需要持续触发）
+    const DYNAMIC_ACTIONS = ['rotate', 'switch', 'switch_next', 'switch_prev'] // 旋转和切换动作需要实时响应
     if (this.currentAction && !DYNAMIC_ACTIONS.includes(this.currentAction) && currentTime - this.actionStartTime > 3000) {
       this.currentAction = null
     }
@@ -241,7 +218,6 @@ export class ActionRecognitionService {
     // 检查是否达到稳定阈值（静态手势需要更高的稳定性）
     const requiredStability = isStatic ? ACTION_RECOGNITION_CONFIG.STABILITY_THRESHOLD_STATIC : ACTION_RECOGNITION_CONFIG.STABILITY_THRESHOLD_DYNAMIC
     const stability = maxCount / this.gestureHistory.length
-    console.log(`${isStatic ? '静态' : '动态'}动作稳定性:`, stability.toFixed(2), '历史长度:', this.gestureHistory.length)
     
     if (stability >= requiredStability && mostFrequentAction !== null) {
       return mostFrequentAction
@@ -252,6 +228,10 @@ export class ActionRecognitionService {
   
   private mapGestureToAction(gestureId: number): ActionType | null {
     const action = gestureToActionMap[gestureId]
+    // 添加SWIPE手势的调试信息，只在开发模式下显示
+    if (['switch', 'switch_next', 'switch_prev'].includes(action) && import.meta.env.DEV) {
+      console.log(`SWIPE手势识别: 手势ID=${gestureId}, 映射为动作=${action}`)
+    }
     return action
   }
   
