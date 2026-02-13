@@ -54,6 +54,9 @@
       <button class="tool-btn" @click="toggleCamera">
         {{ showCamera ? '📷' : '📵' }}
       </button>
+      <button class="tool-btn switch-btn" @click="$emit('toggleThumbBar')">
+        🔄
+      </button>
       <button class="info-btn" @click="$emit('showInfo')">
         ℹ️
       </button>
@@ -79,7 +82,7 @@ export default {
       required: true
     }
   },
-  emits: ['showInfo', 'nextModel', 'displayGestureHint'],
+  emits: ['showInfo', 'nextModel', 'prevModel', 'displayGestureHint', 'toggleThumbBar'],
   data() {
     return {
       showCamera: false,
@@ -321,7 +324,6 @@ export default {
       console.log('摄像头显示状态:', this.showCamera)
     },
     
-    // 导出控制台日志
     exportLogs() {
       console.log('开始导出控制台日志')
       
@@ -412,7 +414,7 @@ export default {
 <style scoped>
 .main-view {
   position: absolute;
-  top: 140px;
+  top: 0;
   left: 0;
   right: 0;
   bottom: 0;
@@ -480,6 +482,24 @@ export default {
   font-size: 16px;
   cursor: pointer;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
+}
+
+.tool-btn:hover {
+  background-color: rgba(255, 255, 255, 1);
+  transform: scale(1.1);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+.switch-btn {
+  background-color: var(--text-color);
+  color: white;
+  font-size: 18px;
+  font-weight: bold;
+}
+
+.switch-btn:hover {
+  background-color: rgba(196, 146, 16, 1);
 }
 
 .info-btn {

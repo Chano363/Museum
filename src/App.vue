@@ -5,20 +5,21 @@
     
     <!-- 主界面 -->
     <div v-else-if="currentView === 'main'" class="main-interface">
-      <!-- 文物缩略图栏 -->
       <ThumbBar 
         :artifacts="artifacts" 
         :selectedIndex="selectedArtifactIndex"
+        :visible="showThumbBar"
         @select="selectArtifact"
+        @close="showThumbBar = false"
       />
       
-      <!-- 主交互区 -->
       <MainView 
         :selectedArtifact="selectedArtifact"
         @showInfo="showArtifactInfo"
         @nextModel="nextModel"
         @prevModel="prevModel"
         @displayGestureHint="displayGestureHint"
+        @toggleThumbBar="toggleThumbBar"
       />
       
       <!-- 文物详情浮层 -->
@@ -36,7 +37,6 @@
         ⚙️
       </button>
       
-      <!-- 设置页 -->
       <SettingView 
         v-if="showSettings"
         @close="showSettings = false"
@@ -144,6 +144,7 @@ export default {
       showGestureHint: false,
       currentGestureHint: '',
       showSettings: false,
+      showThumbBar: false,
       sounds: {
         modelChange: null
       }
@@ -200,6 +201,11 @@ export default {
       console.log('=== 切换设置事件触发 ===')
       this.showSettings = !this.showSettings
       console.log('设置面板显示状态:', this.showSettings)
+    },
+    toggleThumbBar() {
+      console.log('=== 切换文物弹窗事件触发 ===')
+      this.showThumbBar = !this.showThumbBar
+      console.log('文物弹窗显示状态:', this.showThumbBar)
     },
     nextModel() {
       console.log('=== 切换模型事件触发 ===')
@@ -326,7 +332,6 @@ body {
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
 }
 
-/* 响应式设计 */
 @media (max-width: 768px) {
   .settings-btn {
     top: 15px;
