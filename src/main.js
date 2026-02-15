@@ -3,8 +3,6 @@ import App from './App.vue'
 
 // 全局控制台日志捕获功能
 if (import.meta.env.DEV) {
-  console.log('开发环境：初始化控制台日志捕获功能')
-  
   // 存储控制台日志
   window.consoleLogs = []
   

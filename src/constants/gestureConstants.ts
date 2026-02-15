@@ -52,4 +52,4 @@ export const GESTURE_MAPPINGS = {
 }
 
 // 动作类型
-export type ActionType = 'zoom_in' | 'zoom_out' | 'rotate' | 'switch' | 'switch_next' | 'switch_prev' | 'reset' | 'show_info'
+export type ActionType = 'zoom_in' | 'zoom_out' | 'rotate' | 'switch' | 'switch_next' | 'switch_prev' | 'reset' | 'toggle_thumbbar'

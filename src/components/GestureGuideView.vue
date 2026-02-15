@@ -10,12 +10,6 @@
         <h3>核心手势</h3>
         <div class="gesture-grid">
           <div class="gesture-card">
-            <div class="gesture-icon">🖐️</div>
-            <h4>手掌</h4>
-            <p class="gesture-desc">重置模型到初始视角</p>
-            <p class="gesture-tip">五指自然张开，手心朝向摄像头</p>
-          </div>
-          <div class="gesture-card">
             <div class="gesture-icon">👍</div>
             <h4>点赞</h4>
             <p class="gesture-desc">放大模型视图</p>
@@ -28,22 +22,16 @@
             <p class="gesture-tip">大拇指向下，其他手指弯曲</p>
           </div>
           <div class="gesture-card">
-            <div class="gesture-icon">✊</div>
-            <h4>拳头</h4>
-            <p class="gesture-desc">切换展品模型</p>
-            <p class="gesture-tip">握紧拳头，所有手指弯曲</p>
+            <div class="gesture-icon">🖐️</div>
+            <h4>手掌</h4>
+            <p class="gesture-desc">旋转模型</p>
+            <p class="gesture-tip">五指自然张开，移动手掌控制模型旋转</p>
           </div>
           <div class="gesture-card">
-            <div class="gesture-icon">👌</div>
-            <h4>OK手势</h4>
-            <p class="gesture-desc">显示文物详细信息</p>
-            <p class="gesture-tip">拇指和食指形成圆圈，其他手指伸直</p>
-          </div>
-          <div class="gesture-card">
-            <div class="gesture-icon">☝️</div>
-            <h4>手指指向</h4>
-            <p class="gesture-desc">移动和旋转模型</p>
-            <p class="gesture-tip">伸出食指，其他手指弯曲，移动手指控制模型</p>
+            <div class="gesture-icon">👉👈</div>
+            <h4>左右滑动</h4>
+            <p class="gesture-desc">切换展品</p>
+            <p class="gesture-tip">手部向左或向右滑动，切换上一个/下一个展品</p>
           </div>
         </div>
       </div>
@@ -53,9 +41,10 @@
         <ul class="tips-list">
           <li>确保光线充足，让摄像头能够清晰捕捉手部</li>
           <li>保持手部在摄像头视野中央</li>
-          <li>手势需要保持1-2秒以确保被识别</li>
-          <li>如遇识别困难，可尝试调整摄像头角度</li>
-          <li>点击工具栏的摄像头图标可开启/关闭手势控制</li>
+          <li>旋转手势响应较快，移动手掌即可实时控制模型旋转</li>
+          <li>放大/缩小手势需要保持稳定约1秒才能触发</li>
+          <li>左右滑动手势用于切换展品，需要快速移动手部</li>
+          <li>如遇识别困难，可尝试调整摄像头角度或距离</li>
         </ul>
       </div>
       

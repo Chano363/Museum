@@ -1,0 +1,116 @@
+2026-02-14T14:19:22.409Z: [WARN] [Vue warn]: The `compilerOptions` config option is only respected when using a build of Vue.js that includes the runtime compiler (aka "full build"). Since you are using the runtime-only build, `compilerOptions` must be passed to `@vue/compiler-dom` in the build setup instead.
+- For vue-loader: pass it via vue-loader's `compilerOptions` loader option.
+- For vue-cli: see https://cli.vuejs.org/guide/webpack.html#modifying-options-of-a-loader
+- For vite: pass it via @vitejs/plugin-vue options. See https://github.com/vitejs/vite-plugin-vue/tree/main/packages/plugin-vue#example-for-passing-options-to-vuecompiler-sfc
+2026-02-14T14:19:22.418Z: App组件已挂载
+2026-02-14T14:19:22.489Z: 🚀 启动模型预加载...
+2026-02-14T14:19:22.548Z: 🔍 检查缓存: /3Dmodels/卣（盛酒器）/you_wine_vessel_12th-11th_c_bce/scene.gltf
+2026-02-14T14:19:22.548Z: App组件初始化完成
+2026-02-14T14:19:22.548Z: 🔍 IndexedDB查询: /3Dmodels/卣（盛酒器）/you_wine_vessel_12th-11th_c_bce/scene.gltf
+2026-02-14T14:19:22.600Z: ✅ IndexedDB找到数据: /3Dmodels/卣（盛酒器）/you_wine_vessel_12th-11th_c_bce/scene.gltf
+2026-02-14T14:19:22.612Z: ✅ 从IndexedDB加载
+2026-02-14T14:19:22.613Z: [WARN] THREE.Material: 'emissive' is not a property of THREE.PointsMaterial.
+2026-02-14T14:19:22.613Z: [WARN] THREE.Material: 'emissiveIntensity' is not a property of THREE.PointsMaterial.
+2026-02-14T14:19:22.652Z: ✅ 所有模型预加载完成！
+2026-02-14T14:19:25.000Z: === 进入博物馆事件触发 ===
+2026-02-14T14:19:25.001Z: 当前视图已切换到: main
+2026-02-14T14:19:25.117Z: [WARN] THREE.Material: 'emissive' is not a property of THREE.PointsMaterial.
+2026-02-14T14:19:25.117Z: [WARN] THREE.Material: 'emissiveIntensity' is not a property of THREE.PointsMaterial.
+2026-02-14T14:19:25.118Z: MainView mounted, selectedArtifact: {"id":1,"name":"卣（盛酒器）","dynasty":"商代晚期","era":"公元前12世纪 – 前11世纪","material":"青铜","dimensions":"高 32.54 × 宽 14.6 × 深 12.86 厘米，重 2.9 公斤","description":"商代青铜盛酒器，造型庄重，纹饰精美，是中国古代青铜文明的重要象征。","model":"external","modelPath":"/3Dmodels/卣（盛酒器）/you_wine_vessel_12th-11th_c_bce/scene.gltf","iconPath":"/3Dmodels/卣（盛酒器）/you_wine_vessel_12th-11th_c_bce/textures/Mia_017453_Fangyou_250k_diffuse.jpeg","color":"#cd7f32"}
+2026-02-14T14:19:25.171Z: 开始启动摄像头...
+2026-02-14T14:19:28.740Z: 摄像头权限获取成功，流状态: true
+2026-02-14T14:19:28.740Z: 视频流已设置到video元素
+2026-02-14T14:19:28.809Z: 视频加载完成
+2026-02-14T14:19:28.969Z: 视频开始播放
+2026-02-14T14:19:33.061Z: [GestureControl] 收到检测: fist(25)
+2026-02-14T14:19:33.061Z: [GestureControl] 有效检测: 1
+2026-02-14T14:19:53.246Z: === 切换文物弹窗事件触发 ===
+2026-02-14T14:19:53.248Z: 文物弹窗显示状态: true
+2026-02-14T14:19:53.248Z: 是否自动切换: false
+2026-02-14T14:19:53.274Z: 居中计算: {"screenCenter":561,"cardCenter":110,"translateX":451,"tempSelectedIndex":0}
+2026-02-14T14:19:57.557Z: === 选择文物事件触发 ===
+2026-02-14T14:19:57.558Z: 选择文物: 1 {"id":2,"name":"爵（饮酒器）","dynasty":"商代晚期","era":"公元前12世纪 – 前11世纪","material":"青铜","dimensions":"高 23.97 × 宽 17.78 × 深 12.54 厘米，重 1.1 公斤","description":"商代青铜饮酒器，形制规整，纹饰清晰，是研究商代酒文化的重要实物资料。","model":"external","modelPath":"/3Dmodels/爵（饮酒器）/jue_wine_vessel_12th11th_c_bce/scene.gltf","iconPath":"/3Dmodels/爵（饮酒器）/jue_wine_vessel_12th11th_c_bce/textures/Mia_001146_Jue_100k_baseColor.jpeg","color":"#cd7f32"}
+2026-02-14T14:19:57.558Z: 文物选择完成，当前选中: 1
+2026-02-14T14:19:57.563Z: 🔍 检查缓存: /3Dmodels/爵（饮酒器）/jue_wine_vessel_12th11th_c_bce/scene.gltf
+2026-02-14T14:19:57.564Z: 🔍 IndexedDB查询: /3Dmodels/爵（饮酒器）/jue_wine_vessel_12th11th_c_bce/scene.gltf
+2026-02-14T14:19:57.602Z: ❌ IndexedDB未找到: /3Dmodels/爵（饮酒器）/jue_wine_vessel_12th11th_c_bce/scene.gltf
+2026-02-14T14:19:57.602Z: ❌ 缓存未找到，从网络加载...
+2026-02-14T14:27:14.965Z: 📦 IndexedDB存储开始: /3Dmodels/爵（饮酒器）/jue_wine_vessel_12th11th_c_bce/scene.gltf
+2026-02-14T14:27:15.427Z: 📦 序列化完成，数据大小: 410 KB
+2026-02-14T14:27:15.906Z: ✅ IndexedDB存储成功: /3Dmodels/爵（饮酒器）/jue_wine_vessel_12th11th_c_bce/scene.gltf
+2026-02-14T14:27:15.906Z: 💾 已保存到IndexedDB
+2026-02-14T14:27:15.913Z: [WARN] THREE.Material: 'emissive' is not a property of THREE.PointsMaterial.
+2026-02-14T14:27:15.914Z: [WARN] THREE.Material: 'emissiveIntensity' is not a property of THREE.PointsMaterial.
+2026-02-14T14:27:15.949Z: 开始启动摄像头...
+2026-02-14T14:27:16.295Z: [WARN] THREE.Material: 'emissive' is not a property of THREE.PointsMaterial.
+2026-02-14T14:27:16.296Z: [WARN] THREE.Material: 'emissiveIntensity' is not a property of THREE.PointsMaterial.
+2026-02-14T14:27:16.297Z: MainView mounted, selectedArtifact: {"id":2,"name":"爵（饮酒器）","dynasty":"商代晚期","era":"公元前12世纪 – 前11世纪","material":"青铜","dimensions":"高 23.97 × 宽 17.78 × 深 12.54 厘米，重 1.1 公斤","description":"商代青铜饮酒器，形制规整，纹饰清晰，是研究商代酒文化的重要实物资料。","model":"external","modelPath":"/3Dmodels/爵（饮酒器）/jue_wine_vessel_12th11th_c_bce/scene.gltf","iconPath":"/3Dmodels/爵（饮酒器）/jue_wine_vessel_12th11th_c_bce/textures/Mia_001146_Jue_100k_baseColor.jpeg","color":"#cd7f32"}
+2026-02-14T14:27:16.365Z: 开始启动摄像头...
+2026-02-14T14:27:16.529Z: [WARN] THREE.Material: 'emissive' is not a property of THREE.PointsMaterial.
+2026-02-14T14:27:16.530Z: [WARN] THREE.Material: 'emissiveIntensity' is not a property of THREE.PointsMaterial.
+2026-02-14T14:27:16.535Z: MainView mounted, selectedArtifact: {"id":2,"name":"爵（饮酒器）","dynasty":"商代晚期","era":"公元前12世纪 – 前11世纪","material":"青铜","dimensions":"高 23.97 × 宽 17.78 × 深 12.54 厘米，重 1.1 公斤","description":"商代青铜饮酒器，形制规整，纹饰清晰，是研究商代酒文化的重要实物资料。","model":"external","modelPath":"/3Dmodels/爵（饮酒器）/jue_wine_vessel_12th11th_c_bce/scene.gltf","iconPath":"/3Dmodels/爵（饮酒器）/jue_wine_vessel_12th11th_c_bce/textures/Mia_001146_Jue_100k_baseColor.jpeg","color":"#cd7f32"}
+2026-02-14T14:27:16.628Z: 开始启动摄像头...
+2026-02-14T14:27:16.919Z: [WARN] THREE.Material: 'emissive' is not a property of THREE.PointsMaterial.
+2026-02-14T14:27:16.920Z: [WARN] THREE.Material: 'emissiveIntensity' is not a property of THREE.PointsMaterial.
+2026-02-14T14:27:16.922Z: MainView mounted, selectedArtifact: {"id":2,"name":"爵（饮酒器）","dynasty":"商代晚期","era":"公元前12世纪 – 前11世纪","material":"青铜","dimensions":"高 23.97 × 宽 17.78 × 深 12.54 厘米，重 1.1 公斤","description":"商代青铜饮酒器，形制规整，纹饰清晰，是研究商代酒文化的重要实物资料。","model":"external","modelPath":"/3Dmodels/爵（饮酒器）/jue_wine_vessel_12th11th_c_bce/scene.gltf","iconPath":"/3Dmodels/爵（饮酒器）/jue_wine_vessel_12th11th_c_bce/textures/Mia_001146_Jue_100k_baseColor.jpeg","color":"#cd7f32"}
+2026-02-14T14:27:17.024Z: 开始启动摄像头...
+2026-02-14T14:27:17.487Z: 摄像头权限获取成功，流状态: true
+2026-02-14T14:27:17.489Z: [ERROR] videoRef未找到
+2026-02-14T14:27:17.525Z: 摄像头权限获取成功，流状态: true
+2026-02-14T14:27:17.525Z: [ERROR] videoRef未找到
+2026-02-14T14:27:17.612Z: App组件已挂载
+2026-02-14T14:27:17.618Z: 🚀 启动模型预加载...
+2026-02-14T14:27:17.620Z: App组件初始化完成
+2026-02-14T14:27:17.622Z: ✅ 所有模型预加载完成！
+2026-02-14T14:27:17.626Z: 摄像头权限获取成功，流状态: true
+2026-02-14T14:27:17.627Z: [ERROR] videoRef未找到
+2026-02-14T14:27:17.627Z: 摄像头权限获取成功，流状态: true
+2026-02-14T14:27:17.628Z: [ERROR] videoRef未找到
+2026-02-14T14:27:17.662Z: App组件已挂载
+2026-02-14T14:27:17.664Z: 🚀 启动模型预加载...
+2026-02-14T14:27:17.667Z: App组件初始化完成
+2026-02-14T14:27:17.669Z: ✅ 所有模型预加载完成！
+2026-02-14T14:27:17.700Z: App组件已挂载
+2026-02-14T14:27:17.702Z: 🚀 启动模型预加载...
+2026-02-14T14:27:17.704Z: App组件初始化完成
+2026-02-14T14:27:17.705Z: ✅ 所有模型预加载完成！
+2026-02-14T14:27:17.738Z: App组件已挂载
+2026-02-14T14:27:17.740Z: 🚀 启动模型预加载...
+2026-02-14T14:27:17.741Z: App组件初始化完成
+2026-02-14T14:27:17.741Z: ✅ 所有模型预加载完成！
+2026-02-14T14:27:17.770Z: App组件已挂载
+2026-02-14T14:27:17.772Z: 🚀 启动模型预加载...
+2026-02-14T14:27:17.774Z: App组件初始化完成
+2026-02-14T14:27:17.775Z: ✅ 所有模型预加载完成！
+2026-02-14T14:27:17.899Z: App组件已挂载
+2026-02-14T14:27:17.900Z: 🚀 启动模型预加载...
+2026-02-14T14:27:17.902Z: App组件初始化完成
+2026-02-14T14:27:17.903Z: ✅ 所有模型预加载完成！
+2026-02-14T14:27:20.289Z: === 进入博物馆事件触发 ===
+2026-02-14T14:27:20.290Z: 当前视图已切换到: main
+2026-02-14T14:27:20.379Z: [WARN] THREE.Material: 'emissive' is not a property of THREE.PointsMaterial.
+2026-02-14T14:27:20.379Z: [WARN] THREE.Material: 'emissiveIntensity' is not a property of THREE.PointsMaterial.
+2026-02-14T14:27:20.381Z: MainView mounted, selectedArtifact: {"id":1,"name":"卣（盛酒器）","dynasty":"商代晚期","era":"公元前12世纪 – 前11世纪","material":"青铜","dimensions":"高 32.54 × 宽 14.6 × 深 12.86 厘米，重 2.9 公斤","description":"商代青铜盛酒器，造型庄重，纹饰精美，是中国古代青铜文明的重要象征。","model":"external","modelPath":"/3Dmodels/卣（盛酒器）/you_wine_vessel_12th-11th_c_bce/scene.gltf","iconPath":"/3Dmodels/卣（盛酒器）/you_wine_vessel_12th-11th_c_bce/textures/Mia_017453_Fangyou_250k_diffuse.jpeg","color":"#cd7f32"}
+2026-02-14T14:27:20.413Z: 开始启动摄像头...
+2026-02-14T14:27:20.531Z: 摄像头权限获取成功，流状态: true
+2026-02-14T14:27:20.532Z: 视频流已设置到video元素
+2026-02-14T14:27:20.549Z: 视频加载完成
+2026-02-14T14:27:20.642Z: 视频开始播放
+2026-02-14T14:27:22.466Z: === 切换文物弹窗事件触发 ===
+2026-02-14T14:27:22.467Z: 文物弹窗显示状态: true
+2026-02-14T14:27:22.467Z: 是否自动切换: false
+2026-02-14T14:27:22.478Z: 居中计算: {"screenCenter":561,"cardCenter":110,"translateX":451,"tempSelectedIndex":0}
+2026-02-14T14:27:24.073Z: === 选择文物事件触发 ===
+2026-02-14T14:27:24.073Z: 选择文物: 1 {"id":2,"name":"爵（饮酒器）","dynasty":"商代晚期","era":"公元前12世纪 – 前11世纪","material":"青铜","dimensions":"高 23.97 × 宽 17.78 × 深 12.54 厘米，重 1.1 公斤","description":"商代青铜饮酒器，形制规整，纹饰清晰，是研究商代酒文化的重要实物资料。","model":"external","modelPath":"/3Dmodels/爵（饮酒器）/jue_wine_vessel_12th11th_c_bce/scene.gltf","iconPath":"/3Dmodels/爵（饮酒器）/jue_wine_vessel_12th11th_c_bce/textures/Mia_001146_Jue_100k_baseColor.jpeg","color":"#cd7f32"}
+2026-02-14T14:27:24.073Z: 文物选择完成，当前选中: 1
+2026-02-14T14:27:24.075Z: [WARN] THREE.Material: 'emissive' is not a property of THREE.PointsMaterial.
+2026-02-14T14:27:24.076Z: [WARN] THREE.Material: 'emissiveIntensity' is not a property of THREE.PointsMaterial.
+2026-02-14T14:27:24.082Z: 开始启动摄像头...
+2026-02-14T14:27:24.737Z: 摄像头权限获取成功，流状态: true
+2026-02-14T14:27:24.738Z: 视频流已设置到video元素
+2026-02-14T14:27:24.762Z: 视频加载完成
+2026-02-14T14:27:24.910Z: 视频开始播放
+2026-02-14T14:27:26.027Z: [ERROR] [手势服务] 初始化失败: {}
+2026-02-14T14:27:26.368Z: [ERROR] [手势服务] 初始化失败: {}
+2026-02-14T14:27:26.660Z: [ERROR] [手势服务] 初始化失败: {}
+2026-02-14T14:28:31.087Z: [ERROR] [vite] Failed to reload /src/components/InfoPanel.vue. This could be due to syntax errors or importing non-existent modules. (see errors above)

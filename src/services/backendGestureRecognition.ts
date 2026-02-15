@@ -21,8 +21,6 @@ export class BackendGestureRecognitionService {
   
   async initialize(): Promise<void> {
     try {
-      console.log('[手势服务] 正在初始化...')
-      
       this.canvas = document.createElement('canvas')
       this.ctx = this.canvas.getContext('2d')
       
@@ -30,20 +28,16 @@ export class BackendGestureRecognitionService {
         throw new Error('无法创建画布上下文')
       }
       
-      console.log('[手势服务] 尝试WebSocket连接...')
-      
       this.initSocket()
       
       await this.waitForConnection()
       
       this.useWebSocket = true
       this.isInitialized = true
-      console.log('[手势服务] 初始化完成，模式: WebSocket')
     } catch (error) {
       console.error('[手势服务] 初始化失败:', error)
       this.isInitialized = true
       this.useWebSocket = false
-      console.log('[手势服务] 初始化完成，模式: HTTP (WebSocket失败)')
     }
   }
   
@@ -58,7 +52,6 @@ export class BackendGestureRecognitionService {
     })
     
     this.socket.on('connect', () => {
-      console.log('[手势服务] WebSocket已连接, id:', this.socket?.id)
     })
     
     this.socket.on('connect_error', (error) => {
@@ -66,21 +59,16 @@ export class BackendGestureRecognitionService {
     })
     
     this.socket.on('result', (result: ProcessFrameResult) => {
-      console.log('[手势服务] 收到结果:', result.detections?.length || 0, '个检测, 手势:', result.detections?.map(d => d.gestureName).join(','))
       if (this.pendingResolve) {
         this.pendingResolve(result)
         this.pendingResolve = null
-      } else {
-        console.warn('[手势服务] 收到结果但没有pendingResolve')
       }
     })
     
     this.socket.on('disconnect', (reason) => {
-      console.log('[手势服务] WebSocket断开:', reason)
     })
     
     this.socket.on('reconnect', (attemptNumber) => {
-      console.log('[手势服务] WebSocket重连成功, 尝试次数:', attemptNumber)
     })
     
     this.socket.on('reconnect_error', (error) => {
@@ -89,10 +77,6 @@ export class BackendGestureRecognitionService {
     
     this.socket.on('reconnect_failed', () => {
       console.error('[手势服务] WebSocket重连失败')
-    })
-    
-    this.socket.onAny((event, ...args) => {
-      console.log('[手势服务] 收到事件:', event, args.length > 0 ? '有数据' : '无数据')
     })
   }
   
@@ -165,7 +149,6 @@ export class BackendGestureRecognitionService {
     }
     
     if (!this.isInitialized) {
-      console.warn('[手势服务] 服务未初始化')
       return defaultResult
     }
     
@@ -198,25 +181,21 @@ export class BackendGestureRecognitionService {
     
     return new Promise((resolve) => {
       if (!this.socket?.connected) {
-        console.warn('[手势服务] WebSocket未连接')
         resolve(defaultResult)
         return
       }
       
       if (this.pendingResolve) {
-        console.warn('[手势服务] 上一个请求未完成，跳过')
         resolve(defaultResult)
         return
       }
       
       this.pendingResolve = resolve
       
-      console.log('[手势服务] 发送帧 #' + this.frameCount + ', socket id:', this.socket.id)
       this.socket.emit('frame', { image: base64Image })
       
       setTimeout(() => {
         if (this.pendingResolve === resolve) {
-          console.warn('[手势服务] WebSocket响应超时')
           this.pendingResolve = null
           resolve(defaultResult)
         }
@@ -232,7 +211,6 @@ export class BackendGestureRecognitionService {
     }
     
     try {
-      console.log('[手势服务] HTTP发送帧 #' + this.frameCount)
       const response = await fetch('http://localhost:5000/api/recognize', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -240,12 +218,10 @@ export class BackendGestureRecognitionService {
       })
       
       if (!response.ok) {
-        console.error('[手势服务] HTTP错误:', response.status)
         return defaultResult
       }
       
       const data = await response.json()
-      console.log('[手势服务] HTTP结果:', data.detections?.length || 0, '个检测')
       
       return {
         detections: data.detections || [],
@@ -253,7 +229,6 @@ export class BackendGestureRecognitionService {
         landmarks: data.landmarks || []
       }
     } catch (error) {
-      console.error('[手势服务] HTTP请求失败:', error)
       return defaultResult
     }
   }
@@ -270,6 +245,5 @@ export class BackendGestureRecognitionService {
     this.canvas = null
     this.ctx = null
     this.isInitialized = false
-    console.log('[手势服务] 已释放')
   }
 }

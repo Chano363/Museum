@@ -116,8 +116,7 @@ class Deque:
         if x.position == HandPosition.LEFT_END and HandPosition.RIGHT_START in self:
             start_index = self.index_position(HandPosition.RIGHT_START)
             if (
-                # self.swipe_distance(self._deque[start_index], x)
-                True
+                self.swipe_distance(self._deque[start_index], x)
                 and self.check_duration(start_index)
                 and self.check_horizontal_swipe(self._deque[start_index], x)
             ):
@@ -129,8 +128,7 @@ class Deque:
         elif x.position == HandPosition.RIGHT_END and HandPosition.LEFT_START in self:
             start_index = self.index_position(HandPosition.LEFT_START)
             if (
-                # self.swipe_distance(self._deque[start_index], x)
-                True
+                self.swipe_distance(self._deque[start_index], x)
                 and self.check_duration(start_index)
                 and self.check_horizontal_swipe(self._deque[start_index], x)
             ):
@@ -144,8 +142,7 @@ class Deque:
         elif x.position == HandPosition.UP_END and HandPosition.DOWN_START in self:
             start_index = self.index_position(HandPosition.DOWN_START)
             if (
-                # self.swipe_distance(self._deque[start_index], x)
-                True
+                self.swipe_distance(self._deque[start_index], x)
                 and self.check_duration(start_index)
                 and self.check_vertical_swipe(self._deque[start_index], x)
             ):
@@ -159,8 +156,7 @@ class Deque:
         elif x.position == HandPosition.DOWN_END and HandPosition.UP_START in self:
             start_index = self.index_position(HandPosition.UP_START)
             if (
-                # self.swipe_distance(self._deque[start_index], x)
-                True
+                self.swipe_distance(self._deque[start_index], x)
                 and self.check_duration(start_index)
                 and self.check_vertical_swipe(self._deque[start_index], x)
             ):

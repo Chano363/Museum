@@ -344,7 +344,7 @@ class BackendGestureRecognitionService {
   private readonly config = {
     CONNECTION_TIMEOUT: 3000,
     MAX_RETRIES: 1,
-    MIN_REQUEST_INTERVAL: 100,
+    MIN_REQUEST_INTERVAL: 33,  // 约30fps
     IMAGE_WIDTH: 320,
     IMAGE_HEIGHT: 240,
     IMAGE_QUALITY: 0.7
@@ -369,7 +369,7 @@ class BackendGestureRecognitionService {
 ### 请求节流
 
 ```typescript
-// 最小请求间隔100ms
+// 最小请求间隔33ms（约30fps）
 if (now - this.lastRequestTime < this.config.MIN_REQUEST_INTERVAL) {
   return this.lastResult
 }

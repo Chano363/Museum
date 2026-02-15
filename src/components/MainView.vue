@@ -1,36 +1,62 @@
 <template>
   <div class="main-view">
-    <div class="model-container">
-      <model-viewer
-        ref="modelViewerRef"
-        v-if="modelPath"
-        :src="modelPath"
-        alt="3D Model"
-        auto-rotate="false"
-        camera-orbit="0deg 75deg 0.5m"
-        min-camera-orbit-distance="0.1m"
-        max-camera-orbit-distance="1m"
-        style="width: 100%; height: 100%; pointer-events: auto;"
-        @load="onModelLoaded"
-        @error="onModelError"
-        interaction-policy="always-allow"
-        enable-pan
-        enable-zoom
-        enable-rotate
-        camera-controls
-        touch-action="none"
-      ></model-viewer>
-      <div v-else class="placeholder-container">
-        <div class="placeholder-text">请选择一个展品</div>
+    <!-- 博物馆logo -->
+    <div class="museum-logo">
+      博物馆logo
+    </div>
+    
+    <!-- 主内容区域 -->
+    <div class="main-content">
+      <!-- 左侧信息区域 -->
+      <div class="info-section">
+        <!-- 文物名 -->
+        <div class="artifact-name">
+          {{ selectedArtifact?.name || '请选择文物' }}
+        </div>
+        
+        <!-- 主要信息 -->
+        <div class="artifact-dynasty">
+          {{ selectedArtifact?.dynasty || '朝代' }}
+        </div>
+        
+        <!-- 分隔线 -->
+        <div class="divider"></div>
+        
+        <!-- 详细信息 -->
+        <div class="detail-info">
+          <div class="detail-item">{{ selectedArtifact?.description || '' }}</div>
+          <div class="detail-item">年代: {{ selectedArtifact?.era || '' }}</div>
+          <div class="detail-item">材质: {{ selectedArtifact?.material || '' }}</div>
+          <div class="detail-item">尺寸: {{ selectedArtifact?.dimensions || '' }}</div>
+        </div>
       </div>
       
-      <!-- 3D模型上的小白点 -->
-      <div v-if="isFingerTracking && modelFingerPosition"
-           class="model-finger-dot"
-           :style="{ left: modelFingerPosition.x + '%', top: modelFingerPosition.y + '%' }">
+      <!-- 右侧3D模型区域 -->
+      <div class="model-section">
+        <div class="model-container">
+          <ParticleModel
+            v-if="modelPath"
+            ref="particleModelRef"
+            :model-path="modelPath"
+            :particle-size="0.005"
+            :max-particles="100000"
+            @loaded="onModelLoaded"
+            @error="onModelError"
+          />
+          <div v-else class="placeholder-container">
+            <div class="placeholder-text">文物3D模型</div>
+          </div>
+          
+          <!-- 3D模型上的小白点 -->
+          <div v-if="isFingerTracking && modelFingerPosition"
+               class="model-finger-dot"
+               :style="{ left: modelFingerPosition.x + '%', top: modelFingerPosition.y + '%' }">
+          </div>
+        </div>
       </div>
     </div>
     
+    <!-- 加载中遮罩 -->
     <div v-if="isLoading" class="loading-overlay">
       <div class="loading-content">
         <div class="loading-spinner"></div>
@@ -38,6 +64,7 @@
       </div>
     </div>
     
+    <!-- 摄像头容器 -->
     <div class="camera-container" v-if="showCamera">
       <GestureControl
         :width="videoWidth"
@@ -50,31 +77,42 @@
       />
     </div>
     
+    <!-- 底部工具栏 -->
     <div class="toolbar">
       <button class="tool-btn" @click="toggleCamera">
-        {{ showCamera ? '📷' : '📵' }}
+        <img :src="showCamera ? '/icons/camera.png' : '/icons/camera.png'" 
+             :class="{'camera-off': !showCamera}" 
+             alt="camera" />
       </button>
-      <button class="tool-btn switch-btn" @click="$emit('toggleThumbBar')">
-        🔄
+      <button class="tool-btn" @click="$emit('toggleThumbBar', false)">
+        <img src="/icons/switch.png" alt="switch" />
       </button>
-      <button class="info-btn" @click="$emit('showInfo')">
-        ℹ️
+      <button class="tool-btn" @click="toggleSettings">
+        <img src="/icons/settings.png" alt="settings" />
       </button>
       <button v-if="isDev" class="tool-btn" @click="exportLogs">
         📋
       </button>
     </div>
+    
+    <SettingView 
+      v-if="showSettings"
+      @close="showSettings = false"
+    />
   </div>
 </template>
 
 <script>
 import GestureControl from './GestureControl.vue'
-import { MODEL_CONTROL_CONFIG } from '../constants/gestureConstants'
+import ParticleModel from './ParticleModel.vue'
+import SettingView from './SettingView.vue'
 
 export default {
   name: 'MainView',
   components: {
-    GestureControl
+    GestureControl,
+    ParticleModel,
+    SettingView
   },
   props: {
     selectedArtifact: {
@@ -82,7 +120,7 @@ export default {
       required: true
     }
   },
-  emits: ['showInfo', 'nextModel', 'prevModel', 'displayGestureHint', 'toggleThumbBar'],
+  emits: ['nextModel', 'prevModel', 'displayGestureHint', 'toggleThumbBar'],
   data() {
     return {
       showCamera: false,
@@ -92,7 +130,8 @@ export default {
       isFingerTracking: false,
       modelFingerPosition: null,
       lastFingerMoveTime: 0,
-      FINGER_MOVE_INTERVAL: 16 // 约60fps
+      FINGER_MOVE_INTERVAL: 16,
+      showSettings: false
     }
   },
   computed: {
@@ -107,142 +146,67 @@ export default {
     }
   },
   methods: {
-    // 重置模型视图
     resetModelView() {
-      const modelViewer = this.$refs.modelViewerRef
-      if (!modelViewer) return
-      
-      console.log('重置模型视图')
-      // 重置相机参数
-      try {
-        modelViewer.cameraOrbit = '0deg 75deg 0.1m'
-      } catch (error) {
-        console.error('重置相机失败:', error)
+      const particleModel = this.$refs.particleModelRef
+      if (particleModel) {
+        particleModel.reset()
       }
     },
-    
-    // 放大模型
     zoomIn() {
-      const modelViewer = this.$refs.modelViewerRef
-      if (!modelViewer) {
-        console.log('放大模型失败: modelViewerRef 未找到')
-        return
-      }
-      
-      console.log('放大模型')
-      // 通过减小相机轨道距离来放大
-      try {
-        // 获取当前相机轨道
-        const currentOrbitStr = modelViewer.getAttribute('camera-orbit') || MODEL_CONTROL_CONFIG.DEFAULT_CAMERA_ORBIT
-        console.log('当前轨道:', currentOrbitStr)
-        const currentOrbit = currentOrbitStr.split(' ')
-        
-        if (currentOrbit.length >= 3) {
-          const currentDistance = parseFloat(currentOrbit[2])
-          console.log('当前距离:', currentDistance)
-          const newDistance = Math.max(MODEL_CONTROL_CONFIG.MIN_CAMERA_DISTANCE, currentDistance - MODEL_CONTROL_CONFIG.ZOOM_STEP)
-          console.log('新距离:', newDistance)
-          // 使用 setAttribute 方法来修改相机轨道
-          modelViewer.setAttribute('camera-orbit', `${currentOrbit[0]} ${currentOrbit[1]} ${newDistance.toFixed(2)}m`)
-          console.log('已更新相机轨道')
-        }
-      } catch (error) {
-        console.error('放大模型失败:', error)
+      const particleModel = this.$refs.particleModelRef
+      if (particleModel) {
+        particleModel.zoomIn()
       }
     },
-    
-    // 缩小模型
     zoomOut() {
-      const modelViewer = this.$refs.modelViewerRef
-      if (!modelViewer) {
-        console.log('缩小模型失败: modelViewerRef 未找到')
-        return
-      }
-      
-      console.log('缩小模型')
-      // 通过增大相机轨道距离来缩小
-      try {
-        // 获取当前相机轨道
-        const currentOrbitStr = modelViewer.getAttribute('camera-orbit') || MODEL_CONTROL_CONFIG.DEFAULT_CAMERA_ORBIT
-        console.log('当前轨道:', currentOrbitStr)
-        const currentOrbit = currentOrbitStr.split(' ')
-        
-        if (currentOrbit.length >= 3) {
-          const currentDistance = parseFloat(currentOrbit[2])
-          console.log('当前距离:', currentDistance)
-          // 增大相机轨道距离来缩小
-          const newDistance = Math.min(MODEL_CONTROL_CONFIG.MAX_CAMERA_DISTANCE, currentDistance + MODEL_CONTROL_CONFIG.ZOOM_STEP)
-          console.log('新距离:', newDistance)
-          // 使用 setAttribute 方法来修改相机轨道
-          modelViewer.setAttribute('camera-orbit', `${currentOrbit[0]} ${currentOrbit[1]} ${newDistance.toFixed(2)}m`)
-          console.log('已更新相机轨道')
-        }
-      } catch (error) {
-        console.error('缩小模型失败:', error)
+      const particleModel = this.$refs.particleModelRef
+      if (particleModel) {
+        particleModel.zoomOut()
       }
     },
-    
     onGestureAction(action) {
-      if (!action) {
-        console.log('未检测到动作')
-        return
-      }
-      
-      console.log('=== 检测到动作 ===', action)
-      console.log('modelViewerRef:', this.$refs.modelViewerRef)
-      console.log('action 类型:', typeof action, 'action 值:', action)
+      if (!action) return
       
       switch (action) {
-        case 'reset': // 手掌/释放 - 重置视图
-          console.log('执行重置视图')
+        case 'reset':
           this.resetModelView()
           this.$emit('displayGestureHint', '重置视图')
           break
-        case 'zoom_in': // 点赞 - 放大模型
-          console.log('执行放大模型')
+        case 'zoom_in':
           this.zoomIn()
           this.$emit('displayGestureHint', '放大模型')
           break
-        case 'zoom_out': // 点踩 - 缩小模型
-          console.log('执行缩小模型')
+        case 'zoom_out':
           this.zoomOut()
           this.$emit('displayGestureHint', '缩小模型')
           break
-        case 'switch': // 拳头 - 切换展品
-        case 'switch_next': // SWIPE_RIGHT - 下一件展品
-          console.log('执行切换展品 - 下一件')
+        case 'switch':
+        case 'switch_next':
           this.$emit('nextModel')
           this.$emit('displayGestureHint', '切换展品')
           break
-        case 'switch_prev': // SWIPE_LEFT - 上一件展品
-          console.log('执行切换展品 - 上一件')
+        case 'switch_prev':
           this.$emit('prevModel')
           this.$emit('displayGestureHint', '切换展品')
           break
-        case 'show_info': // OK手势 - 显示信息
-          console.log('执行显示信息')
-          this.$emit('showInfo')
-          this.$emit('displayGestureHint', '显示信息')
-          break
-        case 'rotate': // 手指/一指 - 移动模型
-          console.log('手指移动 - 移动模型')
+        case 'rotate':
           this.isFingerTracking = true
+          break
+        case 'toggle_thumbbar':
+          this.$emit('toggleThumbBar', true) // 通过手势触发，传递autoSwitch=true
+          this.$emit('displayGestureHint', '唤出切换面板')
           break
         default:
           break
       }
     },
     onGestureDetected(gesture) {
-      console.log('检测到手势:', gesture)
+
     },
-    
-    // 处理手指移动事件
     onFingerMove(data) {
-      console.log('[MainView] 收到finger-move:', data)
       const now = performance.now()
       if (now - this.lastFingerMoveTime < this.FINGER_MOVE_INTERVAL) {
-        console.log('[MainView] 节流跳过')
-        return // 处理节流，限制处理频率
+        return
       }
       this.lastFingerMoveTime = now
       
@@ -252,46 +216,20 @@ export default {
         return
       }
       
-      const { deltaX, deltaY, position } = data
-      console.log('[MainView] deltaX:', deltaX, 'deltaY:', deltaY, 'position:', position)
+      const deltaX = data.deltaX
+      const deltaY = data.deltaY
+      const position = data.position
+      const sensitivity = 1.5
       
-      const sensitivity = 1.5 // 提高灵敏度，确保模型能够明显响应
-      
-      const modelViewer = this.$refs.modelViewerRef
-      console.log('[MainView] modelViewer:', modelViewer, 'cameraOrbit:', modelViewer?.cameraOrbit)
-      
-      if (!modelViewer) {
-        console.error('[MainView] modelViewer未找到')
-        return
-      }
+      const particleModel = this.$refs.particleModelRef
+      if (!particleModel) return
       
       try {
-        let currentOrbit = ['0deg', '75deg', '0.5m']
-        
-        if (modelViewer.cameraOrbit) {
-          const orbitParts = modelViewer.cameraOrbit.split(' ')
-          if (orbitParts.length >= 3) {
-            currentOrbit = orbitParts
-          }
-        }
-        
-        const azimuth = parseFloat(currentOrbit[0]) || 0
-        const elevation = parseFloat(currentOrbit[1]) || 75
-        const distance = currentOrbit[2] || '0.5m'
-        
-        // 反转方向：手指向右移动时，模型向左旋转（更直观）
-        const newAzimuth = azimuth - deltaX * sensitivity
-        // 向上移动手指时，deltaY为负，elevation增加，模型向上旋转
-        const clampedDeltaY = Math.max(-20, Math.min(20, deltaY))
-        const newElevation = Math.max(10, Math.min(85, elevation + clampedDeltaY * sensitivity))
-        
-        const newOrbit = `${newAzimuth.toFixed(2)}deg ${newElevation.toFixed(2)}deg ${distance}`
-        console.log('[MainView] 设置camera-orbit:', newOrbit, '原:', modelViewer.cameraOrbit)
-        modelViewer.setAttribute('camera-orbit', newOrbit)
+        particleModel.rotate(-deltaX * sensitivity, deltaY * sensitivity)
         
         if (position) {
-          const modelX = (position.x / 640) * 100
-          const modelY = (position.y / 480) * 100
+          const modelX = (position.x / 320) * 100
+          const modelY = (position.y / 240) * 100
           
           const clampedX = Math.max(0, Math.min(100, modelX))
           const clampedY = Math.max(0, Math.min(100, modelY))
@@ -317,31 +255,19 @@ export default {
         console.error('控制模型失败:', error)
       }
     },
-    
     toggleCamera() {
-      console.log('=== 切换摄像头事件触发 ===')
       this.showCamera = !this.showCamera
-      console.log('摄像头显示状态:', this.showCamera)
     },
-    
+    toggleSettings() {
+      this.showSettings = !this.showSettings
+    },
     exportLogs() {
-      console.log('开始导出控制台日志')
+      let logsToExport = []
       
-      // 检查是否存在 consoleLogs 数组
       if (window.consoleLogs && window.consoleLogs.length > 0) {
-        // 使用存储的日志
-        const logContent = window.consoleLogs.map(log => {
-          return `${log.timestamp}: ${log.message}`;
-        }).join('\n');
-        
-        console.log('使用存储的日志，共', window.consoleLogs.length, '条');
-        this.downloadLogs(logContent);
+        logsToExport = window.consoleLogs
       } else {
-        // 尝试从控制台捕获日志
-        console.log('尝试从控制台捕获日志');
-        
-        // 生成测试日志
-        const testLogs = [
+        logsToExport = [
           {
             timestamp: new Date().toISOString(),
             message: '导出日志功能测试'
@@ -354,56 +280,46 @@ export default {
             timestamp: new Date().toISOString(),
             message: '摄像头状态: ' + this.showCamera
           }
-        ];
-        
-        const logContent = testLogs.map(log => {
-          return `${log.timestamp}: ${log.message}`;
-        }).join('\n');
-        
-        this.downloadLogs(logContent);
+        ]
       }
-    },
-    
-    // 下载日志文件
-    downloadLogs(logContent) {
-      console.log('日志内容长度:', logContent.length);
       
-      // 创建下载链接
-      const blob = new Blob([logContent], { type: 'text/plain' });
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = `console-logs-${new Date().toISOString().slice(0, 19).replace(/:/g, '-')}.txt`;
-      console.log('下载链接创建成功:', a.download);
+      const logContent = logsToExport.map(log => {
+        return `${log.timestamp}: ${log.message}`
+      }).join('\n')
       
-      a.click();
-      
-      // 清理
-      URL.revokeObjectURL(url);
-      
-      console.log('控制台日志导出完成');
+      const blob = new Blob([logContent], { type: 'text/plain' })
+      const url = URL.createObjectURL(blob)
+      const a = document.createElement('a')
+      a.href = url
+      a.download = `console-logs-${new Date().toISOString().slice(0, 19).replace(/:/g, '-')}.txt`
+      a.click()
+      URL.revokeObjectURL(url)
     },
     onModelLoaded() {
-      console.log('模型加载成功:', this.modelPath)
       this.isLoading = false
+      // 模型加载完成后重新打开摄像头
+      this.toggleCamera()
     },
     onModelError(event) {
-      console.error('模型加载失败:', event)
+      console.error('粒子模型加载失败:', event)
       this.isLoading = false
+      // 模型加载失败后也重新打开摄像头
+      this.toggleCamera()
     }
   },
   mounted() {
     console.log('MainView mounted, selectedArtifact:', this.selectedArtifact)
-    console.log('modelPath:', this.modelPath)
+    if (this.selectedArtifact && this.selectedArtifact.model === 'external' && this.selectedArtifact.modelPath) {
+      this.isLoading = true
+    }
   },
-  
-  beforeUnmount() {
-  },
-  
   watch: {
     selectedArtifact() {
-      console.log('选中的展品已更新:', this.selectedArtifact)
       if (this.selectedArtifact && this.selectedArtifact.model === 'external' && this.selectedArtifact.modelPath) {
+        // 开始加载模型时关闭摄像头，减少性能消耗
+        if (this.showCamera) {
+          this.showCamera = false
+        }
         this.isLoading = true
       }
     }
@@ -412,6 +328,7 @@ export default {
 </script>
 
 <style scoped>
+/* 全局样式 */
 .main-view {
   position: absolute;
   top: 0;
@@ -423,53 +340,140 @@ export default {
   font-family: var(--font-family);
 }
 
+/* 博物馆logo */
+.museum-logo {
+  position: absolute;
+  top: 20px;
+  left: 20px;
+  width: 120px;
+  height: 40px;
+  color: #f0d695;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  z-index: 50;
+}
+
+/* 主内容区域 */
+.main-content {
+  position: absolute;
+  top: 80px;
+  left: 50px;
+  right: 50px;
+  bottom: 100px;
+  display: flex;
+  gap: 60px;
+  z-index: 10;
+}
+
+/* 左侧信息区域 */
+.info-section {
+  flex: 0 0 350px;
+  display: flex;
+  flex-direction: column;
+  z-index: 11;
+}
+
+/* 文物名 */
+.artifact-name {
+  width: 100%;
+  color: #f0d695;
+  font-size: 36px;
+  font-weight: bold;
+  text-align: left;
+  margin-bottom: 35px;
+}
+
+/* 朝代信息 */
+.artifact-dynasty {
+  width: 100%;
+  color: #f0d695;
+  font-size: 24px;
+  text-align: left;
+  margin-bottom: 45px;
+}
+
+/* 分隔线 */
+.divider {
+  width: 100%;
+  height: 2px;
+  background-color: #f0d695;
+  margin: 45px 0;
+}
+
+/* 详细信息 */
+.detail-info {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  margin-top: 20px;
+}
+
+.detail-item {
+  width: 100%;
+  color: #f0d695;
+  font-size: 22px;
+  margin-bottom: 30px;
+}
+
+/* 右侧3D模型区域 */
+.model-section {
+  flex: 1;
+  min-width: 600px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  background-color: transparent;
+  box-shadow: 0 8px 32px rgba(196, 146, 16, 0.3);
+  border-radius: 8px;
+  z-index: 11;
+}
+
 .model-container {
   width: 100%;
-  height: calc(100% - 60px);
+  height: 100%;
   position: relative;
-  z-index: 2;
 }
 
 .placeholder-container {
   width: 100%;
   height: 100%;
   display: flex;
-  justify-content: center;
   align-items: center;
+  justify-content: center;
+  color: #f0d695;
+  font-size: 24px;
 }
 
-.placeholder-text {
-  font-size: 18px;
-  color: #ccc;
-  font-weight: 500;
-}
-
+/* 摄像头容器 - 全屏背景 */
 .camera-container {
   position: absolute;
-  top: 20px;
-  right: 20px;
-  width: 200px;
-  height: 150px;
-  z-index: 50;
-  border-radius: 10px;
-  overflow: hidden;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
-  background-color: rgba(196, 146, 16, 0.05);
-}
-
-.toolbar {
-  position: absolute;
-  bottom: 0;
+  top: 0;
   left: 0;
   right: 0;
-  height: 60px;
-  background-color: rgba(196, 146, 16, 0.05);
+  bottom: 0;
+  z-index: 1;
+  overflow: hidden;
+}
+
+.camera-container :deep(.video-display) {
+  opacity: 0.5;
+  filter: brightness(0.5);
+}
+
+/* 底部工具栏 */
+.toolbar {
+  position: absolute;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  height: 50px;
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 15px;
-  backdrop-filter: blur(5px);
-  box-shadow: 0 -2px 8px rgba(0, 0, 0, 0.1);
+  gap: 20px;
   z-index: 100;
 }
 
@@ -481,50 +485,39 @@ export default {
   background-color: rgba(255, 255, 255, 0.8);
   font-size: 16px;
   cursor: pointer;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 2px 8px rgba(196, 146, 16, 0.3);
   transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 8px;
+}
+
+.tool-btn img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.tool-btn img.camera-off {
+  opacity: 0.4;
+  filter: grayscale(100%);
 }
 
 .tool-btn:hover {
   background-color: rgba(255, 255, 255, 1);
   transform: scale(1.1);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 4px 12px rgba(196, 146, 16, 0.4);
 }
 
-.switch-btn {
-  background-color: var(--text-color);
-  color: white;
-  font-size: 18px;
-  font-weight: bold;
-}
-
-.switch-btn:hover {
-  background-color: rgba(196, 146, 16, 1);
-}
-
-.info-btn {
-  position: absolute;
-  right: 20px;
-  top: 50%;
-  transform: translateY(-50%);
-  width: 40px;
-  height: 40px;
-  border: none;
-  border-radius: 50%;
-  background-color: var(--text-color);
-  color: white;
-  font-size: 16px;
-  cursor: pointer;
-  box-shadow: 0 2px 8px rgba(196, 146, 16, 0.2);
-}
-
+/* 加载遮罩 */
 .loading-overlay {
   position: absolute;
   top: 0;
   left: 0;
   right: 0;
   bottom: 0;
-  background-color: rgba(0, 0, 0, 0.7);
+  background-color: rgba(0, 0, 0, 0.95);
   display: flex;
   justify-content: center;
   align-items: center;
@@ -533,11 +526,11 @@ export default {
 }
 
 .loading-content {
-  background-color: rgba(40, 40, 40, 0.95);
+  background-color: rgba(0, 0, 0, 0.95);
   border-radius: 15px;
   padding: 40px;
   text-align: center;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+  box-shadow: 0 10px 30px rgba(196, 146, 16, 0.4);
   max-width: 400px;
   width: 90%;
 }
@@ -545,8 +538,8 @@ export default {
 .loading-spinner {
   width: 60px;
   height: 60px;
-  border: 5px solid rgba(196, 146, 16, 0.2);
-  border-top: 5px solid var(--text-color);
+  border: 5px solid rgba(240, 214, 149, 0.3);
+  border-top: 5px solid #f0d695;
   border-radius: 50%;
   animation: spin 1s linear infinite;
   margin: 0 auto 20px;
@@ -555,7 +548,7 @@ export default {
 .loading-text {
   font-size: 18px;
   font-weight: bold;
-  color: var(--text-color);
+  color: #f0d695;
   margin-bottom: 20px;
 }
 
@@ -564,6 +557,7 @@ export default {
   100% { transform: rotate(360deg); }
 }
 
+/* 模型手指点 */
 .model-finger-dot {
   position: absolute;
   width: 20px;
@@ -574,6 +568,55 @@ export default {
   pointer-events: none;
   z-index: 100;
   box-shadow: 0 0 10px rgba(255, 255, 255, 0.8);
+}
+
+/* 响应式设计 */
+@media (max-width: 1024px) {
+  .main-content {
+    flex-direction: column;
+    gap: 20px;
+  }
+  
+  .info-section {
+    max-width: 100%;
+    order: 2;
+  }
+  
+  .model-section {
+    flex: 1;
+    min-width: 100%;
+    order: 1;
+  }
+  
+  .artifact-name,
+  .artifact-dynasty,
+  .detail-item {
+    font-size: 14px;
+    padding: 10px;
+  }
+}
+
+@media (max-width: 768px) {
+  .museum-logo {
+    width: 100px;
+    height: 32px;
+    font-size: 12px;
+  }
+  
+  .main-content {
+    top: 70px;
+    bottom: 70px;
+  }
+  
+  .toolbar {
+    height: 50px;
+  }
+  
+  .tool-btn {
+    width: 36px;
+    height: 36px;
+    font-size: 14px;
+  }
 }
 
 </style>

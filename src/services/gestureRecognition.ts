@@ -29,30 +29,22 @@ export class GestureRecognitionService {
   
   async initialize(detectorPath: string, classifierPath: string): Promise<void> {
     try {
-      console.log('正在初始化手势识别模型...')
-      
       // 验证模型路径
       if (!detectorPath || !classifierPath) {
         throw new Error('模型路径不能为空')
       }
       
-      // 直接使用CPU执行，避免WASM初始化失败的问题
-      console.log('使用CPU模式加载模型...')
-      
       // 加载手部检测模型
       this.detectionSession = await ort.InferenceSession.create(detectorPath, {
         executionProviders: ['cpu']
       })
-      console.log('手部检测模型（CPU模式）加载完成')
       
       // 加载手势分类模型
       this.classificationSession = await ort.InferenceSession.create(classifierPath, {
         executionProviders: ['cpu']
       })
-      console.log('手势分类模型（CPU模式）加载完成')
       
       this.isInitialized = true
-      console.log('手势识别系统初始化完成')
     } catch (error) {
       console.error('模型初始化失败:', error)
       // 提供更友好的错误信息
@@ -299,9 +291,6 @@ export class GestureRecognitionService {
         this.frameCount = 0
         this.lastFpsUpdate = currentTime
       }
-      
-      const processingTime = performance.now() - startTime
-      console.log(`处理时间: ${processingTime.toFixed(2)}ms, FPS: ${this.fps}`)
       
       return detections
     } catch (error) {

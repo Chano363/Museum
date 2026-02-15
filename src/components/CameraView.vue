@@ -226,11 +226,39 @@ const updateDetections = (newDetections) => {
 
 // 获取检测框样式
 const getBoxStyle = (bbox) => {
+  if (!videoRef.value) {
+    return {
+      left: `${bbox.x1}px`,
+      top: `${bbox.y1}px`,
+      width: `${bbox.x2 - bbox.x1}px`,
+      height: `${bbox.y2 - bbox.y1}px`
+    }
+  }
+  
+  // 注意：视频帧被压缩了一半发送给后端，所以检测框坐标也是基于压缩后的尺寸
+  // 需要将检测框坐标乘以2来映射回原始尺寸
+  const compressionRatio = 2
+  
+  const videoWidth = videoRef.value.offsetWidth
+  const videoHeight = videoRef.value.offsetHeight
+  
+  const scaleX = videoWidth / props.width
+  const scaleY = videoHeight / props.height
+  
+  const originalLeft = bbox.x1 * compressionRatio * scaleX
+  const top = bbox.y1 * compressionRatio * scaleY
+  const width = (bbox.x2 - bbox.x1) * compressionRatio * scaleX
+  const height = (bbox.y2 - bbox.y1) * compressionRatio * scaleY
+  
+  // 考虑视频的水平翻转（transform: scaleX(-1)）
+  // 翻转后的left坐标 = 视频宽度 - 原始left - 宽度
+  const flippedLeft = videoWidth - originalLeft - width
+  
   return {
-    left: `${bbox.x1}px`,
-    top: `${bbox.y1}px`,
-    width: `${bbox.x2 - bbox.x1}px`,
-    height: `${bbox.y2 - bbox.y1}px`
+    left: `${flippedLeft}px`,
+    top: `${top}px`,
+    width: `${width}px`,
+    height: `${height}px`
   }
 }
 

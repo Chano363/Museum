@@ -112,9 +112,15 @@ export default {
       }
     },
     updateTranslateX(animate = true) {
-      const centerX = window.innerWidth / 2
+      const screenCenter = window.innerWidth / 2
       const cardCenter = this.tempSelectedIndex * (this.cardWidth + this.gap) + this.cardWidth / 2
-      this.translateX = centerX - cardCenter
+      this.translateX = screenCenter - cardCenter
+      console.log('居中计算:', {
+        screenCenter,
+        cardCenter,
+        translateX: this.translateX,
+        tempSelectedIndex: this.tempSelectedIndex
+      })
     },
     selectNextArtifact() {
       if (this.isAnimating) return
@@ -146,7 +152,7 @@ export default {
         opacity,
         filter: `brightness(${brightness})`,
         zIndex: 100 - distance,
-        backgroundColor: isSelected ? 'rgba(245, 222, 179, 0.95)' : 'rgba(218, 165, 32, 0.85)'
+        backgroundColor: isSelected ? 'rgba(30, 30, 30, 0.95)' : 'rgba(30, 30, 30, 0.9)'
       }
     },
     selectArtifact(index) {
@@ -177,7 +183,6 @@ export default {
   width: 100%;
   height: 100%;
   display: flex;
-  justify-content: center;
   align-items: center;
   overflow: hidden;
   mask-image: linear-gradient(to right, transparent 5%, black 20%, black 80%, transparent 95%);
@@ -188,7 +193,6 @@ export default {
   display: flex;
   align-items: center;
   gap: 15px;
-  padding: 0 50vw;
   transition: transform 0.3s cubic-bezier(0.25, 0.1, 0.25, 1);
   will-change: transform;
 }
@@ -197,10 +201,11 @@ export default {
   flex-shrink: 0;
   width: 220px;
   aspect-ratio: 3/4;
-  background-color: rgba(218, 165, 32, 0.85);
+  background-color: rgba(30, 30, 30, 0.9);
   border-radius: 8px;
   cursor: pointer;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 4px 20px rgba(196, 146, 16, 0.3);
+  border: 2px solid rgba(196, 146, 16, 0.6);
   display: flex;
   justify-content: center;
   align-items: center;
@@ -208,16 +213,20 @@ export default {
   transition: transform 0.3s cubic-bezier(0.25, 0.1, 0.25, 1),
               opacity 0.3s cubic-bezier(0.25, 0.1, 0.25, 1),
               filter 0.3s cubic-bezier(0.25, 0.1, 0.25, 1),
-              background-color 0.3s ease;
+              background-color 0.3s ease,
+              border-color 0.3s ease,
+              box-shadow 0.3s ease;
   will-change: transform, opacity, filter;
 }
 
 .thumb-item:hover {
-  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.4);
+  box-shadow: 0 8px 30px rgba(196, 146, 16, 0.5);
+  border-color: rgba(196, 146, 16, 0.8);
 }
 
 .thumb-item.selected {
-  box-shadow: 0 12px 40px rgba(196, 146, 16, 0.5);
+  box-shadow: 0 12px 40px rgba(196, 146, 16, 0.6);
+  border-color: rgba(196, 146, 16, 1);
 }
 
 .thumb-color {

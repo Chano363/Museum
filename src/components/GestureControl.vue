@@ -122,8 +122,8 @@ export default {
       const displayWidth = cameraElement.offsetWidth
       const displayHeight = cameraElement.offsetHeight
       
-      const mappedX = (x / 640) * displayWidth
-      const mappedY = (y / 480) * displayHeight
+      const mappedX = (x / 320) * displayWidth
+      const mappedY = (y / 240) * displayHeight
       
       return { x: mappedX, y: mappedY }
     }
@@ -150,8 +150,19 @@ export default {
         36: 'rotate',       // stop_inverted (停止反转)
         29: 'rotate',       // ok (OK手势)
         
-        // 注意：手势ID 0-44是静态手势分类，不是SWIPE事件
-        // 如果需要SWIPE功能，应基于手部轨迹检测实现
+        // SWIPE手势操作 - 唤出切换页面
+        0: 'toggle_thumbbar',   // SWIPE_RIGHT - 向右滑动，唤出切换页面
+        1: 'toggle_thumbbar',   // SWIPE_LEFT - 向左滑动，唤出切换页面
+        2: 'toggle_thumbbar',   // SWIPE_UP - 向上滑动，唤出切换页面
+        3: 'toggle_thumbbar',   // SWIPE_DOWN - 向下滑动，唤出切换页面
+        10: 'toggle_thumbbar',  // SWIPE_RIGHT2 - 向右滑动，唤出切换页面
+        11: 'toggle_thumbbar',  // SWIPE_LEFT2 - 向左滑动，唤出切换页面
+        12: 'toggle_thumbbar',  // SWIPE_UP2 - 向上滑动，唤出切换页面
+        13: 'toggle_thumbbar',  // SWIPE_DOWN2 - 向下滑动，唤出切换页面
+        15: 'toggle_thumbbar',  // SWIPE_RIGHT3 - 向右滑动，唤出切换页面
+        16: 'toggle_thumbbar',  // SWIPE_LEFT3 - 向左滑动，唤出切换页面
+        17: 'toggle_thumbbar',  // SWIPE_UP3 - 向上滑动，唤出切换页面
+        18: 'toggle_thumbbar',  // SWIPE_DOWN3 - 向下滑动，唤出切换页面
       }
       return actionMap[gestureId] || null
     }
@@ -209,46 +220,46 @@ export default {
         cameraViewRef.value?.updateDetections(validDetections)
         const currentTime = Date.now()
         
-        // 如果旋转动作已触发，继续手指追踪（即使没有检测到手势）
-        if (isRotationTriggered.value && result.fingerPosition) {
-          const { x, y } = result.fingerPosition
-          const mirroredX = 640 - x
-          
-          const mappedPosition = mapCoordinates(mirroredX, y)
-          fingerPosition.value = { x: mappedPosition.x, y: mappedPosition.y }
-          
-          if (result.landmarks && result.landmarks.length > 0) {
-            handLandmarks.value = result.landmarks
-          }
-          
-          isFingerTracking.value = true
-          
-          if (isFirstFingerPosition.value) {
-            lastFingerPosition.value = { x: mirroredX, y }
-            isFirstFingerPosition.value = false
-            console.log('[GestureControl] 发送finger-move (首次):', { deltaX: 0, deltaY: 0, position: { x: mirroredX, y } })
-            emit('finger-move', {
-              deltaX: 0,
-              deltaY: 0,
-              position: { x: mirroredX, y }
-            })
-          } else {
-            const deltaX = mirroredX - lastFingerPosition.value.x
-            const deltaY = y - lastFingerPosition.value.y
+          // 如果旋转动作已触发，继续手指追踪（即使没有检测到手势）
+          if (isRotationTriggered.value && result.fingerPosition) {
+            const { x, y } = result.fingerPosition
+            const mirroredX = 320 - x
             
-            console.log('[GestureControl] 发送finger-move:', { deltaX, deltaY })
-            emit('finger-move', {
-              deltaX: deltaX,
-              deltaY: deltaY,
-              position: { x: mirroredX, y }
-            })
+            const mappedPosition = mapCoordinates(mirroredX, y)
+            fingerPosition.value = { x: mappedPosition.x, y: mappedPosition.y }
             
-            lastFingerPosition.value = { x: mirroredX, y }
+            if (result.landmarks && result.landmarks.length > 0) {
+              handLandmarks.value = result.landmarks
+            }
+            
+            isFingerTracking.value = true
+            
+            if (isFirstFingerPosition.value) {
+              lastFingerPosition.value = { x: mirroredX, y }
+              isFirstFingerPosition.value = false
+              console.log('[GestureControl] 发送finger-move (首次):', { deltaX: 0, deltaY: 0, position: { x: mirroredX, y } })
+              emit('finger-move', {
+                deltaX: 0,
+                deltaY: 0,
+                position: { x: mirroredX, y }
+              })
+            } else {
+              const deltaX = mirroredX - lastFingerPosition.value.x
+              const deltaY = y - lastFingerPosition.value.y
+              
+              console.log('[GestureControl] 发送finger-move:', { deltaX, deltaY })
+              emit('finger-move', {
+                deltaX: deltaX,
+                deltaY: deltaY,
+                position: { x: mirroredX, y }
+              })
+              
+              lastFingerPosition.value = { x: mirroredX, y }
+            }
+            
+            lastMoveTime.value = currentTime
+            return
           }
-          
-          lastMoveTime.value = currentTime
-          return
-        }
         
         if (validDetections.length > 0) {
           const hand = validDetections[0]
@@ -277,6 +288,7 @@ export default {
                 }
               }
             } else {
+              // 对于所有动作（包括动态动作）都应用冷却时间，防止频繁触发
               if (currentTime - lastActionTime >= ACTION_COOLDOWN) {
                 currentAction.value = recognizedAction
                 emit('action', recognizedAction)
@@ -296,7 +308,7 @@ export default {
           // 如果旋转动作已触发，继续手指追踪
           if (isRotationTriggered.value && result.fingerPosition) {
             const { x, y } = result.fingerPosition
-            const mirroredX = 640 - x
+            const mirroredX = 320 - x
             
             const mappedPosition = mapCoordinates(mirroredX, y)
             fingerPosition.value = { x: mappedPosition.x, y: mappedPosition.y }
@@ -372,8 +384,8 @@ export default {
       'reset': '🖐️',
       'zoom_in': '👍',
       'zoom_out': '👎',
-      'show_info': '👌',
-      'rotate': '☝️'
+      'rotate': '☝️',
+      'toggle_thumbbar': '🔄'
     }
     return iconMap[action] || '✋'
   }
@@ -386,8 +398,8 @@ export default {
       'reset': '手掌',
       'zoom_in': '点赞',
       'zoom_out': '点踩',
-      'show_info': 'OK手势',
-      'rotate': '手指指向'
+      'rotate': '手指指向',
+      'toggle_thumbbar': '切换面板'
     }
     return textMap[action] || '未知动作'
   }

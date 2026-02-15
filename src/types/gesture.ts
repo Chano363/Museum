@@ -70,7 +70,7 @@ export enum ActionType {
   ZOOM_IN = 'zoom_in',
   ZOOM_OUT = 'zoom_out',
   RESET = 'reset',
-  SHOW_INFO = 'show_info',
+  TOGGLE_THUMBBAR = 'toggle_thumbbar',
   ROTATE = 'rotate',
   SWITCH = 'switch'
 }
