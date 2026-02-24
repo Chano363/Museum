@@ -1,0 +1,62 @@
+[
+  {
+    "id": "bronze_jue_001",
+    "url": "/static/textures/bronze/Wine warmer (Jue).jpg",
+    "bronze_type": "jue",
+    "style": "default",
+    "name": "青铜爵",
+    "period": "商周",
+    "description": "青铜爵，古代饮酒器",
+    "features": []
+  },
+  {
+    "id": "bronze_vase_001",
+    "url": "/static/textures/bronze/Vase in Shape of Archaic Chinese bronze.jpg",
+    "bronze_type": "zun",
+    "style": "default",
+    "name": "仿古青铜瓶",
+    "period": "清代",
+    "description": "仿古青铜器风格的瓷瓶",
+    "features": []
+  },
+  {
+    "id": "bronze_censer_001",
+    "url": "/static/textures/bronze/Censer.jpg",
+    "bronze_type": "ding",
+    "style": "default",
+    "name": "青铜香炉",
+    "period": "明清",
+    "description": "青铜香炉，仿鼎形制",
+    "features": []
+  },
+  {
+    "id": "bronze_parakeets_001",
+    "url": "/static/textures/bronze/One of a pair of parakeets.jpg",
+    "bronze_type": "zun",
+    "style": "fengniao",
+    "name": "鹦鹉纹青铜器",
+    "period": "商周",
+    "description": "鹦鹉纹装饰青铜器",
+    "features": []
+  },
+  {
+    "id": "bronze_pipa_001",
+    "url": "/static/textures/bronze/Pipa.jpg",
+    "bronze_type": "you",
+    "style": "default",
+    "name": "琵琶形青铜器",
+    "period": "商周",
+    "description": "琵琶形制青铜器",
+    "features": []
+  },
+  {
+    "id": "bronze_default",
+    "url": "/static/textures/bronze/Censer.jpg",
+    "bronze_type": "default",
+    "style": "default",
+    "name": "默认青铜纹理",
+    "period": "通用",
+    "description": "通用青铜质感纹理",
+    "features": []
+  }
+]

@@ -33,3 +33,5 @@ public/3Dmodels/
 *.log
 npm-debug.log*
 yarn-debug.log*
+
+.env

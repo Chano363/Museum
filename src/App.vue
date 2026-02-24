@@ -1,41 +1,52 @@
 <template>
   <div class="app-container">
-    <!-- 欢迎/引导页 -->
-    <WelcomeView v-if="currentView === 'welcome'" @enter="enterMuseum" />
-    
-    <!-- 主界面 -->
-    <div v-else-if="currentView === 'main'" class="main-interface">
-      <ThumbBar 
-        :artifacts="artifacts" 
-        :selectedIndex="selectedArtifactIndex"
-        :visible="showThumbBar"
-        @select="selectArtifact"
-        @close="showThumbBar = false"
+    <transition name="fade" mode="out-in">
+      <WelcomeView 
+        v-if="currentView === 'welcome'" 
+        @enter-museum="enterMuseum"
+        @enter-sketch="enterSketch"
       />
       
       <MainView 
+        v-else-if="currentView === 'main'"
         :selectedArtifact="selectedArtifact"
         @nextModel="nextModel"
         @prevModel="prevModel"
         @displayGestureHint="displayGestureHint"
         @toggleThumbBar="(autoSwitch) => toggleThumbBar(autoSwitch)"
+        @back="goToWelcome"
       />
       
-      <!-- 手势提示泡 -->
-      <GestureHint v-if="showGestureHint" :hint="currentGestureHint" />
-      
-      <SettingView 
-        v-if="showSettings"
-        @close="showSettings = false"
+      <SketchView 
+        v-else-if="currentView === 'sketch'"
+        @back="goToWelcome"
+        @enter-museum="enterMuseum"
       />
-    </div>
+    </transition>
+    
+    <ThumbBar 
+      v-if="currentView === 'main'"
+      :artifacts="artifacts" 
+      :selectedIndex="selectedArtifactIndex"
+      :visible="showThumbBar"
+      @select="selectArtifact"
+      @close="showThumbBar = false"
+    />
+    
+    <GestureHint v-if="showGestureHint" :hint="currentGestureHint" />
+    
+    <SettingView 
+      v-if="showSettings"
+      @close="showSettings = false"
+    />
   </div>
 </template>
 
 <script>
 import WelcomeView from './components/WelcomeView.vue'
-import ThumbBar from './components/ThumbBar.vue'
 import MainView from './components/MainView.vue'
+import SketchView from './components/SketchView.vue'
+import ThumbBar from './components/ThumbBar.vue'
 import GestureHint from './components/GestureHint.vue'
 import SettingView from './components/SettingView.vue'
 import { Howl } from 'howler'
@@ -45,8 +56,9 @@ export default {
   name: 'App',
   components: {
     WelcomeView,
-    ThumbBar,
     MainView,
+    SketchView,
+    ThumbBar,
     GestureHint,
     SettingView
   },
@@ -158,13 +170,9 @@ export default {
   },
   mounted() {
     console.log('App组件已挂载')
-    // 初始化全局CSS变量
     document.documentElement.style.setProperty('--brightness', '1')
-    // 将Howler挂载到window对象
     window.Howl = Howl
-    // 初始化音效
     this.initSounds()
-    // 启动模型预加载
     this.startModelPreloading()
     console.log('App组件初始化完成')
   },
@@ -189,33 +197,30 @@ export default {
         this.sounds[soundName].play()
       }
     },
+    goToWelcome() {
+      this.currentView = 'welcome'
+    },
     enterMuseum() {
-      console.log('=== 进入博物馆事件触发 ===')
+      console.log('=== 进入博物馆 ===')
       this.currentView = 'main'
-      console.log('当前视图已切换到:', this.currentView)
+    },
+    enterSketch() {
+      console.log('=== 进入青铜绘境 ===')
+      this.currentView = 'sketch'
     },
     selectArtifact(index) {
-      console.log('=== 选择文物事件触发 ===')
-      console.log('选择文物:', index, this.artifacts[index])
+      console.log('=== 选择文物 ===', index)
       this.selectedArtifactIndex = index
-      console.log('文物选择完成，当前选中:', this.selectedArtifactIndex)
     },
     toggleSettings() {
-      console.log('=== 切换设置事件触发 ===')
       this.showSettings = !this.showSettings
-      console.log('设置面板显示状态:', this.showSettings)
     },
     toggleThumbBar(autoSwitch = false) {
-      console.log('=== 切换文物弹窗事件触发 ===')
       this.showThumbBar = !this.showThumbBar
-      console.log('文物弹窗显示状态:', this.showThumbBar)
-      console.log('是否自动切换:', autoSwitch)
       
-      // 如果是通过滑动手势触发的打开切换页面，500毫秒后自动切换到下一个文物
       if (this.showThumbBar && autoSwitch) {
         setTimeout(() => {
           if (this.showThumbBar) {
-            console.log('=== 自动切换到下一个文物 ===')
             this.nextModel()
             this.showThumbBar = false
           }
@@ -223,18 +228,12 @@ export default {
       }
     },
     nextModel() {
-      console.log('=== 切换模型事件触发 ===')
       this.selectedArtifactIndex = (this.selectedArtifactIndex + 1) % this.artifacts.length
-      console.log('模型已切换到索引:', this.selectedArtifactIndex)
     },
     prevModel() {
-      console.log('=== 切换模型事件触发 ===')
       this.selectedArtifactIndex = (this.selectedArtifactIndex - 1 + this.artifacts.length) % this.artifacts.length
-      console.log('模型已切换到索引:', this.selectedArtifactIndex)
     },
     displayGestureHint(hint) {
-      console.log('=== 显示手势提示事件触发 ===')
-      console.log('手势提示内容:', hint)
       this.showGestureHint = true
       this.currentGestureHint = hint
       setTimeout(() => {
@@ -251,7 +250,6 @@ export default {
 </script>
 
 <style>
-/* 引入新字体 */
 @font-face {
   font-family: 'ChillHuoKai';
   src: url('/fonts/ChillHuoKai_Regular.otf') format('opentype');
@@ -273,7 +271,6 @@ export default {
   font-style: normal;
 }
 
-/* 全局样式 */
 :root {
   --brightness: 1;
   --background-color: #1a1a1a;
@@ -305,12 +302,13 @@ body {
   overflow: hidden;
 }
 
-.main-interface {
-  width: 100%;
-  height: 100%;
-  position: relative;
-  z-index: 1;
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 0.5s ease;
 }
 
-
+.fade-enter-from,
+.fade-leave-to {
+  opacity: 0;
+}
 </style>

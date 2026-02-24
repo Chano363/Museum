@@ -1,142 +1,65 @@
 <template>
   <div class="help-view-overlay" @click="$emit('close')">
     <div class="help-view" @click.stop>
-      <button class="close-btn" @click="$emit('close')">
-        ×
-      </button>
-      <div class="help-content">
-        <div class="help-header">
-          <div class="help-icon">❓</div>
-          <h2 class="help-title">使用帮助</h2>
-        </div>
-        
-        <div class="help-section">
-          <h3>基本操作</h3>
-          <div class="help-item">
-            <div class="help-icon-small">🖱️</div>
-            <div class="help-text">
-              <strong>鼠标操作</strong>
-              <p>• 拖拽：旋转模型</p>
-              <p>• 滚轮：缩放模型</p>
-              <p>• 点击：选择功能</p>
+      <button class="close-btn" @click="$emit('close')">×</button>
+      <h2 class="help-title">使用帮助</h2>
+      
+      <div class="help-section">
+        <h3>基本操作</h3>
+        <div class="operation-grid">
+          <div class="operation-item">
+            <span class="op-icon">🖱️</span>
+            <div class="op-info">
+              <strong>鼠标</strong>
+              <p>拖拽旋转 / 滚轮缩放</p>
             </div>
           </div>
-          
-          <div class="help-item">
-            <div class="help-icon-small">👆</div>
-            <div class="help-text">
-              <strong>触摸操作</strong>
-              <p>• 单指拖拽：旋转模型</p>
-              <p>• 双指捏合：缩放模型</p>
-              <p>• 点击：选择功能</p>
+          <div class="operation-item">
+            <span class="op-icon">👆</span>
+            <div class="op-info">
+              <strong>触摸</strong>
+              <p>单指旋转 / 双指缩放</p>
             </div>
           </div>
         </div>
-        
-        <div class="help-section">
-          <h3>手势控制</h3>
-          <div class="gesture-guide">
-            <div class="gesture-item">
-              <div class="gesture-icon">✊</div>
-              <div class="gesture-info">
-                <strong>拳头</strong>
-                <p>锁定/解锁模型旋转</p>
-              </div>
-            </div>
-            <div class="gesture-item">
-              <div class="gesture-icon">🖐️</div>
-              <div class="gesture-info">
-                <strong>张开手</strong>
-                <p>重置模型视角</p>
-              </div>
-            </div>
-            <div class="gesture-item">
-              <div class="gesture-icon">👍</div>
-              <div class="gesture-info">
-                <strong>点赞</strong>
-                <p>放大模型</p>
-              </div>
-            </div>
-            <div class="gesture-item">
-              <div class="gesture-icon">👎</div>
-              <div class="gesture-info">
-                <strong>拇指向下</strong>
-                <p>缩小模型</p>
-              </div>
-            </div>
-            <div class="gesture-item">
-              <div class="gesture-icon">✌️</div>
-              <div class="gesture-info">
-                <strong>剪刀手</strong>
-                <p>切换到下一个模型</p>
-              </div>
-            </div>
-            <div class="gesture-item">
-              <div class="gesture-icon">👌</div>
-              <div class="gesture-info">
-                <strong>OK手势</strong>
-                <p>显示模型信息</p>
-              </div>
-            </div>
+      </div>
+      
+      <div class="help-section">
+        <h3>工具栏</h3>
+        <div class="toolbar-grid">
+          <div class="toolbar-item">
+            <span>📷</span>
+            <p>摄像头开关</p>
+          </div>
+          <div class="toolbar-item">
+            <span>🔄</span>
+            <p>切换展品</p>
+          </div>
+          <div class="toolbar-item">
+            <span>⚙️</span>
+            <p>系统设置</p>
+          </div>
+          <div class="toolbar-item">
+            <span>🏠</span>
+            <p>返回首页</p>
           </div>
         </div>
-        
-        <div class="help-section">
-          <h3>工具栏功能</h3>
-          <div class="toolbar-guide">
-            <div class="toolbar-item">
-              <div class="toolbar-icon">🔒/🔄</div>
-              <div class="toolbar-info">
-                <strong>旋转锁定</strong>
-                <p>锁定或解锁模型自动旋转</p>
-              </div>
-            </div>
-            <div class="toolbar-item">
-              <div class="toolbar-icon">🔍+</div>
-              <div class="toolbar-info">
-                <strong>放大</strong>
-                <p>放大模型视图</p>
-              </div>
-            </div>
-            <div class="toolbar-item">
-              <div class="toolbar-icon">🔍-</div>
-              <div class="toolbar-info">
-                <strong>缩小</strong>
-                <p>缩小模型视图</p>
-              </div>
-            </div>
-            <div class="toolbar-item">
-              <div class="toolbar-icon">🔄</div>
-              <div class="toolbar-info">
-                <strong>重置</strong>
-                <p>重置模型视角</p>
-              </div>
-            </div>
-            <div class="toolbar-item">
-              <div class="toolbar-icon">📷/📵</div>
-              <div class="toolbar-info">
-                <strong>摄像头</strong>
-                <p>开启或关闭摄像头</p>
-              </div>
-            </div>
+      </div>
+      
+      <div class="help-section">
+        <h3>常见问题</h3>
+        <div class="faq-list">
+          <div class="faq-item">
+            <strong>摄像头无法打开？</strong>
+            <p>请检查浏览器摄像头权限设置</p>
           </div>
-        </div>
-        
-        <div class="help-section">
-          <h3>常见问题</h3>
-          <div class="faq">
-            <div class="faq-item">
-              <strong>Q: 为什么摄像头无法打开？</strong>
-              <p>A: 请检查是否已授予摄像头权限，确保浏览器支持摄像头访问。</p>
-            </div>
-            <div class="faq-item">
-              <strong>Q: 手势控制不工作怎么办？</strong>
-              <p>A: 请确保光线充足，手部在摄像头视野内，并且已开启摄像头。</p>
-            </div>
-            <div class="faq-item">
-              <strong>Q: 模型加载失败怎么解决？</strong>
-              <p>A: 请检查网络连接，刷新页面后重试。</p>
-            </div>
+          <div class="faq-item">
+            <strong>手势识别不灵敏？</strong>
+            <p>确保光线充足，手部在画面中央</p>
+          </div>
+          <div class="faq-item">
+            <strong>模型加载失败？</strong>
+            <p>检查网络连接后刷新页面</p>
           </div>
         </div>
       </div>
@@ -158,24 +81,21 @@ export default {
   left: 0;
   right: 0;
   bottom: 0;
-  background-color: rgba(0, 0, 0, 0.5);
+  background-color: rgba(0, 0, 0, 0.7);
   display: flex;
   justify-content: center;
   align-items: center;
-  z-index: 1000;
-  animation: fadeIn 0.3s ease;
+  z-index: 2000;
 }
 
 .help-view {
-  width: 600px;
+  width: 550px;
   max-width: 90vw;
   max-height: 80vh;
-  background-color: #f2f2f2;
-  border-radius: 10px;
-  padding: 30px;
-  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.3);
-  animation: slideIn 0.3s ease;
   overflow-y: auto;
+  background-color: #f2f2f2;
+  border-radius: 15px;
+  padding: 35px;
   position: relative;
   font-family: var(--font-family);
 }
@@ -187,230 +107,116 @@ export default {
   width: 30px;
   height: 30px;
   border: none;
-  background-color: transparent;
+  background: transparent;
   font-size: 24px;
   cursor: pointer;
   color: var(--text-color);
-  transition: all 0.3s ease;
-}
-
-.close-btn:hover {
-  transform: scale(1.2);
-  color: var(--text-color);
-}
-
-.help-header {
-  text-align: center;
-  margin-bottom: 30px;
-  padding-bottom: 20px;
-  border-bottom: 1px solid rgba(196, 146, 16, 0.2);
-}
-
-.help-icon {
-  font-size: 60px;
-  margin-bottom: 15px;
 }
 
 .help-title {
-  font-size: 2rem;
-  font-weight: bold;
+  font-size: 2.8rem;
   color: var(--text-color);
+  text-align: center;
+  margin-bottom: 35px;
 }
 
 .help-section {
-  margin-bottom: 30px;
+  margin-bottom: 35px;
 }
 
 .help-section h3 {
-  font-size: 1.2rem;
-  font-weight: bold;
+  font-size: 1.7rem;
   color: var(--text-color);
-  margin-bottom: 15px;
-}
-
-.help-item {
-  display: flex;
-  align-items: flex-start;
   margin-bottom: 20px;
-  padding: 15px;
-  background-color: rgba(196, 146, 16, 0.05);
-  border-radius: 8px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid rgba(196, 146, 16, 0.2);
 }
 
-.help-icon-small {
-  font-size: 24px;
-  margin-right: 15px;
-  min-width: 30px;
-}
-
-.help-text {
-  flex: 1;
-}
-
-.help-text strong {
-  display: block;
-  color: var(--text-color);
-  margin-bottom: 5px;
-}
-
-.help-text p {
-  color: #666;
-  margin-bottom: 3px;
-  font-size: 0.95rem;
-}
-
-.gesture-guide {
+.operation-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  gap: 15px;
+  grid-template-columns: 1fr 1fr;
+  gap: 18px;
 }
 
-.gesture-item {
+.operation-item {
   display: flex;
   align-items: center;
-  padding: 15px;
-  background-color: rgba(196, 146, 16, 0.05);
-  border-radius: 8px;
+  gap: 18px;
+  padding: 18px;
+  background: rgba(196, 146, 16, 0.05);
+  border-radius: 10px;
 }
 
-.gesture-icon {
-  font-size: 32px;
-  margin-right: 15px;
-  min-width: 40px;
+.op-icon {
+  font-size: 40px;
 }
 
-.gesture-info strong {
+.op-info strong {
   display: block;
   color: var(--text-color);
-  margin-bottom: 3px;
+  font-size: 1.5rem;
 }
 
-.gesture-info p {
-  color: #666;
-  font-size: 0.9rem;
+.op-info p {
+  color: #444;
+  font-size: 1.3rem;
   margin: 0;
 }
 
-.toolbar-guide {
+.toolbar-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  grid-template-columns: repeat(4, 1fr);
   gap: 15px;
 }
 
 .toolbar-item {
-  display: flex;
-  align-items: center;
-  padding: 12px;
-  background-color: rgba(196, 146, 16, 0.05);
-  border-radius: 8px;
-}
-
-.toolbar-icon {
-  font-size: 20px;
-  margin-right: 12px;
-  min-width: 35px;
   text-align: center;
+  padding: 18px 12px;
+  background: rgba(196, 146, 16, 0.05);
+  border-radius: 10px;
 }
 
-.toolbar-info strong {
+.toolbar-item span {
+  font-size: 40px;
   display: block;
-  color: var(--text-color);
-  margin-bottom: 2px;
-  font-size: 0.95rem;
+  margin-bottom: 10px;
 }
 
-.toolbar-info p {
-  color: #666;
-  font-size: 0.85rem;
+.toolbar-item p {
+  font-size: 1.2rem;
+  color: #444;
   margin: 0;
 }
 
-.faq {
+.faq-list {
   display: flex;
   flex-direction: column;
   gap: 15px;
 }
 
 .faq-item {
-  padding: 15px;
-  background-color: rgba(196, 146, 16, 0.05);
-  border-radius: 8px;
+  padding: 18px;
+  background: rgba(196, 146, 16, 0.05);
+  border-radius: 10px;
 }
 
 .faq-item strong {
   display: block;
   color: var(--text-color);
-  margin-bottom: 5px;
+  font-size: 1.3rem;
+  margin-bottom: 8px;
 }
 
 .faq-item p {
-  color: #666;
+  color: #444;
+  font-size: 1.25rem;
   margin: 0;
-  font-size: 0.95rem;
 }
 
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-  }
-  to {
-    opacity: 1;
-  }
-}
-
-@keyframes slideIn {
-  from {
-    opacity: 0;
-    transform: scale(0.9);
-  }
-  to {
-    opacity: 1;
-    transform: scale(1);
-  }
-}
-
-/* 滚动条样式 */
-.help-view::-webkit-scrollbar {
-  width: 6px;
-}
-
-.help-view::-webkit-scrollbar-track {
-  background: rgba(196, 146, 16, 0.1);
-  border-radius: 3px;
-}
-
-.help-view::-webkit-scrollbar-thumb {
-  background: rgba(196, 146, 16, 0.3);
-  border-radius: 3px;
-}
-
-/* 响应式设计 */
-@media (max-width: 768px) {
-  .help-view {
-    width: 95vw;
-    padding: 20px;
-  }
-  
-  .help-icon {
-    font-size: 50px;
-  }
-  
-  .help-title {
-    font-size: 1.8rem;
-  }
-  
-  .gesture-guide,
-  .toolbar-guide {
-    grid-template-columns: 1fr;
-  }
-  
-  .help-item {
-    flex-direction: column;
-    align-items: flex-start;
-  }
-  
-  .help-icon-small {
-    margin-bottom: 10px;
+@media (max-width: 400px) {
+  .operation-grid,
+  .toolbar-grid {
+    grid-template-columns: 1fr 1fr;
   }
 }
 </style>

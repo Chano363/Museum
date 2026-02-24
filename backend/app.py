@@ -1,4 +1,4 @@
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, send_from_directory
 from flask_cors import CORS
 import cv2
 import numpy as np
@@ -7,6 +7,9 @@ import sys
 import os
 import json
 import time
+
+from dotenv import load_dotenv
+load_dotenv()
 
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
@@ -156,6 +159,18 @@ def process_frame(image_data):
 
 flask_app = Flask(__name__)
 CORS(flask_app)
+
+static_folder = os.path.join(os.path.dirname(__file__), '..', 'public', 'static')
+if os.path.exists(static_folder):
+    flask_app._static_folder = static_folder
+
+from sketch_api import sketch_bp
+flask_app.register_blueprint(sketch_bp)
+
+@flask_app.route('/static/<path:filename>')
+def serve_static(filename):
+    static_dir = os.path.join(os.path.dirname(__file__), '..', 'public', 'static')
+    return send_from_directory(static_dir, filename)
 
 @flask_app.route('/api/recognize', methods=['POST'])
 def recognize_gesture():

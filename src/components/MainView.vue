@@ -79,6 +79,9 @@
     
     <!-- 底部工具栏 -->
     <div class="toolbar">
+      <button class="tool-btn back-home-btn" @click="$emit('back')" title="返回首页">
+        🏠
+      </button>
       <button class="tool-btn" @click="toggleCamera">
         <img :src="showCamera ? '/icons/camera.png' : '/icons/camera.png'" 
              :class="{'camera-off': !showCamera}" 
