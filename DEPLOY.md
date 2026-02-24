@@ -52,7 +52,7 @@
 
 | Key | Value |
 |-----|-------|
-| `PYTHON_VERSION` | `3.11.0` |
+| `PYTHON_VERSION` | `3.13.0` |
 | `CORS_ORIGINS` | `*` |
 | `PORT` | `10000` |
 

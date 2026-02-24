@@ -3,15 +3,14 @@ services:
     name: museum-exhibition-backend
     runtime: python
     plan: free
-    buildCommand: pip install -r requirements.txt
-    startCommand: python backend/app.py
+    autoDeploy: false
+    buildCommand: "pip install -r requirements.txt"
+    startCommand: "python backend/app.py"
     envVars:
       - key: PYTHON_VERSION
-        value: 3.11.0
-      - key: FLASK_ENV
-        value: production
+        value: "3.13.0"
       - key: CORS_ORIGINS
         value: "*"
       - key: PORT
-        value: 10000
+        value: "10000"
     healthCheckPath: /api/health
