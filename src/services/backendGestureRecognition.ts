@@ -1,6 +1,7 @@
 import { io, Socket } from 'socket.io-client'
 import type { HandDetection } from '../types/gesture'
 import { BACKEND_CONFIG } from '../constants/gestureConstants'
+import { API_BASE_URL, WS_BASE_URL } from '../config/api'
 
 export interface ProcessFrameResult {
   detections: HandDetection[]
@@ -42,7 +43,7 @@ export class BackendGestureRecognitionService {
   }
   
   private initSocket(): void {
-    this.socket = io('http://localhost:5000', {
+    this.socket = io(WS_BASE_URL, {
       path: '/socket.io',
       transports: ['polling', 'websocket'],
       reconnection: true,
@@ -211,7 +212,7 @@ export class BackendGestureRecognitionService {
     }
     
     try {
-      const response = await fetch('http://localhost:5000/api/recognize', {
+      const response = await fetch(`${API_BASE_URL}/api/recognize`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ image: base64Image })

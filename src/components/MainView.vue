@@ -7,31 +7,27 @@
     
     <!-- 主内容区域 -->
     <div class="main-content">
-      <!-- 左侧信息区域 -->
-      <div class="info-section">
-        <!-- 文物名 -->
+      <!-- 左侧展品名称区域 -->
+      <div class="artifact-name-section">
         <div class="artifact-name">
           {{ selectedArtifact?.name || '请选择文物' }}
         </div>
-        
-        <!-- 主要信息 -->
-        <div class="artifact-dynasty">
-          {{ selectedArtifact?.dynasty || '朝代' }}
-        </div>
-        
-        <!-- 分隔线 -->
-        <div class="divider"></div>
-        
-        <!-- 详细信息 -->
-        <div class="detail-info">
-          <div class="detail-item">{{ selectedArtifact?.description || '' }}</div>
-          <div class="detail-item">年代: {{ selectedArtifact?.era || '' }}</div>
-          <div class="detail-item">材质: {{ selectedArtifact?.material || '' }}</div>
-          <div class="detail-item">尺寸: {{ selectedArtifact?.dimensions || '' }}</div>
+      </div>
+      
+      <!-- 中间副信息区域 -->
+       <div class="side-info-section">
+         <div class="side-info-item">年代: {{ selectedArtifact?.era || '未知' }}</div>
+         <div class="side-info-item author-item">作者: {{ selectedArtifact?.author || '未知' }}</div>
+       </div>
+      
+      <!-- 右侧详情介绍区域 -->
+      <div class="detail-section">
+        <div class="detail-content">
+          {{ selectedArtifact?.description || '暂无介绍' }}
         </div>
       </div>
       
-      <!-- 右侧3D模型区域 -->
+      <!-- 最右侧3D模型区域 -->
       <div class="model-section">
         <div class="model-container">
           <ParticleModel
@@ -83,16 +79,16 @@
         🏠
       </button>
       <button class="tool-btn" @click="toggleCamera">
-        <img :src="showCamera ? '/icons/camera.png' : '/icons/camera.png'" 
-             :class="{'camera-off': !showCamera}" 
-             alt="camera" />
-      </button>
-      <button class="tool-btn" @click="$emit('toggleThumbBar', false)">
-        <img src="/icons/switch.png" alt="switch" />
-      </button>
-      <button class="tool-btn" @click="toggleSettings">
-        <img src="/icons/settings.png" alt="settings" />
-      </button>
+      <img :src="showCamera ? '/icons/camera.png' : '/icons/camera.png'" 
+           :class="{'camera-off': !showCamera}" 
+           alt="camera" />
+    </button>
+    <button class="tool-btn" @click="$emit('toggleThumbBar', false)">
+      <img src="/icons/switch.png" alt="switch" />
+    </button>
+    <button class="tool-btn" @click="toggleSettings">
+      <img src="/icons/settings.png" alt="settings" />
+    </button>
       <button v-if="isDev" class="tool-btn" @click="exportLogs">
         📋
       </button>
@@ -343,6 +339,13 @@ export default {
   font-family: var(--font-family);
 }
 
+@font-face {
+  font-family: '寒蝉书体';
+  src: url('/public/fonts/寒蝉书体 春秋 秋鸿.otf') format('opentype');
+  font-weight: normal;
+  font-style: normal;
+}
+
 /* 博物馆logo */
 .museum-logo {
   position: absolute;
@@ -361,31 +364,77 @@ export default {
 /* 主内容区域 */
 .main-content {
   position: absolute;
-  top: 80px;
-  left: 50px;
-  right: 50px;
-  bottom: 100px;
+  top: 60px;
+  left: 120px;
+  right: 120px;
+  bottom: 60px;
   display: flex;
   gap: 60px;
   z-index: 10;
 }
 
-/* 左侧信息区域 */
-.info-section {
+/* 左侧展品名称区域 */
+.artifact-name-section {
+  flex: 0 0 200px;
+  display: flex;
+  align-items: flex-start;
+  justify-content: flex-start;
+  padding-top: 80px;
+  padding-left: 0;
+  z-index: 11;
+}
+
+/* 中间副信息区域 */
+.side-info-section {
+  flex: 0 0 150px;
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  justify-content: flex-start;
+  gap: 30px;
+  padding-top: 80px;
+  z-index: 11;
+}
+
+.side-info-item {
+  color: #f0d695;
+  font-size: 28px;
+  font-family: 'ChillHuokai', sans-serif;
+  writing-mode: vertical-rl;
+}
+
+.author-item {
+  transform: translateY(0);
+}
+
+/* 右侧详情介绍区域 */
+.detail-section {
   flex: 0 0 350px;
   display: flex;
-  flex-direction: column;
+  align-items: flex-end;
+  justify-content: flex-start;
+  padding-bottom: 40px;
   z-index: 11;
+}
+
+.detail-content {
+  color: #f0d695;
+  font-size: 24px;
+  font-family: 'Chill Hwo Kai', sans-serif;
+  line-height: 2.2;
+  letter-spacing: 2px;
 }
 
 /* 文物名 */
 .artifact-name {
-  width: 100%;
   color: #f0d695;
-  font-size: 36px;
+  font-size: 96px;
   font-weight: bold;
+  font-family: '寒蝉书体', cursive;
   text-align: left;
-  margin-bottom: 35px;
+  white-space: nowrap;
+  writing-mode: vertical-rl;
+  overflow: visible;
 }
 
 /* 朝代信息 */
@@ -416,21 +465,19 @@ export default {
 .detail-item {
   width: 100%;
   color: #f0d695;
-  font-size: 22px;
-  margin-bottom: 30px;
+  font-size: 20px;
+  margin-bottom: 25px;
+  font-family: 'Chill Hwo Kai', sans-serif;
 }
 
-/* 右侧3D模型区域 */
+/* 最右侧3D模型区域 */
 .model-section {
   flex: 1;
-  min-width: 600px;
   display: flex;
   align-items: center;
   justify-content: center;
   position: relative;
   background-color: transparent;
-  box-shadow: 0 8px 32px rgba(196, 146, 16, 0.3);
-  border-radius: 8px;
   z-index: 11;
 }
 

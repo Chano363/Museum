@@ -158,7 +158,16 @@ def process_frame(image_data):
         return {'error': str(e)}
 
 flask_app = Flask(__name__)
-CORS(flask_app)
+
+# 配置 CORS，允许所有来源（生产环境建议指定具体域名）
+cors_origins = os.environ.get('CORS_ORIGINS', '*')
+CORS(flask_app, resources={
+    r"/api/*": {
+        "origins": cors_origins.split(',') if cors_origins != '*' else '*',
+        "methods": ["GET", "POST", "OPTIONS"],
+        "allow_headers": ["Content-Type", "Authorization"]
+    }
+})
 
 static_folder = os.path.join(os.path.dirname(__file__), '..', 'public', 'static')
 if os.path.exists(static_folder):
@@ -171,6 +180,14 @@ flask_app.register_blueprint(sketch_bp)
 def serve_static(filename):
     static_dir = os.path.join(os.path.dirname(__file__), '..', 'public', 'static')
     return send_from_directory(static_dir, filename)
+
+@flask_app.route('/api/health', methods=['GET'])
+def health_check():
+    return jsonify({
+        'status': 'healthy',
+        'mediapipe': mediapipe_available,
+        'models_loaded': True
+    })
 
 @flask_app.route('/api/recognize', methods=['POST'])
 def recognize_gesture():
@@ -202,13 +219,16 @@ def run_servers():
             result = process_frame(data['image'])
             sio.emit('result', result, to=sid)
     
+    # 使用环境变量 PORT，Render 默认是 10000
+    port = int(os.environ.get('PORT', 5000))
+    
     print('=' * 50)
-    print('服务器启动在端口 5000')
-    print('HTTP端点: http://localhost:5000/api/recognize')
-    print('WebSocket端点: ws://localhost:5000/socket.io')
+    print(f'服务器启动在端口 {port}')
+    print(f'HTTP端点: http://0.0.0.0:{port}/api/recognize')
+    print(f'WebSocket端点: ws://0.0.0.0:{port}/socket.io')
     print('=' * 50)
     
-    wsgi.server(eventlet.listen(('0.0.0.0', 5000)), app)
+    wsgi.server(eventlet.listen(('0.0.0.0', port)), app)
 
 if __name__ == '__main__':
     run_servers()
