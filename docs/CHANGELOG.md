@@ -8,6 +8,216 @@
 
 ## [Unreleased]
 
+### 优化 - 2026-02-28
+
+#### 精简后端AI生图代码
+
+**问题描述:**
+后端代码包含多个AI生图服务商（Siliconflow、SD WebUI）的实现，但实际只使用即梦API，造成代码冗余。
+
+**解决方案:**
+移除未使用的Siliconflow和SD WebUI相关代码，只保留即梦API实现。
+
+**修改文件:**
+
+| 文件 | 修改内容 |
+|------|----------|
+| `backend/sketch_api.py` | 移除：call_siliconflow_api函数、call_sd_webui函数、相关配置变量 |
+
+**具体修改:**
+
+1. **移除的配置变量**
+   - `AI_PROVIDER`
+   - `SILICONFLOW_API_KEY`
+   - `SILICONFLOW_API_URL`
+   - `SD_WEBUI_URL`
+   - `DEFAULT_NEGATIVE_PROMPT`
+   - `BRONZE_QUALITY_PROMPT`
+
+2. **移除的函数**
+   - `call_siliconflow_api()` - Siliconflow API调用
+   - `call_sd_webui()` - SD WebUI API调用
+
+3. **简化的函数**
+   - `generate_image()` - 直接调用即梦API，移除provider切换逻辑
+   - `get_config()` - 只返回即梦相关配置
+   - `set_config()` - 只支持即梦相关配置
+
+---
+
+### 新增 - 2026-02-27
+
+#### 保存3D模型截图功能
+
+**功能描述:**
+用户保存作品时，自动截取带纹理的3D模型截图作为作品缩略图，在排行榜和博物馆中展示。
+
+**修改文件:**
+
+| 文件 | 修改内容 |
+|------|----------|
+| `src/components/SketchGenerator/VasePreview.vue` | 新增：captureScreenshot方法，使用model-viewer的toBlob API截图 |
+| `src/components/SketchGenerator/SketchGenerator.vue` | 修改：保存时先截图上传，再保存作品信息 |
+| `backend/sketch_api.py` | 新增：/api/gallery/upload接口，接收base64图片并保存 |
+| `backend/gallery_db.py` | 修改：新增texture_path字段，区分截图和纹理图 |
+
+**具体修改:**
+
+1. **截图功能**
+   ```typescript
+   async function captureScreenshot(): Promise<string | null> {
+     const blob = await modelViewer.toBlob({ mimeType: 'image/png', quality: 1 })
+     return new Promise((resolve) => {
+       const reader = new FileReader()
+       reader.onloadend = () => resolve(reader.result as string)
+       reader.readAsDataURL(blob)
+     })
+   }
+   ```
+
+2. **数据库字段**
+   - `image_path`: 3D模型截图（用于展示）
+   - `texture_path`: 纹理图片（用于贴图）
+
+3. **保存流程**
+   ```
+   用户点击保存 → 截取3D模型截图 → 上传截图 → 保存作品信息到数据库
+   ```
+
+---
+
+### 重构 - 2026-02-27
+
+#### AI生图功能重构为模型纹理创作系统
+
+**功能描述:**
+将原有的青铜器纹理生成功能重构为模型纹理创作系统，支持三种预设3D模型，用户绘制草图后通过AI生成纹理图案，生成的作品可添加到博物馆中与手势交互。
+
+**修改文件:**
+
+| 文件 | 修改内容 |
+|------|----------|
+| `src/constants/vaseConstants.ts` | 新增：定义三种预设模型（瓷器花瓶、簋、爵）和六种提示词模板 |
+| `src/components/SketchGenerator/VasePreview.vue` | 新增：3D模型预览组件，支持纹理贴图 |
+| `src/components/SketchGenerator/GeneratePanel.vue` | 重写：模型选择、风格选择、自定义提示词功能 |
+| `src/components/SketchGenerator/SketchGenerator.vue` | 重写：三栏布局（画布/预览/控制），SVG图标替代emoji |
+| `src/components/SketchGenerator/LeaderboardPanel.vue` | 修改：移除emoji改用SVG图标，bronze_type改为base_model |
+| `src/components/SketchGenerator/GalleryPanel.vue` | 修改：axios改为fetch API |
+| `src/components/SketchView.vue` | 简化：包装SketchGenerator组件 |
+| `src/App.vue` | 新增：handleSaveToGallery方法，将生成作品添加到artifacts |
+| `src/services/sketchGenerator.ts` | 修改：更新GenerateConfig接口 |
+| `backend/sketch_api.py` | 修改：bronze_type改为base_model，更新提示词模板 |
+| `backend/gallery_db.py` | 修改：数据库字段bronze_type改为base_model，新增custom_prompt |
+
+**具体修改:**
+
+1. **预设模型定义**
+   ```typescript
+   export const BASE_MODELS: BaseModel[] = [
+     { id: 'vase', name: '瓷器花瓶', modelPath: '/3Dmodels/瓷器花瓶/...' },
+     { id: 'gui', name: '簋（食器）', modelPath: '/3Dmodels/簋（食器）/...' },
+     { id: 'jue', name: '爵（饮酒器）', modelPath: '/3Dmodels/爵（饮酒器）/...' }
+   ]
+   ```
+
+2. **提示词模板**
+   ```typescript
+   export const PROMPT_TEMPLATES: PromptTemplate[] = [
+     { id: 'floral', name: '花卉图案', prompt: '中国传统花卉图案...' },
+     { id: 'landscape', name: '山水图案', prompt: '中国山水画风格...' },
+     { id: 'geometric', name: '几何图案', prompt: '中国传统几何纹样...' },
+     { id: 'dragon', name: '龙凤图案', prompt: '龙凤纹样...' },
+     { id: 'bird', name: '花鸟图案', prompt: '花鸟画风格...' },
+     { id: 'custom', name: '自定义', prompt: '' }
+   ]
+   ```
+
+3. **生成作品添加到博物馆**
+   ```typescript
+   handleSaveToGallery(data) {
+     const newArtifact = {
+       id: this.generatedArtifactIdCounter++,
+       name: `创作作品 #${data.id}`,
+       modelPath: baseModel.modelPath,
+       iconPath: data.textureUrl,
+       isGenerated: true,
+       textureUrl: data.textureUrl
+     }
+     this.artifacts.push(newArtifact)
+   }
+   ```
+
+4. **UI图标改用SVG**
+   - 移除所有emoji图标（🏆、🥇、🥈、🥉等）
+   - 使用内联SVG替代，保持视觉一致性
+
+**功能特性:**
+- 三种预设3D模型供用户选择
+- 六种提示词模板 + 自定义提示词
+- 生成的纹理实时预览在3D模型上
+- 作品保存后自动添加到博物馆展品列表
+- 支持手势交互查看生成的作品
+- 排行榜功能保持不变
+
+---
+
+### 新增 - 2026-02-26
+
+#### AI生图调试信息显示功能
+
+**功能描述:**
+在AI生图功能中添加调试信息显示，包括生图时间和提示词，仅在开发模式(dev)下显示，方便调试和性能分析。
+
+**修改文件:**
+
+| 文件 | 修改内容 |
+|------|----------|
+| `src/services/sketchGenerator.ts` | 添加 `generationTime` 字段，使用 `performance.now()` 计算耗时 |
+| `src/components/SketchGenerator/SketchGenerator.vue` | 添加 `generationTime` 和 `prompt` 传递给子组件 |
+| `src/components/SketchGenerator/TextureResult.vue` | 在dev模式下显示生图耗时和提示词 |
+| `.env` | 禁用后端自动打开浏览器 (`OPEN_BROWSER=false`) |
+
+**具体修改:**
+
+1. **服务层时间计算**
+   ```typescript
+   const startTime = performance.now()
+   // ... API请求
+   const endTime = performance.now()
+   generationTime: Math.round(endTime - startTime)
+   ```
+
+2. **组件层传递数据**
+   ```vue
+   <TextureResult :generation-time="generationTime" :prompt="lastPrompt" />
+   ```
+
+3. **UI层条件显示**
+   ```vue
+   <div v-if="showDevInfo && (generationTime || prompt)" class="dev-info-panel">
+     <div class="dev-info-header">
+       <span class="dev-badge">DEV</span>
+       <span>调试信息</span>
+     </div>
+     <div class="dev-info-row">
+       <span>生图耗时:</span>
+       <span>{{ generationTime }}ms</span>
+     </div>
+     <div class="dev-info-row">
+       <span>提示词:</span>
+       <span>{{ prompt }}</span>
+     </div>
+   </div>
+   ```
+
+**UI效果:**
+- 在生成的纹理图片下方显示调试信息面板
+- 包含生图耗时（毫秒）和完整提示词
+- 仅在开发模式 (`npm run dev`) 下显示
+- 生产构建后不显示
+
+---
+
 ### 优化 - 2025-02-12
 
 #### 改用WebSocket减少网络延迟

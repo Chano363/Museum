@@ -14,7 +14,11 @@
       
       <div class="feature-cards">
         <div class="feature-card museum-card" @click="$emit('enter-museum')">
-          <div class="card-icon">🏛️</div>
+          <div class="card-icon">
+            <svg viewBox="0 0 24 24" width="48" height="48">
+              <path fill="currentColor" d="M12 3L1 9l11 6 9-4.91V17h2V9M5 13.18v4L12 21l7-3.82v-4L12 17l-7-3.82z"/>
+            </svg>
+          </div>
           <div class="card-content">
             <h3>进入博物馆</h3>
             <p>浏览青铜器藏品，手势交互体验</p>
@@ -23,23 +27,43 @@
         </div>
         
         <div class="feature-card sketch-card" @click="$emit('enter-sketch')">
-          <div class="card-icon">🎨</div>
+          <div class="card-icon">
+            <svg viewBox="0 0 24 24" width="48" height="48">
+              <path fill="currentColor" d="M20.71 7.04c.39-.39.39-1.04 0-1.41l-2.34-2.34c-.37-.39-1.02-.39-1.41 0l-1.84 1.83 3.75 3.75M3 17.25V21h3.75L17.81 9.93l-3.75-3.75L3 17.25z"/>
+            </svg>
+          </div>
           <div class="card-content">
             <h3>青铜绘境</h3>
             <p>绘制草图，AI生成青铜器纹理</p>
           </div>
           <div class="card-arrow">→</div>
-          <div class="new-badge">新功能</div>
+        </div>
+        
+        <div class="feature-card gallery-card" @click="$emit('enter-user-gallery')">
+          <div class="card-icon">
+            <svg viewBox="0 0 24 24" width="48" height="48">
+              <path fill="currentColor" d="M22 16V4c0-1.1-.9-2-2-2H8c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2zm-11-4l2.03 2.71L16 11l4 5H8l3-4zM2 6v14c0 1.1.9 2 2 2h14v-2H4V6H2z"/>
+            </svg>
+          </div>
+          <div class="card-content">
+            <h3>我的作品</h3>
+            <p>查看已创作的纹理作品</p>
+          </div>
+          <div class="card-arrow">→</div>
         </div>
       </div>
       
       <div class="bottom-actions">
         <button class="gesture-btn" @click="showGestureGuide = true">
-          <span class="btn-icon">👋</span>
+          <svg viewBox="0 0 24 24" width="20" height="20">
+            <path fill="currentColor" d="M10.5 2C8.5 2 7 3.5 7 5.5v7.41l-2.09-2.09c-.78-.78-2.05-.78-2.82 0-.78.78-.78 2.05 0 2.83l5.5 5.5c.78.78 2.05.78 2.83 0l5.5-5.5c.78-.78.78-2.05 0-2.83-.78-.78-2.05-.78-2.83 0L11 12.91V5.5c0-1.1-.9-2-2-2-.55 0-1.05.22-1.41.59-.36.36-.59.86-.59 1.41v7.41l-2.09-2.09c-.39-.39-1.02-.39-1.41 0-.39.39-.39 1.02 0 1.41l5.5 5.5c.39.39 1.02.39 1.41 0l5.5-5.5c.39-.39.39-1.02 0-1.41-.39-.39-1.02-.39-1.41 0L11 12.91V5.5c0-.55-.22-1.05-.59-1.41C10.05 3.72 9.55 3.5 9 3.5s-1.05.22-1.41.59C7.22 4.45 7 4.95 7 5.5"/>
+          </svg>
           手势教学
         </button>
         <button class="help-btn" @click="showHelp = true">
-          <span class="btn-icon">❓</span>
+          <svg viewBox="0 0 24 24" width="20" height="20">
+            <path fill="currentColor" d="M11 18h2v-2h-2v2zm1-16C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm0-14c-2.21 0-4 1.79-4 4h2c0-1.1.9-2 2-2s2 .9 2 2c0 2-3 1.75-3 5h2c0-2.25 3-2.5 3-5 0-2.21-1.79-4-4-4z"/>
+          </svg>
           使用帮助
         </button>
       </div>
@@ -60,7 +84,7 @@ export default {
     GestureGuideView,
     HelpView
   },
-  emits: ['enter-museum', 'enter-sketch'],
+  emits: ['enter-museum', 'enter-sketch', 'enter-user-gallery'],
   data() {
     return {
       showGestureGuide: false,
@@ -258,6 +282,12 @@ export default {
 .card-icon {
   font-size: 48px;
   margin-bottom: 16px;
+  color: var(--text-color, #C49210);
+}
+
+.card-icon svg {
+  width: 48px;
+  height: 48px;
 }
 
 .card-content h3 {

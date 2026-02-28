@@ -1,21 +1,36 @@
+import os
+import sys
+import io
+
+sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8', errors='replace')
+sys.stderr = io.TextIOWrapper(sys.stderr.buffer, encoding='utf-8', errors='replace')
+
+import eventlet
+eventlet.monkey_patch()
 from flask import Flask, request, jsonify, send_from_directory
+from flask_socketio import SocketIO
 from flask_cors import CORS
+from threading import Thread
 import cv2
 import numpy as np
 import base64
-import sys
-import os
 import json
 import time
 
 from dotenv import load_dotenv
 load_dotenv()
 
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+def get_base_path():
+    if getattr(sys, 'frozen', False):
+        return sys._MEIPASS
+    return os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
+
+sys.path.append(get_base_path())
 
 from dynamic_gestures.onnx_models import HandDetection, HandClassification
 
-model_dir = os.path.join(os.path.dirname(__file__), '..', 'dynamic_gestures', 'models')
+base_path = get_base_path()
+model_dir = os.path.join(base_path, 'dynamic_gestures', 'models')
 detection_model = HandDetection(os.path.join(model_dir, 'YOLOv10n_hands.onnx'), image_size=(640, 640), confidence_threshold=0.4)
 classification_model = HandClassification(os.path.join(model_dir, 'crops_classifier.onnx'))
 
@@ -28,7 +43,7 @@ try:
     import urllib.request
     
     model_url = "https://storage.googleapis.com/mediapipe-models/hand_landmarker/hand_landmarker/float16/1/hand_landmarker.task"
-    model_path = os.path.join(os.path.dirname(__file__), '..', 'models', 'hand_landmarker.task')
+    model_path = os.path.join(base_path, 'models', 'hand_landmarker.task')
     
     os.makedirs(os.path.dirname(model_path), exist_ok=True)
     
@@ -169,17 +184,42 @@ CORS(flask_app, resources={
     }
 })
 
-static_folder = os.path.join(os.path.dirname(__file__), '..', 'public', 'static')
+static_folder = os.path.join(base_path, 'public', 'static')
 if os.path.exists(static_folder):
     flask_app._static_folder = static_folder
+
+frontend_static_folder = os.path.join(base_path, 'static')
 
 from sketch_api import sketch_bp
 flask_app.register_blueprint(sketch_bp)
 
 @flask_app.route('/static/<path:filename>')
 def serve_static(filename):
-    static_dir = os.path.join(os.path.dirname(__file__), '..', 'public', 'static')
+    static_dir = os.path.join(base_path, 'public', 'static')
     return send_from_directory(static_dir, filename)
+
+@flask_app.route('/fonts/<path:filename>')
+def serve_fonts(filename):
+    fonts_dir = os.path.join(base_path, 'public', 'fonts')
+    return send_from_directory(fonts_dir, filename)
+
+@flask_app.route('/icons/<path:filename>')
+def serve_icons(filename):
+    icons_dir = os.path.join(base_path, 'public', 'icons')
+    return send_from_directory(icons_dir, filename)
+
+@flask_app.route('/models/<path:filename>')
+def serve_models(filename):
+    models_dir = os.path.join(base_path, 'public', 'models')
+    return send_from_directory(models_dir, filename)
+
+@flask_app.route('/', defaults={'path': ''})
+@flask_app.route('/<path:path>')
+def serve_frontend(path):
+    if path != "" and os.path.exists(os.path.join(frontend_static_folder, path)):
+        return send_from_directory(frontend_static_folder, path)
+    else:
+        return send_from_directory(frontend_static_folder, 'index.html')
 
 @flask_app.route('/api/health', methods=['GET'])
 def health_check():
@@ -219,7 +259,6 @@ def run_servers():
             result = process_frame(data['image'])
             sio.emit('result', result, to=sid)
     
-    # 使用环境变量 PORT，Render 默认是 10000
     port = int(os.environ.get('PORT', 5000))
     
     print('=' * 50)

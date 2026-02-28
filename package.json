@@ -7,8 +7,9 @@
     "dev": "vite",
     "build": "vite build",
     "preview": "vite preview",
-    "start": "concurrently \"npm run dev\" \"python backend/app.py\"",
-    "backend": "python backend/app.py",
+    "start": "node scripts/start.js",
+    "startnet": "node startnet.js",
+    "backend": "cmd /c start_backend.bat",
     "test": "jest",
     "test:watch": "jest --watch"
   },

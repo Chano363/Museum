@@ -5,6 +5,7 @@
         v-if="currentView === 'welcome'" 
         @enter-museum="enterMuseum"
         @enter-sketch="enterSketch"
+        @enter-user-gallery="enterUserGallery"
       />
       
       <MainView 
@@ -17,10 +18,23 @@
         @back="goToWelcome"
       />
       
+      <UserGalleryView 
+        v-else-if="currentView === 'userGallery'"
+        :selectedIndex="userGalleryIndex"
+        @nextModel="nextUserArtwork"
+        @prevModel="prevUserArtwork"
+        @displayGestureHint="displayGestureHint"
+        @toggleThumbBar="(autoSwitch) => toggleUserThumbBar(autoSwitch)"
+        @back="goToWelcome"
+        @loaded="onUserGalleryLoaded"
+      />
+      
       <SketchView 
         v-else-if="currentView === 'sketch'"
         @back="goToWelcome"
         @enter-museum="enterMuseum"
+        @save-to-gallery="handleSaveToGallery"
+        @delete-artwork="handleDeleteArtwork"
       />
     </transition>
     
@@ -31,6 +45,15 @@
       :visible="showThumbBar"
       @select="selectArtifact"
       @close="showThumbBar = false"
+    />
+    
+    <ThumbBar 
+      v-if="currentView === 'userGallery'"
+      :artifacts="userArtworks" 
+      :selectedIndex="userGalleryIndex"
+      :visible="showUserThumbBar"
+      @select="selectUserArtwork"
+      @close="showUserThumbBar = false"
     />
     
     <GestureHint v-if="showGestureHint" :hint="currentGestureHint" />
@@ -45,18 +68,21 @@
 <script>
 import WelcomeView from './components/WelcomeView.vue'
 import MainView from './components/MainView.vue'
+import UserGalleryView from './components/UserGalleryView.vue'
 import SketchView from './components/SketchView.vue'
 import ThumbBar from './components/ThumbBar.vue'
 import GestureHint from './components/GestureHint.vue'
 import SettingView from './components/SettingView.vue'
 import { Howl } from 'howler'
 import { ModelPreloader } from './services/modelPreloader'
+import { BASE_MODELS } from './constants/vaseConstants'
 
 export default {
   name: 'App',
   components: {
     WelcomeView,
     MainView,
+    UserGalleryView,
     SketchView,
     ThumbBar,
     GestureHint,
@@ -163,9 +189,13 @@ export default {
       currentGestureHint: '',
       showSettings: false,
       showThumbBar: false,
+      userArtworks: [],
+      userGalleryIndex: 0,
+      showUserThumbBar: false,
       sounds: {
         modelChange: null
-      }
+      },
+      generatedArtifactIdCounter: 1000
     }
   },
   mounted() {
@@ -205,8 +235,12 @@ export default {
       this.currentView = 'main'
     },
     enterSketch() {
-      console.log('=== 进入青铜绘境 ===')
+      console.log('=== 进入纹理创作 ===')
       this.currentView = 'sketch'
+    },
+    enterUserGallery() {
+      console.log('=== 进入我的作品 ===')
+      this.currentView = 'userGallery'
     },
     selectArtifact(index) {
       console.log('=== 选择文物 ===', index)
@@ -239,6 +273,92 @@ export default {
       setTimeout(() => {
         this.showGestureHint = false
       }, 800)
+    },
+    handleSaveToGallery(data) {
+      console.log('=== 保存作品到画廊 ===', data)
+      
+      const baseModel = BASE_MODELS.find(m => m.id === data.modelId)
+      if (!baseModel) return
+      
+      const newArtifact = {
+        id: this.generatedArtifactIdCounter++,
+        name: `创作作品 #${data.id}`,
+        dynasty: '当代创作',
+        era: new Date().toLocaleDateString('zh-CN'),
+        material: 'AI生成纹理',
+        dimensions: '自定义图案',
+        description: '用户通过AI生成的纹理作品，可在博物馆中查看。',
+        model: 'external',
+        modelPath: baseModel.modelPath,
+        iconPath: data.imageUrl || data.textureUrl,
+        color: baseModel.color,
+        isGenerated: true,
+        textureUrl: data.textureUrl
+      }
+      
+      this.artifacts.push(newArtifact)
+      
+      this.displayGestureHint('作品已添加到博物馆')
+    },
+    
+    handleDeleteArtwork(artworkId) {
+      const index = this.artifacts.findIndex(a => a.id === artworkId || a.name?.includes(`#${artworkId}`))
+      if (index !== -1) {
+        this.artifacts.splice(index, 1)
+        if (this.selectedArtifactIndex >= this.artifacts.length) {
+          this.selectedArtifactIndex = Math.max(0, this.artifacts.length - 1)
+        }
+      }
+      
+      const userIndex = this.userArtworks.findIndex(a => a.id === artworkId)
+      if (userIndex !== -1) {
+        this.userArtworks.splice(userIndex, 1)
+        if (this.userGalleryIndex >= this.userArtworks.length) {
+          this.userGalleryIndex = Math.max(0, this.userArtworks.length - 1)
+        }
+      }
+    },
+    onUserGalleryLoaded(artworks) {
+      this.userArtworks = artworks.map(artwork => ({
+        id: artwork.id,
+        name: artwork.name || `作品 #${artwork.id}`,
+        dynasty: '当代创作',
+        era: artwork.created_at ? new Date(artwork.created_at).toLocaleDateString('zh-CN') : '',
+        material: 'AI生成纹理',
+        dimensions: '自定义图案',
+        description: artwork.prompt || '用户创作的纹理作品',
+        model: 'external',
+        modelPath: BASE_MODELS.find(m => m.id === artwork.base_model)?.modelPath || '/3Dmodels/瓷器花瓶/scene.gltf',
+        iconPath: artwork.image_url || artwork.texture_url,
+        color: '#cd7f32',
+        isGenerated: true,
+        textureUrl: artwork.texture_url || artwork.image_url,
+        base_model: artwork.base_model,
+        style: artwork.style
+      }))
+    },
+    selectUserArtwork(index) {
+      this.userGalleryIndex = index
+    },
+    toggleUserThumbBar(autoSwitch = false) {
+      this.showUserThumbBar = !this.showUserThumbBar
+      
+      if (this.showUserThumbBar && autoSwitch) {
+        setTimeout(() => {
+          if (this.showUserThumbBar) {
+            this.nextUserArtwork()
+            this.showUserThumbBar = false
+          }
+        }, 500)
+      }
+    },
+    nextUserArtwork() {
+      if (this.userArtworks.length === 0) return
+      this.userGalleryIndex = (this.userGalleryIndex + 1) % this.userArtworks.length
+    },
+    prevUserArtwork() {
+      if (this.userArtworks.length === 0) return
+      this.userGalleryIndex = (this.userGalleryIndex - 1 + this.userArtworks.length) % this.userArtworks.length
     }
   },
   computed: {

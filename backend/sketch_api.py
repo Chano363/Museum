@@ -1,10 +1,11 @@
 """
 青铜器草图生图API模块
-支持多种AI生图服务：火山引擎即梦AI、Siliconflow、本地SD WebUI
+使用火山引擎即梦AI进行图像生成
 """
 from flask import Blueprint, request, jsonify
 import base64
 import os
+import sys
 import uuid
 import json
 import numpy as np
@@ -12,96 +13,77 @@ from PIL import Image
 import io
 from typing import Optional
 import requests
+from gallery_db import (
+    save_artwork, get_artwork_list, get_artwork_by_id, 
+    toggle_like, get_leaderboard, is_liked, get_artwork_count, delete_artwork
+)
+
+def get_base_path():
+    if getattr(sys, 'frozen', False):
+        return sys._MEIPASS
+    return os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
 
 sketch_bp = Blueprint('sketch', __name__, url_prefix='/api')
-
-AI_PROVIDER = os.getenv('AI_PROVIDER', 'jimeng')
-SILICONFLOW_API_KEY = os.getenv('SILICONFLOW_API_KEY', '')
-SILICONFLOW_API_URL = 'https://api.siliconflow.cn/v1'
-SD_WEBUI_URL = os.getenv('SD_WEBUI_URL', 'http://127.0.0.1:7860')
 
 ARK_API_KEY = os.getenv('ARK_API_KEY', '')
 JIMENG_API_URL = 'https://ark.cn-beijing.volces.com/api/v3/images/generations'
 JIMENG_MODEL = os.getenv('JIMENG_MODEL', 'doubao-seedream-4-5-251128')
 
-DEFAULT_NEGATIVE_PROMPT = """
-low quality, blurry, distorted, modern, cartoon, 
-anime, realistic photo, watermark, text, signature
-"""
-
-BRONZE_QUALITY_PROMPT = """
-masterpiece, best quality, ancient Chinese bronze ware,
-Shang Dynasty style, bronze texture, patina, 
-museum collection, professional photography, 
-detailed ornamentation, high resolution texture
-"""
-
-BRONZE_PROMPT_TEMPLATES = {
-    "ding": {
-        "base": "中国古代青铜鼎，三足两耳，",
-        "styles": {
-            "taotie": "饕餮纹装饰，兽面纹样，神秘威严",
-            "yunlei": "云雷纹底纹，回旋几何图案",
-            "kui": "夔龙纹饰，单足龙形纹样",
-            "fengniao": "凤鸟纹装饰，华丽精美",
-            "liuli": "蟠螭纹饰，盘曲龙形"
-        }
+PROMPT_TEMPLATES = {
+    "floral": {
+        "name": "花卉图案",
+        "prompt": "中国传统花卉图案，牡丹、莲花、菊花，瓷器风格，精美细腻，高清纹理"
     },
-    "zun": {
-        "base": "中国古代青铜尊，盛酒器，",
-        "styles": {
-            "fengniao": "凤鸟纹装饰，华丽精美",
-            "taotie": "饕餮纹饰，庄重典雅",
-            "yunlei": "云雷纹底纹，古朴简洁"
-        }
+    "landscape": {
+        "name": "山水图案",
+        "prompt": "中国山水画风格，水墨意境，远山近水，诗意盎然，瓷器装饰，高清纹理"
     },
-    "jue": {
-        "base": "中国古代青铜爵，饮酒器，三足流尾，",
-        "styles": {
-            "yunlei": "云雷纹装饰，简洁古朴",
-            "taotie": "饕餮纹饰，神秘庄重"
-        }
+    "geometric": {
+        "name": "几何图案",
+        "prompt": "中国传统几何纹样，回纹、云纹，对称美感，瓷器装饰，高清纹理"
     },
-    "gu": {
-        "base": "中国古代青铜觚，饮酒器，喇叭口，",
-        "styles": {
-            "taotie": "饕餮纹装饰，精美华丽",
-            "yunlei": "云雷纹底纹，简洁大方"
-        }
+    "dragon": {
+        "name": "龙凤图案",
+        "prompt": "中国传统龙凤纹样，祥云缭绕，华贵典雅，瓷器装饰，高清纹理"
     },
-    "pan": {
-        "base": "中国古代青铜盘，盛水器，",
-        "styles": {
-            "liuli": "蟠螭纹装饰，盘曲生动",
-            "yunlei": "云雷纹装饰，古朴典雅"
-        }
+    "bird": {
+        "name": "花鸟图案",
+        "prompt": "中国花鸟画风格，梅兰竹菊，雅致清新，瓷器装饰，高清纹理"
     },
-    "you": {
-        "base": "中国古代青铜卣，盛酒器，提梁，",
-        "styles": {
-            "fengniao": "凤鸟纹装饰，华丽精美",
-            "kui": "夔龙纹饰，神秘威严"
-        }
+    "custom": {
+        "name": "自定义",
+        "prompt": ""
     }
 }
 
+BASE_MODEL_INFO = {
+    "vase": "瓷器花瓶",
+    "gui": "簋（食器）",
+    "jue": "爵（饮酒器）"
+}
 
-def build_prompt(bronze_type: str, style: str) -> str:
+
+def build_prompt(style: str, custom_prompt: str = "") -> str:
     """
-    构建青铜器生成提示词
+    构建图案生成提示词
     
     Args:
-        bronze_type: 青铜器类型
-        style: 纹饰风格
+        style: 图案风格
+        custom_prompt: 自定义提示词
         
     Returns:
         完整的提示词字符串
     """
-    template = BRONZE_PROMPT_TEMPLATES.get(bronze_type, {})
-    base = template.get("base", "中国古代青铜器，")
-    style_desc = template.get("styles", {}).get(style, "精美纹饰")
+    template = PROMPT_TEMPLATES.get(style, PROMPT_TEMPLATES["floral"])
+    base_prompt = template["prompt"]
     
-    return f"{base}{style_desc}，商周时期风格，青铜质感，铜绿锈迹，古朴厚重，博物馆藏品级，高清纹理，masterpiece, best quality"
+    if style == "custom" and custom_prompt:
+        return f"{custom_prompt}，masterpiece, best quality"
+    
+    if custom_prompt:
+        return f"{base_prompt}，{custom_prompt}，masterpiece, best quality"
+    
+    return f"{base_prompt}，masterpiece, best quality"
 
 
 def call_jimeng_api(prompt: str, image_base64: str = None) -> dict:
@@ -130,14 +112,14 @@ def call_jimeng_api(prompt: str, image_base64: str = None) -> dict:
                 "model": JIMENG_MODEL,
                 "prompt": prompt,
                 "image": f"data:image/png;base64,{image_base64}",
-                "size": "1920x1920",
+                "size": "1024x1024",
                 "n": 1
             }
         else:
             payload = {
                 "model": JIMENG_MODEL,
                 "prompt": prompt,
-                "size": "1920x1920",
+                "size": "1024x1024",
                 "n": 1
             }
         
@@ -180,7 +162,7 @@ def call_jimeng_api(prompt: str, image_base64: str = None) -> dict:
             print(f"Downloaded image: {len(image_bytes)} bytes")
             
             filename = f"bronze_{uuid.uuid4().hex[:8]}.png"
-            static_dir = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'public', 'static', 'textures', 'generated')
+            static_dir = os.path.join(get_base_path(), 'public', 'static', 'textures', 'generated')
             save_path = os.path.join(static_dir, filename)
             
             os.makedirs(static_dir, exist_ok=True)
@@ -215,260 +197,36 @@ def call_jimeng_api(prompt: str, image_base64: str = None) -> dict:
         return {'success': False, 'error': f'错误: {str(e)}'}
 
 
-def call_siliconflow_api(prompt: str, image_base64: str = None, strength: float = 0.75) -> dict:
-    """
-    调用 Siliconflow API 生成图像
-    
-    Args:
-        prompt: 提示词
-        image_base64: 输入图像的base64编码（用于图生图）
-        strength: 去噪强度
-        
-    Returns:
-        包含生成结果的字典
-    """
-    if not SILICONFLOW_API_KEY:
-        print("ERROR: SILICONFLOW_API_KEY not configured")
-        return {'success': False, 'error': 'SILICONFLOW_API_KEY not configured'}
-    
-    headers = {
-        'Authorization': f'Bearer {SILICONFLOW_API_KEY}',
-        'Content-Type': 'application/json'
-    }
-    
-    try:
-        if image_base64:
-            payload = {
-                "model": "Kwai-Kolors/Kolors",
-                "prompt": prompt,
-                "negative_prompt": DEFAULT_NEGATIVE_PROMPT,
-                "image": f"data:image/png;base64,{image_base64}",
-                "image_size": "512x512",
-                "num_inference_steps": 20,
-                "guidance_scale": 7.5
-            }
-        else:
-            payload = {
-                "model": "Kwai-Kolors/Kolors",
-                "prompt": prompt,
-                "negative_prompt": DEFAULT_NEGATIVE_PROMPT,
-                "image_size": "512x512",
-                "num_inference_steps": 20,
-                "guidance_scale": 7.5
-            }
-        endpoint = f"{SILICONFLOW_API_URL}/images/generations"
-        
-        print(f"\n=== Calling Siliconflow API ===")
-        print(f"Endpoint: {endpoint}")
-        print(f"Model: {payload['model']}")
-        print(f"Image provided: {bool(image_base64)}")
-        print(f"Prompt: {prompt[:100]}...")
-        
-        response = requests.post(endpoint, headers=headers, json=payload, timeout=120)
-        
-        print(f"Response status: {response.status_code}")
-        
-        if response.status_code == 200:
-            result = response.json()
-            print(f"Response keys: {list(result.keys())}")
-            print(f"Full response: {json.dumps(result, indent=2)[:500]}...")
-            
-            image_data = None
-            
-            if 'images' in result and len(result['images']) > 0:
-                img_item = result['images'][0]
-                if isinstance(img_item, dict) and 'url' in img_item:
-                    image_data = img_item['url']
-                    print(f"Found image URL in 'images[0].url'")
-                else:
-                    image_data = img_item
-                    print(f"Found image in 'images' array")
-            elif 'image' in result:
-                image_data = result['image']
-                print(f"Found image in 'image' field")
-            elif 'data' in result and len(result['data']) > 0:
-                first_item = result['data'][0]
-                if isinstance(first_item, dict):
-                    image_data = first_item.get('url') or first_item.get('b64_json')
-                else:
-                    image_data = first_item
-                print(f"Found image in 'data' array")
-            
-            if not image_data:
-                print(f"ERROR: No image data found in response")
-                return {'success': False, 'error': 'No image in response'}
-            
-            if isinstance(image_data, str):
-                if image_data.startswith('data:image'):
-                    image_data = image_data.split(',')[1]
-                    print(f"Extracted base64 from data URL")
-                
-                if image_data.startswith('http'):
-                    print(f"Image is URL, downloading: {image_data[:100]}...")
-                    img_response = requests.get(image_data, timeout=30)
-                    if img_response.status_code == 200:
-                        image_bytes = img_response.content
-                        print(f"Downloaded image: {len(image_bytes)} bytes")
-                    else:
-                        return {'success': False, 'error': f'Failed to download image: {img_response.status_code}'}
-                else:
-                    try:
-                        image_bytes = base64.b64decode(image_data)
-                        print(f"Decoded base64: {len(image_bytes)} bytes")
-                    except Exception as e:
-                        print(f"Base64 decode error: {e}")
-                        return {'success': False, 'error': f'Invalid image data: {str(e)}'}
-            else:
-                return {'success': False, 'error': 'Unexpected image data format'}
-            
-            if len(image_bytes) < 1000:
-                print(f"WARNING: Image data too small ({len(image_bytes)} bytes), might be corrupted")
-            
-            filename = f"bronze_{uuid.uuid4().hex[:8]}.png"
-            static_dir = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'public', 'static', 'textures', 'generated')
-            save_path = os.path.join(static_dir, filename)
-            
-            os.makedirs(static_dir, exist_ok=True)
-            
-            with open(save_path, 'wb') as f:
-                f.write(image_bytes)
-            
-            print(f"Image saved to: {save_path}")
-            print(f"File size: {len(image_bytes)} bytes")
-            print(f"File exists: {os.path.exists(save_path)}")
-            
-            return {
-                'success': True,
-                'image_url': f"/static/textures/generated/{filename}"
-            }
-        else:
-            error_msg = response.text
-            try:
-                error_data = response.json()
-                error_code = error_data.get('code', 0)
-                error_msg = error_data.get('message', error_msg)
-                
-                if error_code == 30001:
-                    print(f"API ERROR: 账户余额不足，请充值后重试")
-                    return {'success': False, 'error': '账户余额不足，请充值后重试', 'need_recharge': True}
-                elif error_code == 30003:
-                    print(f"API ERROR: 模型已禁用")
-                    return {'success': False, 'error': '当前模型不可用，请联系管理员'}
-            except:
-                pass
-            print(f"API ERROR: {response.status_code}")
-            print(f"Error details: {error_msg}")
-            return {'success': False, 'error': f'API错误: {error_msg[:100]}'}
-            
-    except requests.RequestException as e:
-        print(f"Request exception: {e}")
-        return {'success': False, 'error': f'Network error: {str(e)}'}
-    except Exception as e:
-        print(f"Unexpected exception: {e}")
-        import traceback
-        traceback.print_exc()
-        return {'success': False, 'error': f'Error: {str(e)}'}
-
-
-def call_sd_webui(sketch_bytes: bytes, prompt: str, negative_prompt: str, strength: float) -> dict:
-    """
-    调用 Stable Diffusion WebUI API 进行图生图
-    
-    Args:
-        sketch_bytes: 草图字节数据
-        prompt: 正向提示词
-        negative_prompt: 负向提示词
-        strength: 去噪强度
-        
-    Returns:
-        包含生成结果的字典
-    """
-    try:
-        sketch_base64 = base64.b64encode(sketch_bytes).decode('utf-8')
-        
-        payload = {
-            "init_images": [f"data:image/png;base64,{sketch_base64}"],
-            "prompt": prompt,
-            "negative_prompt": negative_prompt,
-            "denoising_strength": strength,
-            "steps": 30,
-            "cfg_scale": 7,
-            "width": 512,
-            "height": 512,
-            "sampler_name": "DPM++ 2M Karras"
-        }
-        
-        response = requests.post(
-            f"{SD_WEBUI_URL}/sdapi/v1/img2img",
-            json=payload,
-            timeout=60
-        )
-        
-        if response.status_code == 200:
-            result = response.json()
-            image_data = result['images'][0]
-            if image_data.startswith('data:image'):
-                image_data = image_data.split(',')[1]
-            
-            filename = f"bronze_{uuid.uuid4().hex[:8]}.png"
-            static_dir = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'public', 'static', 'textures', 'generated')
-            save_path = os.path.join(static_dir, filename)
-            
-            os.makedirs(static_dir, exist_ok=True)
-            with open(save_path, 'wb') as f:
-                f.write(base64.b64decode(image_data))
-            
-            return {
-                'success': True,
-                'image_url': f"/static/textures/generated/{filename}"
-            }
-        else:
-            return {'success': False, 'error': f'SD WebUI returned {response.status_code}'}
-            
-    except requests.RequestException as e:
-        return {'success': False, 'error': f'Request failed: {str(e)}'}
-    except Exception as e:
-        return {'success': False, 'error': str(e)}
-
-
 def generate_image(sketch_bytes: bytes, prompt: str, strength: float = 0.75) -> dict:
     """
-    根据配置的AI提供商生成图像
+    调用即梦AI生成图像
     
     Args:
         sketch_bytes: 草图字节数据
         prompt: 提示词
-        strength: 去噪强度
+        strength: 去噪强度（保留参数，即梦API不使用）
         
     Returns:
         包含生成结果的字典
     """
     print(f"\n=== generate_image called ===")
-    print(f"AI_PROVIDER: {AI_PROVIDER}")
     
     sketch_base64 = base64.b64encode(sketch_bytes).decode('utf-8')
-    
-    if AI_PROVIDER == 'jimeng':
-        return call_jimeng_api(prompt, sketch_base64)
-    elif AI_PROVIDER == 'siliconflow':
-        return call_siliconflow_api(prompt, sketch_base64, strength)
-    elif AI_PROVIDER == 'sd_webui':
-        return call_sd_webui(sketch_bytes, prompt, DEFAULT_NEGATIVE_PROMPT, strength)
-    else:
-        return {'success': False, 'error': f'Unknown AI provider: {AI_PROVIDER}'}
+    return call_jimeng_api(prompt, sketch_base64)
 
 
 @sketch_bp.route('/generate', methods=['POST'])
 def generate_texture():
     """
-    AI生成青铜器纹理
+    AI生成模型纹理图案
     
     Request JSON:
         {
             "sketch": "base64_image_data",
             "prompt": "用户自定义提示词",
-            "style": "taotie",
-            "bronze_type": "ding",
+            "style": "floral",
+            "base_model": "vase",
+            "custom_prompt": "额外描述",
             "strength": 0.75
         }
         
@@ -476,7 +234,8 @@ def generate_texture():
         {
             "success": true,
             "texture_url": "/static/textures/generated/xxx.png",
-            "fallback": false
+            "fallback": false,
+            "base_model": "vase"
         }
     """
     try:
@@ -486,14 +245,17 @@ def generate_texture():
             
         sketch_data = data.get('sketch', '')
         user_prompt = data.get('prompt', '')
-        style = data.get('style', 'taotie')
-        bronze_type = data.get('bronze_type', 'ding')
+        style = data.get('style', 'floral')
+        base_model = data.get('base_model', 'vase')
+        custom_prompt = data.get('custom_prompt', '')
         strength = data.get('strength', 0.75)
         
         if not sketch_data:
             return jsonify({'success': False, 'error': 'No sketch provided'}), 400
         
-        full_prompt = f"{user_prompt}, {BRONZE_QUALITY_PROMPT}"
+        full_prompt = build_prompt(style, custom_prompt)
+        if user_prompt:
+            full_prompt = f"{user_prompt}，{full_prompt}"
         
         if sketch_data.startswith('data:image'):
             sketch_data = sketch_data.split(',')[1]
@@ -509,16 +271,18 @@ def generate_texture():
             return jsonify({
                 'success': True,
                 'texture_url': result['image_url'],
-                'fallback': False
+                'fallback': False,
+                'base_model': base_model
             })
         else:
             print(f"AI generation failed: {result['error']}, using fallback")
-            fallback_result = match_texture_from_db(sketch_bytes, bronze_type, style)
+            fallback_result = match_texture_from_db(sketch_bytes, base_model, style)
             return jsonify({
                 'success': True,
                 'texture_url': fallback_result['texture_url'],
                 'fallback': True,
-                'matched_id': fallback_result['matched_id']
+                'matched_id': fallback_result['matched_id'],
+                'base_model': base_model
             })
             
     except Exception as e:
@@ -534,11 +298,8 @@ def get_config():
     获取当前AI配置信息
     """
     return jsonify({
-        'provider': AI_PROVIDER,
         'ark_configured': bool(ARK_API_KEY),
-        'jimeng_model': JIMENG_MODEL,
-        'siliconflow_configured': bool(SILICONFLOW_API_KEY),
-        'sd_webui_url': SD_WEBUI_URL
+        'jimeng_model': JIMENG_MODEL
     })
 
 
@@ -547,23 +308,17 @@ def set_config():
     """
     临时设置AI配置（运行时有效，重启后失效）
     """
-    global AI_PROVIDER, SILICONFLOW_API_KEY, ARK_API_KEY, JIMENG_MODEL
+    global ARK_API_KEY, JIMENG_MODEL
     
     data = request.json
     if not data:
         return jsonify({'success': False, 'error': 'No data provided'}), 400
-    
-    if 'provider' in data:
-        AI_PROVIDER = data['provider']
     
     if 'ark_api_key' in data:
         ARK_API_KEY = data['ark_api_key']
     
     if 'jimeng_model' in data:
         JIMENG_MODEL = data['jimeng_model']
-    
-    if 'siliconflow_api_key' in data:
-        SILICONFLOW_API_KEY = data['siliconflow_api_key']
     
     return jsonify({'success': True})
 
@@ -685,7 +440,7 @@ def load_texture_database() -> list:
     Returns:
         纹理库列表
     """
-    db_path = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'data', 'bronze_textures.json')
+    db_path = os.path.join(get_base_path(), 'backend', 'data', 'bronze_textures.json')
     
     if os.path.exists(db_path):
         try:
@@ -804,5 +559,244 @@ def match_texture():
             'matched_id': result['matched_id']
         })
         
+    except Exception as e:
+        return jsonify({'success': False, 'error': str(e)}), 500
+
+
+@sketch_bp.route('/gallery/upload', methods=['POST'])
+def gallery_upload():
+    """
+    上传图片（base64格式）
+    
+    Request JSON:
+        {
+            "image_data": "data:image/png;base64,..."
+        }
+        
+    Returns:
+        {
+            "success": true,
+            "image_url": "/static/textures/generated/xxx.png"
+        }
+    """
+    try:
+        data = request.json
+        if not data:
+            return jsonify({'success': False, 'error': 'No data provided'}), 400
+        
+        image_data = data.get('image_data', '')
+        if not image_data:
+            return jsonify({'success': False, 'error': 'No image_data provided'}), 400
+        
+        if image_data.startswith('data:image'):
+            image_data = image_data.split(',')[1]
+        
+        try:
+            image_bytes = base64.b64decode(image_data)
+        except Exception:
+            return jsonify({'success': False, 'error': 'Invalid image data'}), 400
+        
+        filename = f"model_{uuid.uuid4().hex[:8]}.png"
+        static_dir = os.path.join(get_base_path(), 'public', 'static', 'textures', 'generated')
+        save_path = os.path.join(static_dir, filename)
+        
+        os.makedirs(static_dir, exist_ok=True)
+        
+        with open(save_path, 'wb') as f:
+            f.write(image_bytes)
+        
+        return jsonify({
+            'success': True,
+            'image_url': f"/static/textures/generated/{filename}"
+        })
+        
+    except Exception as e:
+        return jsonify({'success': False, 'error': str(e)}), 500
+
+
+@sketch_bp.route('/gallery/save', methods=['POST'])
+def gallery_save():
+    """
+    保存作品到作品集
+    
+    Request JSON:
+        {
+            "image_url": "/static/textures/generated/xxx.png",
+            "texture_url": "/static/textures/generated/yyy.png",
+            "prompt": "生成提示词",
+            "base_model": "vase",
+            "style": "floral",
+            "custom_prompt": "额外描述"
+        }
+        
+    Returns:
+        保存结果JSON
+    """
+    try:
+        data = request.json
+        if not data:
+            return jsonify({'success': False, 'error': 'No data provided'}), 400
+        
+        image_url = data.get('image_url', '')
+        texture_url = data.get('texture_url', '')
+        prompt = data.get('prompt', '')
+        base_model = data.get('base_model', 'vase')
+        style = data.get('style', 'floral')
+        custom_prompt = data.get('custom_prompt', '')
+        name = data.get('name', '未命名作品')
+        
+        if not image_url:
+            return jsonify({'success': False, 'error': 'No image_url provided'}), 400
+        
+        result = save_artwork(image_url, prompt, base_model, style, custom_prompt, texture_url, name)
+        
+        if result['success']:
+            return jsonify(result)
+        else:
+            return jsonify(result), 500
+            
+    except Exception as e:
+        return jsonify({'success': False, 'error': str(e)}), 500
+
+
+@sketch_bp.route('/gallery/list', methods=['GET'])
+def gallery_list():
+    """
+    获取作品集列表
+    
+    Query Parameters:
+        limit: 返回数量限制（默认50）
+        offset: 偏移量（默认0）
+        
+    Returns:
+        作品列表JSON
+    """
+    try:
+        limit = int(request.args.get('limit', 50))
+        offset = int(request.args.get('offset', 0))
+        
+        artworks = get_artwork_list(limit, offset)
+        total = get_artwork_count()
+        
+        return jsonify({
+            'success': True,
+            'artworks': artworks,
+            'total': total
+        })
+    except Exception as e:
+        return jsonify({'success': False, 'error': str(e)}), 500
+
+
+@sketch_bp.route('/gallery/<int:artwork_id>', methods=['GET'])
+def gallery_detail(artwork_id: int):
+    """
+    获取作品详情
+    
+    Path Parameters:
+        artwork_id: 作品ID
+        
+    Returns:
+        作品详情JSON
+    """
+    try:
+        artwork = get_artwork_by_id(artwork_id)
+        
+        if artwork:
+            artwork['is_liked'] = is_liked(artwork_id)
+            return jsonify({
+                'success': True,
+                'artwork': artwork
+            })
+        else:
+            return jsonify({'success': False, 'error': '作品不存在'}), 404
+    except Exception as e:
+        return jsonify({'success': False, 'error': str(e)}), 500
+
+
+@sketch_bp.route('/gallery/like', methods=['POST'])
+def gallery_like():
+    """
+    点赞/取消点赞作品
+    
+    Request JSON:
+        {
+            "artwork_id": 1
+        }
+        
+    Returns:
+        操作结果JSON
+    """
+    try:
+        data = request.json
+        if not data:
+            return jsonify({'success': False, 'error': 'No data provided'}), 400
+        
+        artwork_id = data.get('artwork_id')
+        if not artwork_id:
+            return jsonify({'success': False, 'error': 'No artwork_id provided'}), 400
+        
+        result = toggle_like(int(artwork_id))
+        
+        if result['success']:
+            return jsonify(result)
+        else:
+            return jsonify(result), 400
+            
+    except Exception as e:
+        return jsonify({'success': False, 'error': str(e)}), 500
+
+
+@sketch_bp.route('/gallery/delete', methods=['POST'])
+def gallery_delete():
+    """
+    删除作品
+    
+    Request JSON:
+        {
+            "artwork_id": 1
+        }
+        
+    Returns:
+        操作结果JSON
+    """
+    try:
+        data = request.json
+        if not data:
+            return jsonify({'success': False, 'error': 'No data provided'}), 400
+        
+        artwork_id = data.get('artwork_id')
+        if not artwork_id:
+            return jsonify({'success': False, 'error': 'No artwork_id provided'}), 400
+        
+        result = delete_artwork(int(artwork_id))
+        
+        if result['success']:
+            return jsonify(result)
+        else:
+            return jsonify(result), 400
+            
+    except Exception as e:
+        return jsonify({'success': False, 'error': str(e)}), 500
+
+
+@sketch_bp.route('/gallery/leaderboard', methods=['GET'])
+def gallery_leaderboard():
+    """
+    获取排行榜
+    
+    Query Parameters:
+        limit: 返回数量限制（默认20）
+        
+    Returns:
+        排行榜列表JSON
+    """
+    try:
+        limit = int(request.args.get('limit', 20))
+        leaderboard = get_leaderboard(limit)
+        
+        return jsonify({
+            'success': True,
+            'leaderboard': leaderboard
+        })
     except Exception as e:
         return jsonify({'success': False, 'error': str(e)}), 500

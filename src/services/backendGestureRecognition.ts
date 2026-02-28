@@ -53,6 +53,7 @@ export class BackendGestureRecognitionService {
     })
     
     this.socket.on('connect', () => {
+      console.log('[手势服务] WebSocket已连接')
     })
     
     this.socket.on('connect_error', (error) => {
@@ -60,6 +61,9 @@ export class BackendGestureRecognitionService {
     })
     
     this.socket.on('result', (result: ProcessFrameResult) => {
+      if (result.detections && result.detections.length > 0) {
+        console.log('[手势服务] 收到识别结果:', result.detections.map(d => d.gestureName).join(', '))
+      }
       if (this.pendingResolve) {
         this.pendingResolve(result)
         this.pendingResolve = null
@@ -67,9 +71,11 @@ export class BackendGestureRecognitionService {
     })
     
     this.socket.on('disconnect', (reason) => {
+      console.log('[手势服务] WebSocket断开:', reason)
     })
     
     this.socket.on('reconnect', (attemptNumber) => {
+      console.log('[手势服务] WebSocket重连成功:', attemptNumber)
     })
     
     this.socket.on('reconnect_error', (error) => {

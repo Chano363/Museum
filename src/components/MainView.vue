@@ -31,13 +31,24 @@
       <div class="model-section">
         <div class="model-container">
           <ParticleModel
-            v-if="modelPath"
+            v-if="modelPath && !isUserModel"
             ref="particleModelRef"
             :model-path="modelPath"
             :particle-size="0.005"
             :max-particles="100000"
             @loaded="onModelLoaded"
             @error="onModelError"
+          />
+          <model-viewer
+            v-else-if="modelPath && isUserModel"
+            ref="modelViewerRef"
+            :src="modelPath"
+            :style="userModelStyle"
+            camera-controls
+            auto-rotate
+            shadow-intensity="0"
+            exposure="1.2"
+            @load="onModelLoaded"
           />
           <div v-else class="placeholder-container">
             <div class="placeholder-text">文物3D模型</div>
@@ -76,7 +87,9 @@
     <!-- 底部工具栏 -->
     <div class="toolbar">
       <button class="tool-btn back-home-btn" @click="$emit('back')" title="返回首页">
-        🏠
+        <svg viewBox="0 0 24 24" width="24" height="24">
+          <path fill="currentColor" d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/>
+        </svg>
       </button>
       <button class="tool-btn" @click="toggleCamera">
       <img :src="showCamera ? '/icons/camera.png' : '/icons/camera.png'" 
@@ -90,7 +103,9 @@
       <img src="/icons/settings.png" alt="settings" />
     </button>
       <button v-if="isDev" class="tool-btn" @click="exportLogs">
-        📋
+        <svg viewBox="0 0 24 24" width="24" height="24">
+          <path fill="currentColor" d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-5 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z"/>
+        </svg>
       </button>
     </div>
     
@@ -130,7 +145,12 @@ export default {
       modelFingerPosition: null,
       lastFingerMoveTime: 0,
       FINGER_MOVE_INTERVAL: 16,
-      showSettings: false
+      showSettings: false,
+      targetFingerPosition: null,
+      currentFingerPosition: { x: 50, y: 50 },
+      animationFrameId: null,
+      SMOOTH_SPEED: 2.0,
+      MIN_DISTANCE: 0.5
     }
   },
   computed: {
@@ -142,6 +162,16 @@ export default {
         return this.selectedArtifact.modelPath || '/3Dmodels/dragon_with_pearl/scene.gltf'
       }
       return null
+    },
+    isUserModel() {
+      return this.selectedArtifact?.isGenerated === true
+    },
+    userModelStyle() {
+      return {
+        width: '100%',
+        height: '100%',
+        backgroundColor: 'transparent'
+      }
     }
   },
   methods: {
@@ -190,9 +220,12 @@ export default {
           break
         case 'rotate':
           this.isFingerTracking = true
+          if (!this.animationFrameId) {
+            this.startContinuousAnimation()
+          }
           break
         case 'toggle_thumbbar':
-          this.$emit('toggleThumbBar', true) // 通过手势触发，传递autoSwitch=true
+          this.$emit('toggleThumbBar', true)
           this.$emit('displayGestureHint', '唤出切换面板')
           break
         default:
@@ -200,20 +233,19 @@ export default {
       }
     },
     onGestureDetected(gesture) {
-
     },
     onFingerMove(data) {
+      if (!data) {
+        this.isFingerTracking = false
+        this.targetFingerPosition = null
+        return
+      }
+      
       const now = performance.now()
       if (now - this.lastFingerMoveTime < this.FINGER_MOVE_INTERVAL) {
         return
       }
       this.lastFingerMoveTime = now
-      
-      if (!data) {
-        this.isFingerTracking = false
-        this.modelFingerPosition = null
-        return
-      }
       
       const deltaX = data.deltaX
       const deltaY = data.deltaY
@@ -230,29 +262,55 @@ export default {
           const modelX = (position.x / 320) * 100
           const modelY = (position.y / 240) * 100
           
-          const clampedX = Math.max(0, Math.min(100, modelX))
-          const clampedY = Math.max(0, Math.min(100, modelY))
-          
-          this.modelFingerPosition = {
-            x: clampedX,
-            y: clampedY
+          this.targetFingerPosition = {
+            x: Math.max(0, Math.min(100, modelX)),
+            y: Math.max(0, Math.min(100, modelY))
           }
         } else if (deltaX !== undefined && deltaY !== undefined) {
-          const currentX = this.modelFingerPosition?.x || 50
-          const currentY = this.modelFingerPosition?.y || 50
-          
           const dotSensitivity = 0.5
-          const newX = Math.max(0, Math.min(100, currentX + deltaX * dotSensitivity))
-          const newY = Math.max(0, Math.min(100, currentY + deltaY * dotSensitivity))
-          
-          this.modelFingerPosition = {
-            x: newX,
-            y: newY
+          this.targetFingerPosition = {
+            x: Math.max(0, Math.min(100, this.targetFingerPosition?.x || 50 + deltaX * dotSensitivity)),
+            y: Math.max(0, Math.min(100, this.targetFingerPosition?.y || 50 + deltaY * dotSensitivity))
           }
         }
       } catch (error) {
         console.error('控制模型失败:', error)
       }
+    },
+    startContinuousAnimation() {
+      const animate = () => {
+        if (!this.isFingerTracking && !this.targetFingerPosition) {
+          this.modelFingerPosition = null
+          this.animationFrameId = null
+          return
+        }
+        
+        if (this.targetFingerPosition) {
+          const dx = this.targetFingerPosition.x - this.currentFingerPosition.x
+          const dy = this.targetFingerPosition.y - this.currentFingerPosition.y
+          const distance = Math.sqrt(dx * dx + dy * dy)
+          
+          if (distance > this.MIN_DISTANCE) {
+            const moveDistance = Math.min(distance, this.SMOOTH_SPEED)
+            const ratio = moveDistance / distance
+            
+            this.currentFingerPosition.x += dx * ratio
+            this.currentFingerPosition.y += dy * ratio
+          } else {
+            this.currentFingerPosition.x = this.targetFingerPosition.x
+            this.currentFingerPosition.y = this.targetFingerPosition.y
+          }
+        }
+        
+        this.modelFingerPosition = {
+          x: this.currentFingerPosition.x,
+          y: this.currentFingerPosition.y
+        }
+        
+        this.animationFrameId = requestAnimationFrame(animate)
+      }
+      
+      this.animationFrameId = requestAnimationFrame(animate)
     },
     toggleCamera() {
       this.showCamera = !this.showCamera
@@ -310,6 +368,12 @@ export default {
     console.log('MainView mounted, selectedArtifact:', this.selectedArtifact)
     if (this.selectedArtifact && this.selectedArtifact.model === 'external' && this.selectedArtifact.modelPath) {
       this.isLoading = true
+    }
+  },
+  beforeUnmount() {
+    if (this.animationFrameId) {
+      cancelAnimationFrame(this.animationFrameId)
+      this.animationFrameId = null
     }
   },
   watch: {

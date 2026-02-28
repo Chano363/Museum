@@ -91,11 +91,13 @@ const colors = [
 .toolbar {
   display: flex;
   align-items: center;
-  gap: 16px;
-  padding: 12px 16px;
+  gap: 12px;
+  padding: 10px 14px;
   background: rgba(0, 0, 0, 0.3);
+  border: 1px solid rgba(196, 146, 16, 0.2);
   border-radius: 10px;
   flex-wrap: wrap;
+  flex-shrink: 0;
 }
 
 .tool-group {
@@ -104,9 +106,9 @@ const colors = [
 }
 
 .tool-btn {
-  width: 44px;
-  height: 44px;
-  border: 2px solid transparent;
+  width: 36px;
+  height: 36px;
+  border: 1px solid transparent;
   border-radius: 8px;
   background: rgba(255, 255, 255, 0.1);
   color: var(--text-color, #C49210);
@@ -128,53 +130,53 @@ const colors = [
 
 .separator {
   width: 1px;
-  height: 30px;
+  height: 24px;
   background: rgba(255, 255, 255, 0.2);
 }
 
 .size-group {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 8px;
 }
 
 .size-group label {
   color: var(--text-color, #C49210);
-  font-size: 13px;
+  font-size: 12px;
 }
 
 .size-group input[type="range"] {
-  width: 90px;
+  width: 70px;
   accent-color: var(--text-color, #C49210);
 }
 
 .size-group span {
   color: var(--text-color, #C49210);
-  font-size: 13px;
-  min-width: 22px;
+  font-size: 12px;
+  min-width: 18px;
 }
 
 .color-group {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 8px;
 }
 
 .color-group label {
   color: var(--text-color, #C49210);
-  font-size: 13px;
+  font-size: 12px;
 }
 
 .color-options {
   display: flex;
-  gap: 6px;
+  gap: 5px;
 }
 
 .color-btn {
-  width: 30px;
-  height: 30px;
+  width: 24px;
+  height: 24px;
   border: 2px solid transparent;
-  border-radius: 6px;
+  border-radius: 4px;
   cursor: pointer;
   transition: all 0.2s;
 }
@@ -195,14 +197,14 @@ const colors = [
 .action-btn {
   display: flex;
   align-items: center;
-  gap: 6px;
-  padding: 8px 14px;
+  gap: 5px;
+  padding: 6px 12px;
   border: 1px solid var(--text-color, #C49210);
-  border-radius: 8px;
+  border-radius: 6px;
   background: transparent;
   color: var(--text-color, #C49210);
   cursor: pointer;
-  font-size: 14px;
+  font-size: 13px;
   transition: all 0.2s;
 }
 

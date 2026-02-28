@@ -23,6 +23,12 @@ export default defineConfig({
     port: 3002,
     open: true,
     host: '0.0.0.0',
+    clearScreen: false,
+    allowedHosts: [
+      'localhost',
+      'kristi-rustproof-dessie.ngrok-free.dev',
+      '.trycloudflare.com'
+    ],
     proxy: {
       '/api': {
         target: 'http://localhost:5000',

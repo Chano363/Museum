@@ -3,9 +3,11 @@ import { ref, type Ref } from 'vue'
 const API_BASE = import.meta.env.VITE_API_BASE || ''
 
 export interface GenerateConfig {
-  bronzeType: string
+  baseModel: string
   style: string
   prompt: string
+  customPrompt: string
+  name?: string
 }
 
 export interface GenerateResult {
@@ -13,7 +15,9 @@ export interface GenerateResult {
   textureUrl: string
   fallback: boolean
   matchedId?: string
+  baseModel?: string
   error?: string
+  generationTime?: number
 }
 
 class SketchGeneratorService {
@@ -28,6 +32,7 @@ class SketchGeneratorService {
     config: GenerateConfig
   ): Promise<GenerateResult> {
     this.isGenerating.value = true
+    const startTime = performance.now()
     
     try {
       const response = await fetch(`${API_BASE}/api/generate`, {
@@ -39,7 +44,8 @@ class SketchGeneratorService {
           sketch: sketchDataUrl,
           prompt: config.prompt,
           style: config.style,
-          bronze_type: config.bronzeType,
+          base_model: config.baseModel,
+          custom_prompt: config.customPrompt,
           strength: 0.75
         })
       })
@@ -49,12 +55,18 @@ class SketchGeneratorService {
       }
       
       const result = await response.json()
+      const endTime = performance.now()
+      const genTime = Math.round(endTime - startTime)
+      console.log('[sketchGenerator] 生成耗时:', genTime, 'ms')
+      
       return {
         success: result.success,
         textureUrl: result.texture_url || '',
         fallback: result.fallback || false,
         matchedId: result.matched_id,
-        error: result.error
+        baseModel: result.base_model,
+        error: result.error,
+        generationTime: genTime
       }
       
     } catch (error) {
@@ -70,10 +82,10 @@ class SketchGeneratorService {
     }
   }
   
-  async getTextureList(bronzeType?: string): Promise<any[]> {
+  async getTextureList(baseModel?: string): Promise<any[]> {
     const params = new URLSearchParams()
-    if (bronzeType) {
-      params.append('type', bronzeType)
+    if (baseModel) {
+      params.append('type', baseModel)
     }
     
     try {

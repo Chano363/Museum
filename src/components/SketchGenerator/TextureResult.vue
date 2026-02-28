@@ -17,12 +17,33 @@
         预选纹理匹配
       </div>
       
+      <div v-if="showDevInfo && (generationTime || prompt)" class="dev-info-panel">
+        <div class="dev-info-header">
+          <span class="dev-badge">DEV</span>
+          <span class="dev-info-title">调试信息</span>
+        </div>
+        <div v-if="generationTime" class="dev-info-row">
+          <span class="dev-info-label">生图耗时:</span>
+          <span class="dev-info-value">{{ generationTime }}ms</span>
+        </div>
+        <div v-if="prompt" class="dev-info-row">
+          <span class="dev-info-label">提示词:</span>
+          <span class="dev-info-value dev-prompt">{{ prompt }}</span>
+        </div>
+      </div>
+      
       <div class="result-actions">
-        <button class="action-btn primary" @click="$emit('download')">
+        <button class="action-btn primary" @click="$emit('save')">
+          <svg viewBox="0 0 24 24" width="16" height="16">
+            <path fill="currentColor" d="M17 3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V7l-4-4zm-5 16c-1.66 0-3-1.34-3-3s1.34-3 3-3 3 1.34 3 3-1.34 3-3 3zm3-10H5V5h10v4z"/>
+          </svg>
+          保存作品
+        </button>
+        <button class="action-btn" @click="$emit('download')">
           <svg viewBox="0 0 24 24" width="16" height="16">
             <path fill="currentColor" d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/>
           </svg>
-          下载图片
+          下载
         </button>
         <button class="action-btn" @click="$emit('regenerate')">
           <svg viewBox="0 0 24 24" width="16" height="16">
@@ -36,14 +57,32 @@
 </template>
 
 <script setup lang="ts">
-defineProps({
+import { watch } from 'vue'
+
+const showDevInfo = import.meta.env.DEV
+console.log('[TextureResult] showDevInfo:', showDevInfo)
+
+const props = defineProps({
   textureUrl: { type: String, default: '' },
-  isFallback: { type: Boolean, default: false }
+  isFallback: { type: Boolean, default: false },
+  generationTime: { type: Number, default: null },
+  prompt: { type: String, default: '' }
+})
+
+watch(() => props.textureUrl, (newVal) => {
+  console.log('[TextureResult] textureUrl changed:', newVal ? 'has image' : 'no image')
+  console.log('[TextureResult] generationTime:', props.generationTime)
+  console.log('[TextureResult] prompt:', props.prompt)
+})
+
+watch(() => props.generationTime, (newVal) => {
+  console.log('[TextureResult] generationTime changed:', newVal)
 })
 
 defineEmits<{
   (e: 'download'): void
   (e: 'regenerate'): void
+  (e: 'save'): void
 }>()
 </script>
 
@@ -92,6 +131,57 @@ defineEmits<{
   border-radius: 5px;
   color: #4CAF50;
   font-size: 13px;
+}
+
+.dev-info-panel {
+  padding: 10px 12px;
+  background: rgba(196, 146, 16, 0.1);
+  border-top: 1px dashed rgba(196, 146, 16, 0.5);
+}
+
+.dev-info-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+.dev-info-title {
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 13px;
+  font-weight: 500;
+}
+
+.dev-info-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  margin-top: 4px;
+  font-size: 12px;
+}
+
+.dev-info-label {
+  color: rgba(196, 146, 16, 0.8);
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.dev-info-value {
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.dev-prompt {
+  word-break: break-all;
+  line-height: 1.5;
+}
+
+.dev-badge {
+  padding: 2px 6px;
+  background: #C49210;
+  border-radius: 3px;
+  color: #1a1a1a;
+  font-size: 11px;
+  font-weight: 600;
 }
 
 .result-actions {
