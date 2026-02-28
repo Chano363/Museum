@@ -20,6 +20,18 @@ import time
 from dotenv import load_dotenv
 load_dotenv()
 
+DETECTION_MODEL_PATH = os.environ.get('DETECTION_MODEL_PATH', 'dynamic_gestures/models/YOLOv10n_hands.onnx')
+CLASSIFICATION_MODEL_PATH = os.environ.get('CLASSIFICATION_MODEL_PATH', 'dynamic_gestures/models/crops_classifier.onnx')
+HAND_LANDMARKER_PATH = os.environ.get('HAND_LANDMARKER_PATH', 'models/hand_landmarker.task')
+
+CONFIDENCE_THRESHOLD = float(os.environ.get('CONFIDENCE_THRESHOLD', 0.6))
+DETECTION_CONFIDENCE_THRESHOLD = float(os.environ.get('DETECTION_CONFIDENCE_THRESHOLD', 0.4))
+
+MP_NUM_HANDS = int(os.environ.get('MP_NUM_HANDS', 1))
+MP_MIN_DETECTION_CONFIDENCE = float(os.environ.get('MP_MIN_DETECTION_CONFIDENCE', 0.5))
+MP_MIN_PRESENCE_CONFIDENCE = float(os.environ.get('MP_MIN_PRESENCE_CONFIDENCE', 0.5))
+MP_MIN_TRACKING_CONFIDENCE = float(os.environ.get('MP_MIN_TRACKING_CONFIDENCE', 0.5))
+
 def get_base_path():
     if getattr(sys, 'frozen', False):
         return sys._MEIPASS
@@ -30,9 +42,8 @@ sys.path.append(get_base_path())
 from dynamic_gestures.onnx_models import HandDetection, HandClassification
 
 base_path = get_base_path()
-model_dir = os.path.join(base_path, 'dynamic_gestures', 'models')
-detection_model = HandDetection(os.path.join(model_dir, 'YOLOv10n_hands.onnx'), image_size=(640, 640), confidence_threshold=0.4)
-classification_model = HandClassification(os.path.join(model_dir, 'crops_classifier.onnx'))
+detection_model = HandDetection(os.path.join(base_path, DETECTION_MODEL_PATH), image_size=(640, 640), confidence_threshold=DETECTION_CONFIDENCE_THRESHOLD)
+classification_model = HandClassification(os.path.join(base_path, CLASSIFICATION_MODEL_PATH))
 
 import mediapipe as mp
 
@@ -43,7 +54,7 @@ try:
     import urllib.request
     
     model_url = "https://storage.googleapis.com/mediapipe-models/hand_landmarker/hand_landmarker/float16/1/hand_landmarker.task"
-    model_path = os.path.join(base_path, 'models', 'hand_landmarker.task')
+    model_path = os.path.join(base_path, HAND_LANDMARKER_PATH)
     
     os.makedirs(os.path.dirname(model_path), exist_ok=True)
     
@@ -57,10 +68,10 @@ try:
     base_options = python.BaseOptions(model_asset_path=model_path)
     options = vision.HandLandmarkerOptions(
         base_options=base_options,
-        num_hands=1,
-        min_hand_detection_confidence=0.5,
-        min_hand_presence_confidence=0.5,
-        min_tracking_confidence=0.5
+        num_hands=MP_NUM_HANDS,
+        min_hand_detection_confidence=MP_MIN_DETECTION_CONFIDENCE,
+        min_hand_presence_confidence=MP_MIN_PRESENCE_CONFIDENCE,
+        min_tracking_confidence=MP_MIN_TRACKING_CONFIDENCE
     )
     
     hands = vision.HandLandmarker.create_from_options(options)
@@ -109,7 +120,6 @@ def process_frame(image_data):
         labels = classification_model(frame, boxes)
         
         detections = []
-        CONFIDENCE_THRESHOLD = 0.6
         
         for i, (box, prob) in enumerate(zip(boxes, probs)):
             if prob < CONFIDENCE_THRESHOLD:

@@ -1,22 +1,47 @@
 import { spawn } from 'child_process'
 import { platform } from 'os'
 import { existsSync } from 'fs'
+import { config } from 'dotenv'
+import { resolve } from 'path'
+
+config({ path: resolve(process.cwd(), '.env') })
 
 const isWindows = platform() === 'win32'
 
-const CONDA_ENV_PATH = 'D:\\Anaconda\\envs\\dynamic'
-const PYTHON_PATH = isWindows 
-  ? `${CONDA_ENV_PATH}\\python.exe`
-  : `${CONDA_ENV_PATH}/bin/python`
+function getPythonPath() {
+  if (process.env.PYTHON_PATH) {
+    return process.env.PYTHON_PATH
+  }
+  
+  if (isWindows) {
+    const condaEnvName = process.env.CONDA_ENV_NAME || 'dynamic'
+    const condaPrefix = process.env.CONDA_PREFIX || 'D:\\Anaconda\\envs'
+    const condaPath = `${condaPrefix}\\${condaEnvName}`
+    const pythonExe = `${condaPath}\\python.exe`
+    if (existsSync(pythonExe)) {
+      return pythonExe
+    }
+  }
+  
+  return isWindows ? 'python' : 'python3'
+}
+
+const PYTHON_PATH = getPythonPath()
+
+function logConfig() {
+  console.log('[Config] Environment configuration:')
+  console.log(`[Config]   CONDA_ENV_NAME: ${process.env.CONDA_ENV_NAME || 'dynamic (default)'}`)
+  console.log(`[Config]   CONDA_PREFIX: ${process.env.CONDA_PREFIX || 'D:\\Anaconda\\envs (default)'}`)
+  console.log(`[Config]   PYTHON_PATH: ${process.env.PYTHON_PATH || 'not set (auto-detect)'}`)
+  console.log(`[Config]   Resolved Python: ${PYTHON_PATH}`)
+}
 
 function startBackend() {
   console.log('[Backend] Starting backend server...')
-  
-  const pythonExe = existsSync(PYTHON_PATH) ? PYTHON_PATH : 'python'
-  console.log(`[Backend] Using Python: ${pythonExe}`)
+  console.log(`[Backend] Using Python: ${PYTHON_PATH}`)
   
   const backend = spawn(
-    pythonExe,
+    PYTHON_PATH,
     ['backend/app.py'],
     {
       cwd: process.cwd(),
@@ -63,6 +88,8 @@ function startFrontend() {
   
   return frontend
 }
+
+logConfig()
 
 const backendProcess = startBackend()
 const frontendProcess = startFrontend()

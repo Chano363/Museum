@@ -10,6 +10,58 @@
 
 ### 优化 - 2026-02-28
 
+#### 跨平台兼容性改进
+
+**问题描述:**
+项目中存在硬编码的 Windows 路径，导致无法在 Linux 服务器上部署。
+
+**解决方案:**
+移除硬编码路径，使用环境变量和动态检测替代。
+
+**修改文件:**
+
+| 文件 | 修改内容 |
+|------|----------|
+| `scripts/start.js` | 移除硬编码 Conda 路径，改用环境变量和动态检测 |
+| `museum.spec` | 移除硬编码 mediapipe DLL 路径，动态查找库文件 |
+| `backend/requirements.txt` | 新增：Python 依赖列表，用于 Linux 部署 |
+
+**具体修改:**
+
+1. **scripts/start.js** - Python 路径检测逻辑
+   ```javascript
+   function getPythonPath() {
+     // 优先使用环境变量
+     if (process.env.PYTHON_PATH) {
+       return process.env.PYTHON_PATH
+     }
+     // Windows 下检测 Conda 环境
+     if (isWindows) {
+       const condaPath = process.env.CONDA_PREFIX || 'D:\\Anaconda\\envs\\dynamic'
+       // ...
+     }
+     // Linux 默认使用 python3
+     return isWindows ? 'python' : 'python3'
+   }
+   ```
+
+2. **museum.spec** - 动态查找 mediapipe 库
+   ```python
+   def find_mediapipe_dll():
+       import mediapipe
+       mp_path = os.path.dirname(mediapipe.__file__)
+       dll_name = 'libmediapipe.dll' if sys.platform == 'win32' else 'libmediapipe.so'
+       # ...
+   ```
+
+3. **新增 requirements.txt**
+   - flask, flask-socketio, flask-cors
+   - opencv-python, numpy, pillow
+   - mediapipe, onnxruntime, scipy
+   - requests, python-dotenv
+
+---
+
 #### 精简后端AI生图代码
 
 **问题描述:**

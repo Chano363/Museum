@@ -473,3 +473,101 @@ curl -X POST http://localhost:5000/api/hand-tracking \
 3. 设置Header: `Content-Type: application/json`
 4. 设置Body为raw JSON格式
 5. 发送请求
+
+---
+
+## 错误码说明
+
+### HTTP 状态码
+
+| 状态码 | 说明 | 常见原因 |
+|--------|------|----------|
+| 200 | 成功 | 请求处理成功 |
+| 400 | 请求错误 | 参数缺失、格式错误、图像解码失败 |
+| 500 | 服务器错误 | 模型加载失败、内部异常 |
+
+### 业务错误码
+
+| 错误信息 | 说明 | 解决方案 |
+|----------|------|----------|
+| `Failed to decode image` | 图像解码失败 | 检查 Base64 编码是否正确 |
+| `No hands detected` | 未检测到手部 | 确保图像中有清晰的手部 |
+| `Error in hand tracking` | 追踪过程出错 | 检查后端日志 |
+| `Model file not found` | 模型文件未找到 | 检查模型路径配置 |
+
+### 错误响应格式
+
+```json
+{
+  "error": "错误描述",
+  "traceback": "详细堆栈信息（仅开发环境）"
+}
+```
+
+---
+
+## 环境变量配置
+
+API 服务相关配置可通过环境变量调整：
+
+| 变量名 | 默认值 | 说明 |
+|--------|--------|------|
+| `PORT` | 5000 | API 服务端口 |
+| `CORS_ORIGINS` | * | CORS 允许的源 |
+| `CONFIDENCE_THRESHOLD` | 0.6 | 手势识别置信度阈值 |
+| `DETECTION_CONFIDENCE_THRESHOLD` | 0.4 | 检测置信度阈值 |
+
+---
+
+## 请求频率限制
+
+### 前端节流配置
+
+前端通过以下参数控制请求频率：
+
+| 参数 | 默认值 | 说明 |
+|------|--------|------|
+| `MIN_REQUEST_INTERVAL` | 33ms | 最小请求间隔（约30fps） |
+| `CONNECTION_TIMEOUT` | 3000ms | 连接超时时间 |
+
+### 建议配置
+
+```env
+# 高帧率配置（需要更好的网络和服务器性能）
+VITE_MIN_REQUEST_INTERVAL=16
+VITE_CONNECTION_TIMEOUT=2000
+
+# 低带宽配置
+VITE_MIN_REQUEST_INTERVAL=100
+VITE_CONNECTION_TIMEOUT=5000
+```
+
+---
+
+## 安全注意事项
+
+### 1. API 密钥保护
+
+- 不要在前端代码中暴露 API 密钥
+- 使用环境变量存储敏感信息
+- 生产环境使用 HTTPS
+
+### 2. CORS 配置
+
+生产环境应限制 CORS 来源：
+
+```env
+CORS_ORIGINS=https://your-domain.com,https://api.your-domain.com
+```
+
+### 3. 输入验证
+
+- 验证图像大小限制
+- 过滤异常请求
+- 记录请求日志
+
+### 4. 资源限制
+
+- 限制请求频率
+- 设置请求超时
+- 监控服务器资源使用

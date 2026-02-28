@@ -1,13 +1,28 @@
 # -*- mode: python ; coding: utf-8 -*-
 
+import sys
+import os
+
 block_cipher = None
+
+def find_mediapipe_dll():
+    import mediapipe
+    mp_path = os.path.dirname(mediapipe.__file__)
+    dll_name = 'libmediapipe.dll' if sys.platform == 'win32' else 'libmediapipe.so'
+    dll_path = os.path.join(mp_path, 'tasks', 'c', dll_name)
+    if os.path.exists(dll_path):
+        return dll_path
+    return None
+
+mediapipe_dll = find_mediapipe_dll()
+binaries_list = []
+if mediapipe_dll:
+    binaries_list.append((mediapipe_dll, 'mediapipe/tasks/c'))
 
 a = Analysis(
     ['backend/app.py'],
     pathex=[],
-    binaries=[
-        ('D:/Anaconda/Lib/site-packages/mediapipe/tasks/c/libmediapipe.dll', 'mediapipe/tasks/c'),
-    ],
+    binaries=binaries_list,
     datas=[
         ('dist', 'static'),
         ('models', 'models'),
